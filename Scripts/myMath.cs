@@ -13,15 +13,13 @@ namespace MyMath{
         }
 
         public static float arrayMax(float[] array){
-            int targ = 0;
             float maxval = 0;
             for (int i = 0; i < array.Length; i++){
                 if (Math.Abs(array[i]) > maxval == true){
                     maxval = Math.Abs(array[i]);
-                    targ = i;
                 }
             }
-            return array[targ];
+            return maxval;
         }
     }
 }
