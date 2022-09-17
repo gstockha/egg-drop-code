@@ -1,38 +1,55 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using MyMath;
 
 public class Chicken : KinematicBody2D
 {
-Vector2 spriteScale, velocity, shoveVel = Vector2.Zero;
+Vector2 baseScale, velocity, shoveVel = Vector2.Zero;
 float speed = 300;
 float momentum, gravity = 0;
 float weight = .007F;
-float bounce = 0;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
 float[] dirListx = new float[10];
 float[] dirListy = new float[10];
 bool idle, onFloor = false;
 Sprite sprite;
+RayCast2D[] rayCasts = new RayCast2D[12];
+Dictionary<int, string> rays = new Dictionary<int, string>(){
+	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
+};
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     sprite = GetNode<Sprite>("Sprite");
-    spriteScale = sprite.Scale;
+    baseScale = sprite.Scale;
     for (int i = 0; i < dirListx.Length; i++){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
+    rayCasts[0] = GetNode<RayCast2D>("RayCastB");
+    rayCasts[1] = GetNode<RayCast2D>("RayCastT");
+    rayCasts[2] = GetNode<RayCast2D>("RayCastR");
+    rayCasts[3] = GetNode<RayCast2D>("RayCastL");
+    rayCasts[4] = GetNode<RayCast2D>("RayCastBR1");
+    rayCasts[5] = GetNode<RayCast2D>("RayCastTR1");
+    rayCasts[6] = GetNode<RayCast2D>("RayCastBL1");
+    rayCasts[7] = GetNode<RayCast2D>("RayCastTL1");
+    rayCasts[8] = GetNode<RayCast2D>("RayCastBR2");
+    rayCasts[9] = GetNode<RayCast2D>("RayCastTR2");
+    rayCasts[10] = GetNode<RayCast2D>("RayCastBL2");
+    rayCasts[11] = GetNode<RayCast2D>("RayCastTL2");
+
 }
 
 public override void _PhysicsProcess(float _delta){
-    _Move();
-    _ShoveCheck();
-    _Squish(spriteScale);
+    Move();
+    WallCheck();
+    Squish(baseScale);
 }
 
-public void _Move(){
+public void Move(){
 	if (!idle){ //update direction
 		dir[0] = Input.GetActionStrength("right") - Input.GetActionStrength("left");
 		dir[1] = Input.GetActionStrength("down") - Input.GetActionStrength("up");
@@ -43,6 +60,7 @@ public void _Move(){
 		dir[0] = 0;
 		dir[1] = 0;
 	}
+    onFloor = IsOnWall() && Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
     if (dir[1] < 0 || onFloor) gravity = 0;
     else{
         gravity += weight;
@@ -58,20 +76,18 @@ public void _Move(){
 	dirListy[current] = dir[1] + gravity;
 	dirListx[current] = myMath.arrayMean(dirListx);
 	dirListy[current] = myMath.arrayMean(dirListy);
-    onFloor = IsOnWall() && Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
-    momentum = _GetMomentum();
+    momentum = GetMomentum();
     MoveAndSlide(new Vector2(velocity.x, velocity.y) * speed);
     if (shoveCounter[0] > 0){
         shoveCounter[0] -= 10;
         MoveAndSlide(shoveVel * (shoveCounter[1] * (shoveCounter[0] / shoveCounter[1])));
         if (shoveCounter[0] < 0){
-            bounce = 0;
             shoveCounter[0] = 0;
         }
     }
 }
 
-public float _GetMomentum(String XorY = ""){
+public float GetMomentum(string XorY = ""){
     float mom;
     velocity = new Vector2(myMath.arrayMean(dirListx), myMath.arrayMean(dirListy));
     float absx = Mathf.Abs(velocity.x);
@@ -82,62 +98,111 @@ public float _GetMomentum(String XorY = ""){
     return mom;
 }
 
-public void _ShoveCheck(){
-    GD.Print(IsOnWall());
-    if (IsOnWall() == false) return;
-    shoveVel = new Vector2(-1 * Mathf.Sign(velocity.x), -1 * Mathf.Sign(velocity.y));
-    int i;
-    int dirChange;
-    float squishAmount;
-    bool hitGround = Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
+public void WallCheck(){
+    if (GetSlideCount() < 1) return;
+    string direction = "";
+    int dirChange = 0;
     if (Mathf.Round(GetSlideCollision(0).Normal.x) != 0){
-        bounce = _GetMomentum("x");
-        shoveVel.y = 0;
+        direction = "x";
         dirChange = Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.x));
-        for (i = 0; i < dirListx.Length; i++){
-            dirListx[i] *= (Mathf.Sign(dirListx[i]) != dirChange) ? -bounce : bounce;
-            if (Mathf.Abs(dirListx[i]) < .05F) dirListx[i] = 0;
-        }
-        squishAmount = myMath.arrayMax(dirListx) * .6F * spriteScale.x;
-        _Squish(new Vector2(spriteScale.x - squishAmount, spriteScale.x + squishAmount));
     }
     else if (Mathf.Round(GetSlideCollision(0).Normal.y) != 0){
-        bounce = _GetMomentum("y");
-        shoveVel.x = 0;
+        direction = "y";
         dirChange = Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.y));
-        for (i = 0; i < dirListx.Length; i++){
-            dirListy[i] *= (Mathf.Sign(dirListy[i]) != dirChange) ? -bounce : bounce;
-            if (Mathf.Abs(dirListy[i]) < .05F) dirListy[i] = 0;
-        }
-        squishAmount = myMath.arrayMax(dirListy) * spriteScale.y;
-        squishAmount *= (hitGround) ? .3F : .4F;
-        _Squish(new Vector2(spriteScale.x + squishAmount, spriteScale.y - squishAmount));
     }
-    // if (hitGround) bounce *= .01F;
-    // if (bounce < 0.1F){
-    //     bounce = 0;
-    //     return;
-    // }
-    shoveCounter[0] = speed;
+    KnockBack(direction, dirChange, speed, .05F);
+}
+
+public void KnockBack(string direction, int dirChange, float power, float lowerBound){
+    if (direction != "x" && direction != "y") return;
+    shoveVel = new Vector2(-1 * Mathf.Sign(velocity.x), -1 * Mathf.Sign(velocity.y));
+    float bounce = GetMomentum(direction);
+    float[] targetList = new float[0];
+    float squishAmount = 0;
+    float squishMult = .6F;
+    if (direction == "x"){
+        targetList = dirListx;
+        shoveVel.y = 0;
+    }
+    else if (direction == "y"){
+        targetList = dirListy;
+        shoveVel.x = 0;
+        squishMult *= .5F;
+    }
+    for (int i = 0; i < dirListx.Length; i++){
+        targetList[i] *= (Mathf.Sign(targetList[i]) != dirChange) ? -bounce : bounce;
+        if (Mathf.Abs(targetList[i]) < lowerBound) targetList[i] = lowerBound * Mathf.Sign(targetList[i]);
+        else if (Mathf.Abs(targetList[i]) > 1) targetList[i] = 1 * Mathf.Sign(targetList[i]);
+    }
+    squishAmount = (myMath.arrayMax(targetList) * squishMult * baseScale.x) * (power / speed);
+    if (direction == "y") squishAmount *= -1;
+    Squish(new Vector2(baseScale.x - squishAmount, baseScale.x + squishAmount));
+    shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
 }
 
-public void _Squish(Vector2 scale){
-    if (scale != spriteScale){ //setter
+public void Squish(Vector2 scale){
+    if (scale != baseScale){ //setter
+        if (Mathf.Abs(scale.x) > Mathf.Abs(baseScale.x * 1.8F)) scale.x = baseScale.x * 1.7F * Mathf.Sign(scale.x);
+        if (Mathf.Abs(scale.y) > Mathf.Abs(baseScale.y * 1.8F)) scale.y = baseScale.y * 1.7F * Mathf.Sign(scale.y);
         sprite.Scale = scale;
         return;
     }
-    float newXsc = Mathf.Lerp(sprite.Scale.x, spriteScale.x, .07F);
-    float newYsc = Mathf.Lerp(sprite.Scale.y, spriteScale.y, .07F);
+    float newXsc = Mathf.Lerp(sprite.Scale.x, baseScale.x, .07F);
+    float newYsc = Mathf.Lerp(sprite.Scale.y, baseScale.y, .07F);
     sprite.Scale = new Vector2(newXsc, newYsc);
 }
 
 public void _on_Hitbox_area_entered(Node body){
-    // Godot.Collections.Array groups = body.GetGroups();
-    // foreach (String group in groups){
-    //     switch (group){
-
-    //     }
-    // }
+    Godot.Collections.Array group = body.GetGroups();
+    switch (group[0]){
+        case "eggs":
+            int i;
+            for (i = 0; i < rayCasts.Length; i++){
+                if (rayCasts[i].IsColliding()) break;
+            }
+            if (i == rayCasts.Length) return;
+            GD.Print(rays[i]);
+            switch(rays[i]){
+                case "bottom":
+                    KnockBack("y", -1, speed * 2, .6F);
+                    break;
+                case "top":
+                    KnockBack("y", 1, speed * 2, .6F);
+                    break;
+                case "right":
+                    KnockBack("x", 1, speed * 2, .6F);
+                    break;
+                case "left":
+                    KnockBack("x", -1, speed * 2, .6F);
+                    break;
+                case "br1":
+                    KnockBack("x", 1, speed * 2, .6F);
+                    break;
+                case "tr1":
+                    KnockBack("x", 1, speed * 2, .6F);
+                    break;
+                case "bl1":
+                    KnockBack("x", -1, speed * 2, .6F);
+                    break;
+                case "tl1":
+                    KnockBack("x", -1, speed * 2, .6F);
+                    break;
+                case "br2":
+                    KnockBack("y", 1, speed * 2, .6F);
+                    break;
+                case "tr2":
+                    KnockBack("y", 1, speed * 2, .6F);
+                    break;
+                case "bl2":
+                    KnockBack("y", -1, speed * 2, .6F);
+                    break;
+                case "tl2":
+                    KnockBack("y", -1, speed * 2, .6F);
+                    break;
+            }
+            break;
+    }
 }
+
 }

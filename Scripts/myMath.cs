@@ -15,9 +15,7 @@ namespace MyMath{
         public static float arrayMax(float[] array){
             float maxval = 0;
             for (int i = 0; i < array.Length; i++){
-                if (Math.Abs(array[i]) > maxval == true){
-                    maxval = Math.Abs(array[i]);
-                }
+                if (Math.Abs(array[i]) > maxval == true) maxval = Math.Abs(array[i]);
             }
             return maxval;
         }
