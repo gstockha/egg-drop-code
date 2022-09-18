@@ -13,8 +13,9 @@ float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
 float[] dirListx = new float[10];
 float[] dirListy = new float[10];
-bool idle, onFloor = false;
+bool idle, invincible, onFloor = false;
 Sprite sprite;
+Timer invTimer;
 RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
@@ -28,19 +29,21 @@ public override void _Ready(){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-    rayCasts[0] = GetNode<RayCast2D>("RayCastB");
-    rayCasts[1] = GetNode<RayCast2D>("RayCastT");
-    rayCasts[2] = GetNode<RayCast2D>("RayCastR");
-    rayCasts[3] = GetNode<RayCast2D>("RayCastL");
-    rayCasts[4] = GetNode<RayCast2D>("RayCastBR1");
-    rayCasts[5] = GetNode<RayCast2D>("RayCastTR1");
-    rayCasts[6] = GetNode<RayCast2D>("RayCastBL1");
-    rayCasts[7] = GetNode<RayCast2D>("RayCastTL1");
-    rayCasts[8] = GetNode<RayCast2D>("RayCastBR2");
-    rayCasts[9] = GetNode<RayCast2D>("RayCastTR2");
-    rayCasts[10] = GetNode<RayCast2D>("RayCastBL2");
-    rayCasts[11] = GetNode<RayCast2D>("RayCastTL2");
-
+    #region raycasts
+    rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
+    rayCasts[1] = GetNode<RayCast2D>("RayCasts/RayCastT");
+    rayCasts[2] = GetNode<RayCast2D>("RayCasts/RayCastR");
+    rayCasts[3] = GetNode<RayCast2D>("RayCasts/RayCastL");
+    rayCasts[4] = GetNode<RayCast2D>("RayCasts/RayCastBR1");
+    rayCasts[5] = GetNode<RayCast2D>("RayCasts/RayCastTR1");
+    rayCasts[6] = GetNode<RayCast2D>("RayCasts/RayCastBL1");
+    rayCasts[7] = GetNode<RayCast2D>("RayCasts/RayCastTL1");
+    rayCasts[8] = GetNode<RayCast2D>("RayCasts/RayCastBR2");
+    rayCasts[9] = GetNode<RayCast2D>("RayCasts/RayCastTR2");
+    rayCasts[10] = GetNode<RayCast2D>("RayCasts/RayCastBL2");
+    rayCasts[11] = GetNode<RayCast2D>("RayCasts/RayCastTL2");
+    #endregion
+    invTimer = GetNode<Timer>("Invincible");
 }
 
 public override void _PhysicsProcess(float _delta){
@@ -110,12 +113,12 @@ public void WallCheck(){
         direction = "y";
         dirChange = Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.y));
     }
-    KnockBack(direction, dirChange, speed, .05F);
+    KnockBack(direction, dirChange, speed, .05F, 0);
 }
 
-public void KnockBack(string direction, int dirChange, float power, float lowerBound){
+public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime){
     if (direction != "x" && direction != "y") return;
-    shoveVel = new Vector2(-1 * Mathf.Sign(velocity.x), -1 * Mathf.Sign(velocity.y));
+    shoveVel = new Vector2(-Mathf.Sign(velocity.x), -Mathf.Sign(velocity.y));
     float bounce = GetMomentum(direction);
     float[] targetList = new float[0];
     float squishAmount = 0;
@@ -123,14 +126,16 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     if (direction == "x"){
         targetList = dirListx;
         shoveVel.y = 0;
+        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) bounce *= -1; //don't reverse
     }
     else if (direction == "y"){
         targetList = dirListy;
         shoveVel.x = 0;
         squishMult *= .5F;
+        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1; //don't reverse
     }
     for (int i = 0; i < dirListx.Length; i++){
-        targetList[i] *= (Mathf.Sign(targetList[i]) != dirChange) ? -bounce : bounce;
+        targetList[i] *= (Mathf.Sign(targetList[i]) == dirChange) ? bounce : -bounce;
         if (Mathf.Abs(targetList[i]) < lowerBound) targetList[i] = lowerBound * Mathf.Sign(targetList[i]);
         else if (Mathf.Abs(targetList[i]) > 1) targetList[i] = 1 * Mathf.Sign(targetList[i]);
     }
@@ -139,6 +144,10 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     Squish(new Vector2(baseScale.x - squishAmount, baseScale.x + squishAmount));
     shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
+    if (invTime != 0){
+        invincible = true;
+        invTimer.Start(invTime);
+    }
 }
 
 public void Squish(Vector2 scale){
@@ -157,6 +166,7 @@ public void _on_Hitbox_area_entered(Node body){
     Godot.Collections.Array group = body.GetGroups();
     switch (group[0]){
         case "eggs":
+            if (invincible) return;
             int i;
             for (i = 0; i < rayCasts.Length; i++){
                 if (rayCasts[i].IsColliding()) break;
@@ -165,44 +175,48 @@ public void _on_Hitbox_area_entered(Node body){
             GD.Print(rays[i]);
             switch(rays[i]){
                 case "bottom":
-                    KnockBack("y", -1, speed * 2, .6F);
+                    KnockBack("y", -1, speed * 2, .6F, .1F);
                     break;
                 case "top":
-                    KnockBack("y", 1, speed * 2, .6F);
+                    KnockBack("y", 1, speed * 2, .6F, .1F);
                     break;
                 case "right":
-                    KnockBack("x", 1, speed * 2, .6F);
+                    KnockBack("x", 1, speed * 2, .6F, .1F);
                     break;
                 case "left":
-                    KnockBack("x", -1, speed * 2, .6F);
+                    KnockBack("x", -1, speed * 2, .6F, .1F);
                     break;
                 case "br1":
-                    KnockBack("x", 1, speed * 2, .6F);
+                    KnockBack("x", 1, speed * 2, .6F, .1F);
                     break;
                 case "tr1":
-                    KnockBack("x", 1, speed * 2, .6F);
+                    KnockBack("x", 1, speed * 2, .6F, .1F);
                     break;
                 case "bl1":
-                    KnockBack("x", -1, speed * 2, .6F);
+                    KnockBack("x", -1, speed * 2, .6F, .1F);
                     break;
                 case "tl1":
-                    KnockBack("x", -1, speed * 2, .6F);
+                    KnockBack("x", -1, speed * 2, .6F, .1F);
                     break;
                 case "br2":
-                    KnockBack("y", 1, speed * 2, .6F);
+                    KnockBack("y", -1, speed * 2, .6F, .1F);
                     break;
                 case "tr2":
-                    KnockBack("y", 1, speed * 2, .6F);
+                    KnockBack("y", 1, speed * 2, .6F, .1F);
                     break;
                 case "bl2":
-                    KnockBack("y", -1, speed * 2, .6F);
+                    KnockBack("y", -1, speed * 2, .6F, .1F);
                     break;
                 case "tl2":
-                    KnockBack("y", -1, speed * 2, .6F);
+                    KnockBack("y", 1, speed * 2, .6F, .1F);
                     break;
             }
             break;
     }
+}
+
+public void _on_Invincible_timeout(){
+    invincible = false;
 }
 
 }
