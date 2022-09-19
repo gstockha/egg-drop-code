@@ -6,13 +6,13 @@ using MyMath;
 public class Chicken : KinematicBody2D
 {
 Vector2 baseScale, velocity, shoveVel = Vector2.Zero;
-float speed = 300;
+float speed = 400;
 float momentum, gravity = 0;
 float weight = .007F;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
-float[] dirListx = new float[10];
-float[] dirListy = new float[10];
+float[] dirListx = new float[12];
+float[] dirListy = new float[12];
 bool idle, invincible, onFloor = false;
 Sprite sprite;
 Timer invTimer;
@@ -107,39 +107,37 @@ public void WallCheck(){
     int dirChange = 0;
     if (Mathf.Round(GetSlideCollision(0).Normal.x) != 0){
         direction = "x";
-        dirChange = Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.x));
+        dirChange = -Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.x));
     }
     else if (Mathf.Round(GetSlideCollision(0).Normal.y) != 0){
         direction = "y";
         dirChange = Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.y));
     }
-    KnockBack(direction, dirChange, speed, .05F, 0);
+    KnockBack(direction, dirChange, speed * .5F, .05F, 0);
 }
 
 public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime){
     if (direction != "x" && direction != "y") return;
-    shoveVel = new Vector2(-Mathf.Sign(velocity.x), -Mathf.Sign(velocity.y));
-    float bounce = GetMomentum(direction);
+    float bounce = momentum;
+    if (bounce < lowerBound) bounce = lowerBound;
+    if (bounce > 1) bounce = 1;
+    shoveVel = new Vector2(-dirChange, -Mathf.Sign(velocity.y));
     float[] targetList = new float[0];
     float squishAmount = 0;
-    float squishMult = .6F;
     if (direction == "x"){
         targetList = dirListx;
         shoveVel.y = 0;
-        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) bounce *= -1; //don't reverse
+        bounce *= -1;
     }
     else if (direction == "y"){
         targetList = dirListy;
         shoveVel.x = 0;
-        squishMult *= .5F;
-        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1; //don't reverse
+        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1;
     }
     for (int i = 0; i < dirListx.Length; i++){
-        targetList[i] *= (Mathf.Sign(targetList[i]) == dirChange) ? bounce : -bounce;
-        if (Mathf.Abs(targetList[i]) < lowerBound) targetList[i] = lowerBound * Mathf.Sign(targetList[i]);
-        else if (Mathf.Abs(targetList[i]) > 1) targetList[i] = 1 * Mathf.Sign(targetList[i]);
+        targetList[i] = dirChange * bounce;
     }
-    squishAmount = (myMath.arrayMax(targetList) * squishMult * baseScale.x) * (power / speed);
+    squishAmount = (myMath.arrayMax(targetList) * .3F * baseScale.x) * (power / 400);
     if (direction == "y") squishAmount *= -1;
     Squish(new Vector2(baseScale.x - squishAmount, baseScale.x + squishAmount));
     shoveCounter[0] = power;
@@ -162,55 +160,62 @@ public void Squish(Vector2 scale){
     sprite.Scale = new Vector2(newXsc, newYsc);
 }
 
+public void DetectCollision(float power, float lowerBound, float invTime){
+    if (invincible) return;
+    int i;
+    for (i = 0; i < rayCasts.Length; i++){
+        if (rayCasts[i].IsColliding()) break;
+    }
+    if (i == rayCasts.Length) return;
+    GD.Print(rays[i]);
+    switch(rays[i]){
+        case "bottom":
+            KnockBack("y", -1, power, lowerBound, invTime);
+            break;
+        case "top":
+            KnockBack("y", 1, power, lowerBound, invTime);
+            break;
+        case "right":
+            KnockBack("x", 1, power, lowerBound, invTime);
+            break;
+        case "left":
+            KnockBack("x", -1, power, lowerBound, invTime);
+            break;
+        case "br1":
+            KnockBack("x", 1, power, lowerBound, invTime);
+            break;
+        case "tr1":
+            KnockBack("x", 1, power, lowerBound, invTime);
+            break;
+        case "bl1":
+            KnockBack("x", -1, power, lowerBound, invTime);
+            break;
+        case "tl1":
+            KnockBack("x", -1, power, lowerBound, invTime);
+            break;
+        case "br2":
+            KnockBack("y", -1, power, lowerBound, invTime);
+            break;
+        case "tr2":
+            KnockBack("y", 1, power, lowerBound, invTime);
+            break;
+        case "bl2":
+            KnockBack("y", -1, power, lowerBound, invTime);
+            break;
+        case "tl2":
+            KnockBack("y", 1, power, lowerBound, invTime);
+            break;
+    }
+    if (!invincible) KnockBack("y", 1, power, lowerBound, invTime); //default if not detected
+}
+
 public void _on_Hitbox_area_entered(Node body){
     Godot.Collections.Array group = body.GetGroups();
+    int knockb = 0;
     switch (group[0]){
         case "eggs":
-            if (invincible) return;
-            int i;
-            for (i = 0; i < rayCasts.Length; i++){
-                if (rayCasts[i].IsColliding()) break;
-            }
-            if (i == rayCasts.Length) return;
-            GD.Print(rays[i]);
-            switch(rays[i]){
-                case "bottom":
-                    KnockBack("y", -1, speed * 2, .6F, .1F);
-                    break;
-                case "top":
-                    KnockBack("y", 1, speed * 2, .6F, .1F);
-                    break;
-                case "right":
-                    KnockBack("x", 1, speed * 2, .6F, .1F);
-                    break;
-                case "left":
-                    KnockBack("x", -1, speed * 2, .6F, .1F);
-                    break;
-                case "br1":
-                    KnockBack("x", 1, speed * 2, .6F, .1F);
-                    break;
-                case "tr1":
-                    KnockBack("x", 1, speed * 2, .6F, .1F);
-                    break;
-                case "bl1":
-                    KnockBack("x", -1, speed * 2, .6F, .1F);
-                    break;
-                case "tl1":
-                    KnockBack("x", -1, speed * 2, .6F, .1F);
-                    break;
-                case "br2":
-                    KnockBack("y", -1, speed * 2, .6F, .1F);
-                    break;
-                case "tr2":
-                    KnockBack("y", 1, speed * 2, .6F, .1F);
-                    break;
-                case "bl2":
-                    KnockBack("y", -1, speed * 2, .6F, .1F);
-                    break;
-                case "tl2":
-                    KnockBack("y", 1, speed * 2, .6F, .1F);
-                    break;
-            }
+            knockb = (int)body.Get("knockback");
+            DetectCollision(knockb, .3F + (knockb * .0005F), .1F);
             break;
     }
 }

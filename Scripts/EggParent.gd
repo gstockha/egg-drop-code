@@ -10,9 +10,9 @@ var eggRates = {
 }
 enum eggNames { NORMAL, FAST, BIG }
 var eggTypes = {
-	eggNames.NORMAL: { "speed": 2.5, "size": 1.25, "damage": 2 },
-	eggNames.FAST: { "speed": 3.5, "size": 1, "damage": 1 },
-	eggNames.BIG: { "speed": 2, "size": 2, "damage": 3 }
+	eggNames.NORMAL: { "speed": 2.5, "size": 1.25, "knockback": 600 },
+	eggNames.FAST: { "speed": 3.5, "size": 1, "knockback": 500 },
+	eggNames.BIG: { "speed": 2, "size": 2, "knockback": 800 }
 }
 
 func _ready():
@@ -28,7 +28,7 @@ func _process(delta):
 		egg.speed = typeKey["speed"]
 		egg.size = typeKey["size"]
 		egg.scale = Vector2(egg.size, egg.size)
-		egg.damage = typeKey["damage"]
+		egg.knockback = typeKey["knockback"]
 		add_child(egg)
 		egg.global_position.x = rand_range(5,955)
 
