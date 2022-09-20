@@ -23,7 +23,7 @@ func _process(delta):
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
 		var egg = eggScene.instance()
-		var type = _randType(Global.normalcy)
+		var type = randType(Global.normalcy)
 		var typeKey = eggTypes[type]
 		egg.speed = typeKey["speed"]
 		egg.size = typeKey["size"]
@@ -38,7 +38,7 @@ func _physics_process(_delta):
 		if egg.global_position.y > 800: egg.queue_free()
 
 
-func _randType(normalcy: int) -> int:
+func randType(normalcy: int) -> int:
 	var roll = randi() % 100 + 1
 	if roll <= normalcy: return 0
 	var remainder = 100 - normalcy

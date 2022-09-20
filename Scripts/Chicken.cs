@@ -116,6 +116,18 @@ public void WallCheck(){
     KnockBack(direction, dirChange, speed * .5F, .05F, 0);
 }
 
+public void Squish(Vector2 scale){
+    if (scale != baseScale){ //setter
+        if (Mathf.Abs(scale.x) > Mathf.Abs(baseScale.x * 1.8F)) scale.x = baseScale.x * 1.7F * Mathf.Sign(scale.x);
+        if (Mathf.Abs(scale.y) > Mathf.Abs(baseScale.y * 1.8F)) scale.y = baseScale.y * 1.7F * Mathf.Sign(scale.y);
+        sprite.Scale = scale;
+        return;
+    }
+    float newXsc = Mathf.Lerp(sprite.Scale.x, baseScale.x, .07F);
+    float newYsc = Mathf.Lerp(sprite.Scale.y, baseScale.y, .07F);
+    sprite.Scale = new Vector2(newXsc, newYsc);
+}
+
 public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime){
     if (direction != "x" && direction != "y") return;
     float bounce = momentum;
@@ -137,7 +149,7 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     for (int i = 0; i < dirListx.Length; i++){
         targetList[i] = dirChange * bounce;
     }
-    squishAmount = (myMath.arrayMax(targetList) * .3F * baseScale.x) * (power / 400);
+    squishAmount = (myMath.arrayMax(targetList) * .5F * baseScale.x) * (power / 400);
     if (direction == "y") squishAmount *= -1;
     Squish(new Vector2(baseScale.x - squishAmount, baseScale.x + squishAmount));
     shoveCounter[0] = power;
@@ -148,16 +160,8 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     }
 }
 
-public void Squish(Vector2 scale){
-    if (scale != baseScale){ //setter
-        if (Mathf.Abs(scale.x) > Mathf.Abs(baseScale.x * 1.8F)) scale.x = baseScale.x * 1.7F * Mathf.Sign(scale.x);
-        if (Mathf.Abs(scale.y) > Mathf.Abs(baseScale.y * 1.8F)) scale.y = baseScale.y * 1.7F * Mathf.Sign(scale.y);
-        sprite.Scale = scale;
-        return;
-    }
-    float newXsc = Mathf.Lerp(sprite.Scale.x, baseScale.x, .07F);
-    float newYsc = Mathf.Lerp(sprite.Scale.y, baseScale.y, .07F);
-    sprite.Scale = new Vector2(newXsc, newYsc);
+public void EatFood(string type){
+
 }
 
 public void DetectCollision(float power, float lowerBound, float invTime){
@@ -216,6 +220,11 @@ public void _on_Hitbox_area_entered(Node body){
         case "eggs":
             knockb = (int)body.Get("knockback");
             DetectCollision(knockb, .3F + (knockb * .0005F), .1F);
+            body.QueueFree();
+            break;
+        case "food":
+            EatFood((string)body.Get("type"));
+            body.QueueFree();
             break;
     }
 }
