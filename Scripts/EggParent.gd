@@ -2,46 +2,55 @@ extends Node2D
 
 var eggScene = preload("res://scenes/Egg.tscn")
 var eggTimer = 0
+var player = null
 var eggRates = {
 	0: [8,12],
 	1: [5,9],
 	2: [3,6],
 	3: [1,3]
 }
-enum eggNames { NORMAL, FAST, BIG }
 var eggTypes = {
-	eggNames.NORMAL: { "speed": 2.5, "size": 1.25, "knockback": 600 },
-	eggNames.FAST: { "speed": 3.5, "size": 1, "knockback": 500 },
-	eggNames.BIG: { "speed": 2, "size": 2, "knockback": 800 }
+	"normal": { "speed": 2.5, "size": 1.25, "knockback": 400, "damage": 1 },
+	"fast": { "speed": 3.5, "size": 1, "knockback": 300, "damage": 1 },
+	"big": { "speed": 2, "size": 2, "knockback": 600, "damage": 1 }
 }
 
 func _ready():
 	eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
+	player = get_parent().get_node('Chicken')
 
 func _process(delta):
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
-		var egg = eggScene.instance()
-		var type = randType(Global.normalcy)
-		var typeKey = eggTypes[type]
-		egg.speed = typeKey["speed"]
-		egg.size = typeKey["size"]
-		egg.scale = Vector2(egg.size, egg.size)
-		egg.knockback = typeKey["knockback"]
-		add_child(egg)
-		egg.global_position.x = rand_range(5,955)
+		makeEgg(99, randType(Global.normalcy), Vector2(rand_range(5,955), 0))
 
 func _physics_process(_delta):
 	for egg in get_children():
 		egg.global_position.y += egg.speed
-		if egg.global_position.y > 800: egg.queue_free()
+		if egg.global_position.y > 850: egg.queue_free()
+		
+func makeEgg(id: int, type: String, position: Vector2):
+	var egg = eggScene.instance()
+	var typeKey = eggTypes[type]
+	egg.speed = typeKey["speed"]
+	egg.size = typeKey["size"]
+	egg.scale = Vector2(egg.size, egg.size)
+	egg.knockback = typeKey["knockback"]
+	egg.damage = typeKey["damage"]
+	egg.id = id
+	add_child(egg)
+	egg.global_position = position
+	if id != 99:
+		egg.sprite.modulate = Global.colorIdMap[id]
+		if Global.id == id: 
+			egg.speed *= 2
+#			egg.sprite.modulate.a = .75
 
-
-func randType(normalcy: int) -> int:
+func randType(normalcy: int) -> String:
 	var roll = randi() % 100 + 1
-	if roll <= normalcy: return 0
+	if roll <= normalcy: return "normal"
 	var remainder = 100 - normalcy
 	roll =  remainder - (roll - normalcy)
-	if (roll <= remainder * .75): return 1
-	return 2
+	if (roll <= remainder * .75): return "fast"
+	return "big"

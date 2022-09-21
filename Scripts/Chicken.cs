@@ -5,30 +5,45 @@ using MyMath;
 
 public class Chicken : KinematicBody2D
 {
-Vector2 baseScale, velocity, shoveVel = Vector2.Zero;
+Vector2 baseSpriteScale, baseScale, velocity, shoveVel = Vector2.Zero;
 float speed = 400;
-float momentum, gravity = 0;
-float weight = .007F;
+float momentum, eggCooldown, gravity = 0;
+float baseWeight, weight = .007F;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
 float[] dirListx = new float[12];
 float[] dirListy = new float[12];
 bool idle, invincible, onFloor = false;
+int eggCount = 0;
+string[] eggs;
+int maxEggs = 25;
+int health = 3;
 Sprite sprite;
 Timer invTimer;
+Node2D eggParent;
 RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
+Node Global;
+Position2D butthole;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
+    Global = GetNode<Node>("/root/Global");
     sprite = GetNode<Sprite>("Sprite");
-    baseScale = sprite.Scale;
-    for (int i = 0; i < dirListx.Length; i++){
+    eggParent = GetNode<Node2D>("../EggParent");
+    butthole = GetNode<Position2D>("Butthole");
+    baseScale = Scale;
+    baseSpriteScale = sprite.Scale;
+    baseWeight = weight;
+    int i;
+    for (i = 0; i < dirListx.Length; i++){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
+
+    eggs = new string[maxEggs];
     #region raycasts
     rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
     rayCasts[1] = GetNode<RayCast2D>("RayCasts/RayCastT");
@@ -49,7 +64,11 @@ public override void _Ready(){
 public override void _PhysicsProcess(float _delta){
     Move();
     WallCheck();
-    Squish(baseScale);
+    Squish(baseSpriteScale);
+    if (eggCooldown > 0){
+        eggCooldown -= 10;
+        if (eggCooldown < 0) eggCooldown = 0;
+    }
 }
 
 public void Move(){
@@ -117,14 +136,14 @@ public void WallCheck(){
 }
 
 public void Squish(Vector2 scale){
-    if (scale != baseScale){ //setter
-        if (Mathf.Abs(scale.x) > Mathf.Abs(baseScale.x * 1.8F)) scale.x = baseScale.x * 1.7F * Mathf.Sign(scale.x);
-        if (Mathf.Abs(scale.y) > Mathf.Abs(baseScale.y * 1.8F)) scale.y = baseScale.y * 1.7F * Mathf.Sign(scale.y);
+    if (scale != baseSpriteScale){ //setter
+        scale.x = Mathf.Clamp(scale.x, baseSpriteScale.x * .3F, baseSpriteScale.x * 1.7F);
+        scale.y = Mathf.Clamp(scale.y, baseSpriteScale.y * .3F, baseSpriteScale.y * 1.7F);
         sprite.Scale = scale;
         return;
     }
-    float newXsc = Mathf.Lerp(sprite.Scale.x, baseScale.x, .07F);
-    float newYsc = Mathf.Lerp(sprite.Scale.y, baseScale.y, .07F);
+    float newXsc = Mathf.Lerp(sprite.Scale.x, baseSpriteScale.x, .07F);
+    float newYsc = Mathf.Lerp(sprite.Scale.y, baseSpriteScale.y, .07F);
     sprite.Scale = new Vector2(newXsc, newYsc);
 }
 
@@ -149,9 +168,9 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     for (int i = 0; i < dirListx.Length; i++){
         targetList[i] = dirChange * bounce;
     }
-    squishAmount = (myMath.arrayMax(targetList) * .5F * baseScale.x) * (power / 400);
+    squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (power / 200);
     if (direction == "y") squishAmount *= -1;
-    Squish(new Vector2(baseScale.x - squishAmount, baseScale.x + squishAmount));
+    Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
     shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
     if (invTime != 0){
@@ -161,11 +180,40 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
 }
 
 public void EatFood(string type){
+    if (eggCount + 1 >= maxEggs){
+        for (int i = 0; i < maxEggs - 1; i++) eggs[i] = eggs[i+1];
+        eggs[maxEggs-1] = type;
+        eggCount = maxEggs;
+    }
+    else{
+        eggs[eggCount] = type;
+        eggCount ++;
+    }
+    sprite.Scale = baseSpriteScale;
+    Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
+    baseSpriteScale = sprite.Scale;
+    weight = baseWeight + (eggCount * .0002F);
+    Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
+    GD.Print(eggCount);
+}
 
+public override void _Input(InputEvent @event){
+    if (@event.IsActionPressed("egg_lay")){
+        if (eggCount < 1 || eggCooldown > 0) return;
+        eggCount --;
+        eggParent.Call("makeEgg", (int)Global.Get("id"), eggs[eggCount], butthole.GlobalPosition);
+        eggs[eggCount] = null;
+        sprite.Scale = baseSpriteScale;
+        Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
+        baseSpriteScale = sprite.Scale;
+        weight = baseWeight + (eggCount * .0002F);
+        Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
+        eggCooldown = 10;
+        GD.Print(eggCount);
+    }
 }
 
 public void DetectCollision(float power, float lowerBound, float invTime){
-    if (invincible) return;
     int i;
     for (i = 0; i < rayCasts.Length; i++){
         if (rayCasts[i].IsColliding()) break;
@@ -216,14 +264,19 @@ public void DetectCollision(float power, float lowerBound, float invTime){
 public void _on_Hitbox_area_entered(Node body){
     Godot.Collections.Array group = body.GetGroups();
     int knockb = 0;
+    string type;
     switch (group[0]){
         case "eggs":
+            if (invincible || (int)body.Get("id") == (int)Global.Get("id")) return;
             knockb = (int)body.Get("knockback");
+            health -= (int)body.Get("damage");
+            eggParent.Set("playerHealth", health);
             DetectCollision(knockb, .3F + (knockb * .0005F), .1F);
             body.QueueFree();
             break;
         case "food":
-            EatFood((string)body.Get("type"));
+            type = (string)body.Get("type");
+            EatFood(type);
             body.QueueFree();
             break;
     }
