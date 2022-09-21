@@ -17,22 +17,24 @@ bool idle, invincible, onFloor = false;
 int eggCount = 0;
 string[] eggs;
 int maxEggs = 25;
-int health = 3;
+int health = 6;
 Sprite sprite;
 Timer invTimer;
-Node2D eggParent;
+Node2D eggParent, itemParent;
 RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
 Node Global;
 Position2D butthole;
+TextureRect[] heartIcons = new TextureRect[6];
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     Global = GetNode<Node>("/root/Global");
     sprite = GetNode<Sprite>("Sprite");
     eggParent = GetNode<Node2D>("../EggParent");
+    itemParent = GetNode<Node2D>("../ItemParent");
     butthole = GetNode<Position2D>("Butthole");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
@@ -42,7 +44,8 @@ public override void _Ready(){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-
+    string pathStr = "../../Hearts/HeartIcon";
+    for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
     eggs = new string[maxEggs];
     #region raycasts
     rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
@@ -181,9 +184,9 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
 
 public void EatFood(string type){
     if (eggCount + 1 >= maxEggs){
-        for (int i = 0; i < maxEggs - 1; i++) eggs[i] = eggs[i+1];
-        eggs[maxEggs-1] = type;
-        eggCount = maxEggs;
+        MakeEgg();
+        EatFood(type);
+        return;
     }
     else{
         eggs[eggCount] = type;
@@ -197,19 +200,26 @@ public void EatFood(string type){
     GD.Print(eggCount);
 }
 
+public void MakeEgg(){
+    eggCount --;
+    eggParent.Call("makeEgg", (int)Global.Get("id"), eggs[0], butthole.GlobalPosition);
+    for (int i = 0; i < maxEggs - 1; i++){
+        if (eggs[i+1] == null) break;
+        eggs[i] = eggs[i+1];
+        eggs[i+1] = null;
+    }
+    sprite.Scale = baseSpriteScale;
+    Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
+    baseSpriteScale = sprite.Scale;
+    weight = baseWeight + (eggCount * .0002F);
+    Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
+    eggCooldown = 20;
+    GD.Print(eggCount);
+}
+
 public override void _Input(InputEvent @event){
     if (@event.IsActionPressed("egg_lay")){
-        if (eggCount < 1 || eggCooldown > 0) return;
-        eggCount --;
-        eggParent.Call("makeEgg", (int)Global.Get("id"), eggs[eggCount], butthole.GlobalPosition);
-        eggs[eggCount] = null;
-        sprite.Scale = baseSpriteScale;
-        Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
-        baseSpriteScale = sprite.Scale;
-        weight = baseWeight + (eggCount * .0002F);
-        Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
-        eggCooldown = 10;
-        GD.Print(eggCount);
+        if (eggCount > 0 && eggCooldown < 1) MakeEgg();
     }
 }
 
@@ -269,15 +279,28 @@ public void _on_Hitbox_area_entered(Node body){
         case "eggs":
             if (invincible || (int)body.Get("id") == (int)Global.Get("id")) return;
             knockb = (int)body.Get("knockback");
+            if (health - 1 > -1) heartIcons[health-1].Visible = false;
             health -= (int)body.Get("damage");
-            eggParent.Set("playerHealth", health);
-            DetectCollision(knockb, .3F + (knockb * .0005F), .1F);
+            if (health < 0) health = 0;
+            itemParent.Set("playerHealth", health);
+            DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             body.QueueFree();
             break;
         case "food":
             type = (string)body.Get("type");
             EatFood(type);
             body.QueueFree();
+            itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
+            break;
+        case "health":
+            if (health < 6){
+                health ++;
+                heartIcons[health-1].Visible = true;
+                itemParent.Set("playerHealth", health);
+            }
+            else EatFood("normal");
+            body.QueueFree();
+            itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             break;
     }
 }

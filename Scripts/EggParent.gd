@@ -10,25 +10,27 @@ var eggRates = {
 	3: [1,3]
 }
 var eggTypes = {
-	"normal": { "speed": 2.5, "size": 1.25, "knockback": 400, "damage": 1 },
-	"fast": { "speed": 3.5, "size": 1, "knockback": 300, "damage": 1 },
-	"big": { "speed": 2, "size": 2, "knockback": 600, "damage": 1 }
+	"normal": { "speed": 2.5, "size": 1.25, "knockback": 300, "damage": 1 },
+	"fast": { "speed": 3.5, "size": 1, "knockback": 200, "damage": 1 },
+	"big": { "speed": 2, "size": 2, "knockback": 500, "damage": 1 }
 }
+var offset = Vector2.ZERO
 
 func _ready():
 	eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
 	player = get_parent().get_node('Chicken')
+	offset = Global.gameSpaceOffset
 
 func _process(delta):
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
-		makeEgg(99, randType(Global.normalcy), Vector2(rand_range(5,955), 0))
+		makeEgg(99, randType(Global.normalcy), Vector2(rand_range(5+offset.x, 955+offset.y), 0))
 
 func _physics_process(_delta):
 	for egg in get_children():
 		egg.global_position.y += egg.speed
-		if egg.global_position.y > 850: egg.queue_free()
+		if egg.global_position.y > 850 + offset.y: egg.queue_free()
 		
 func makeEgg(id: int, type: String, position: Vector2):
 	var egg = eggScene.instance()

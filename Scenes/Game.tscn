@@ -1,0 +1,234 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Sprites/Heart.png" type="Texture" id=2]
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
+corner_radius_top_left = 60
+corner_radius_top_right = 60
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
+corner_radius_top_left = 60
+corner_radius_bottom_left = 60
+
+[node name="Game" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Playspace" parent="." instance=ExtResource( 1 )]
+position = Vector2( 16, 16 )
+
+[node name="BG" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="BGPieceR" type="ColorRect" parent="BG"]
+margin_left = 976.0
+margin_right = 1344.0
+margin_bottom = 880.0
+color = Color( 0.419608, 0.482353, 0.752941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BGPieceB" type="ColorRect" parent="BG"]
+margin_top = 816.0
+margin_right = 976.0
+margin_bottom = 880.0
+color = Color( 0.419608, 0.482353, 0.752941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BGPieceT" type="ColorRect" parent="BG"]
+margin_left = 16.0
+margin_right = 976.0
+margin_bottom = 16.0
+color = Color( 0.419608, 0.482353, 0.752941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BGPieceL" type="ColorRect" parent="BG"]
+margin_right = 16.0
+margin_bottom = 816.0
+color = Color( 0.419608, 0.482353, 0.752941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hearts" type="Control" parent="."]
+anchor_left = 0.012
+anchor_top = 0.918
+anchor_right = 0.012
+anchor_bottom = 0.918
+margin_left = -0.128
+margin_top = 0.159973
+margin_right = 399.872
+margin_bottom = 72.16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIconBGs" type="Control" parent="Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon1BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_top = 2.0
+margin_right = 64.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon2BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 56.0
+margin_top = 2.0
+margin_right = 120.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+
+[node name="HeartIcon3BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 112.0
+margin_top = 2.0
+margin_right = 176.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+
+[node name="HeartIcon4BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 168.0
+margin_top = 2.0
+margin_right = 232.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+
+[node name="HeartIcon5BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 224.0
+margin_top = 2.0
+margin_right = 288.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon6BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 280.0
+margin_top = 2.0
+margin_right = 344.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon1" type="TextureRect" parent="Hearts"]
+margin_top = 2.0
+margin_right = 64.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon2" type="TextureRect" parent="Hearts"]
+margin_left = 56.0
+margin_top = 2.0
+margin_right = 120.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+
+[node name="HeartIcon3" type="TextureRect" parent="Hearts"]
+margin_left = 112.0
+margin_top = 2.0
+margin_right = 176.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+
+[node name="HeartIcon4" type="TextureRect" parent="Hearts"]
+margin_left = 168.0
+margin_top = 2.0
+margin_right = 232.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+
+[node name="HeartIcon5" type="TextureRect" parent="Hearts"]
+margin_left = 224.0
+margin_top = 2.0
+margin_right = 288.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon6" type="TextureRect" parent="Hearts"]
+margin_left = 280.0
+margin_top = 2.0
+margin_right = 344.0
+margin_bottom = 66.0
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Eggs" type="Control" parent="."]
+anchor_left = 0.72
+anchor_top = 0.959
+anchor_right = 0.72
+anchor_bottom = 0.959
+margin_left = -591.68
+margin_top = -19.92
+margin_right = 0.319946
+margin_bottom = 20.08
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EggBar" type="TextureRect" parent="Eggs"]
+anchor_left = 0.919
+anchor_right = 0.919
+margin_left = -0.0480347
+margin_top = -8.0
+margin_right = 55.952
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EggBG" type="Panel" parent="Eggs"]
+margin_left = 539.0
+margin_top = -3.0
+margin_right = 600.0
+margin_bottom = 50.0
+custom_styles/panel = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EggBar2" type="Panel" parent="Eggs"]
+margin_top = 8.0
+margin_right = 544.0
+margin_bottom = 40.0
+custom_styles/panel = SubResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
