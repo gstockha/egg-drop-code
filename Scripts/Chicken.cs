@@ -7,7 +7,7 @@ public class Chicken : KinematicBody2D
 {
 Vector2 baseSpriteScale, baseScale, velocity, shoveVel = Vector2.Zero;
 float speed = 400;
-float momentum, eggCooldown, gravity = 0;
+float momentum, eggCooldown, screenShake, shakeTimer, gravity = 0;
 float baseWeight, weight = .007F;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
@@ -20,7 +20,7 @@ int maxEggs = 25;
 int health = 6;
 Sprite sprite;
 Timer invTimer;
-Node2D eggParent, itemParent;
+Node2D eggParent, itemParent, gameSpace;
 RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
@@ -28,6 +28,7 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 Node Global;
 Position2D butthole;
 TextureRect[] heartIcons = new TextureRect[6];
+Control eggBar;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -35,6 +36,8 @@ public override void _Ready(){
     sprite = GetNode<Sprite>("Sprite");
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
+    gameSpace = (Node2D)GetParent();
+    eggBar = GetNode<Control>("../../EggBar");
     butthole = GetNode<Position2D>("Butthole");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
@@ -68,10 +71,7 @@ public override void _PhysicsProcess(float _delta){
     Move();
     WallCheck();
     Squish(baseSpriteScale);
-    if (eggCooldown > 0){
-        eggCooldown -= 10;
-        if (eggCooldown < 0) eggCooldown = 0;
-    }
+    ScreenShake();
 }
 
 public void Move(){
@@ -109,6 +109,10 @@ public void Move(){
         if (shoveCounter[0] < 0){
             shoveCounter[0] = 0;
         }
+    }
+    if (eggCooldown > 0){
+        eggCooldown -= 10;
+        if (eggCooldown < 0) eggCooldown = 0;
     }
 }
 
@@ -150,6 +154,19 @@ public void Squish(Vector2 scale){
     sprite.Scale = new Vector2(newXsc, newYsc);
 }
 
+public void ScreenShake(){
+    if (screenShake == 0) return;
+    if (shakeTimer < 1){
+        screenShake = 0;
+        gameSpace.GlobalPosition = new Vector2(16, 16);
+        return;
+    }
+    float rollx = (GD.Randf() < .5F) ? -1 : 1;
+    float rolly = (GD.Randf() < .5F) ? -1 : 1;
+    gameSpace.GlobalPosition = new Vector2(16 + (screenShake * rollx), 16 + (screenShake * rolly));
+    shakeTimer -= 10;
+}
+
 public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime){
     if (direction != "x" && direction != "y") return;
     float bounce = momentum;
@@ -171,15 +188,20 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     for (int i = 0; i < dirListx.Length; i++){
         targetList[i] = dirChange * bounce;
     }
-    squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (power / 200);
+    float squishPower = power;
+    if (invTime != 0){
+        invincible = true;
+        invTimer.Start(invTime);
+        squishPower += 200;
+        screenShake = 10 + (power * .025F);
+        shakeTimer = screenShake;
+    }
+    squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (squishPower / 200);
+    if (squishAmount > .75F) squishAmount = .75F;
     if (direction == "y") squishAmount *= -1;
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
     shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
-    if (invTime != 0){
-        invincible = true;
-        invTimer.Start(invTime);
-    }
 }
 
 public void EatFood(string type){
@@ -197,7 +219,7 @@ public void EatFood(string type){
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-    GD.Print(eggCount);
+    eggBar.Call("drawEggs", eggs[eggCount - 1]);
 }
 
 public void MakeEgg(){
@@ -214,7 +236,7 @@ public void MakeEgg(){
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
     eggCooldown = 20;
-    GD.Print(eggCount);
+    eggBar.Call("drawEggs", "");
 }
 
 public override void _Input(InputEvent @event){

@@ -10,9 +10,9 @@ var eggRates = {
 	3: [1,3]
 }
 var eggTypes = {
-	"normal": { "speed": 2.5, "size": 1.25, "knockback": 300, "damage": 1 },
-	"fast": { "speed": 3.5, "size": 1, "knockback": 200, "damage": 1 },
-	"big": { "speed": 2, "size": 2, "knockback": 500, "damage": 1 }
+	"normal": { "speed": 2.5, "size": 1.25, "knockback": 200, "damage": 1 },
+	"fast": { "speed": 3.5, "size": 1, "knockback": 100, "damage": 1 },
+	"big": { "speed": 2, "size": 2, "knockback": 350, "damage": 1 }
 }
 var offset = Vector2.ZERO
 
