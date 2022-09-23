@@ -9,3 +9,5 @@ var colorIdMap = {
 	9: ColorN("pink")
 }
 var gameSpaceOffset = Vector2(16,16)
+var playerBounds = Vector2(7,953)
+var botBounds = Vector2(988,1464)

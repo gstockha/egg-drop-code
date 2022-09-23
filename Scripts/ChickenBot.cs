@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using MyMath;
 
-public class Chicken : KinematicBody2D
+public class ChickenBot : KinematicBody2D
 {
-Vector2 baseSpriteScale, baseScale, velocity, shoveVel = Vector2.Zero;
-float speed = 400;
-float momentum, eggCooldown, screenShake, shakeTimer, gravity = 0;
+Vector2 baseSpriteScale, baseScale, velocity, calcMove, shoveVel = Vector2.Zero;
+float speed = 200;
+float momentum, eggCooldown, screenShake, moveCooldown, shakeTimer, gravity = 0;
 float baseWeight, weight = .007F;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
@@ -16,9 +16,10 @@ float[] dirListy = new float[12];
 bool idle, invincible, onFloor = false;
 int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
+int moveRate = 300;
 int maxEggs = 25;
-int id = 99;
 int health = 6;
+int id = 99;
 Sprite sprite;
 Timer invTimer;
 Node2D eggParent, itemParent, gameSpace;
@@ -28,8 +29,8 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 };
 Node Global;
 Position2D butthole;
-TextureRect[] heartIcons = new TextureRect[6];
-Control eggBar;
+// TextureRect[] heartIcons = new TextureRect[6];
+// Control eggBar;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -38,19 +39,19 @@ public override void _Ready(){
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
-    eggBar = GetNode<Control>("../../EggBar");
+    // eggBar = GetNode<Control>("../../EggBar");
     butthole = GetNode<Position2D>("Butthole");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
-    id = (int)Global.Get("id");
+    id = (int)Global.Get("id") + 1;
     int i;
     for (i = 0; i < dirListx.Length; i++){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-    string pathStr = "../../Hearts/HeartIcon";
-    for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
+    // string pathStr = "../../Hearts/HeartIcon";
+    // for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
     eggs = new string[maxEggs];
     #region raycasts
     rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
@@ -77,7 +78,14 @@ public override void _PhysicsProcess(float _delta){
 }
 
 public void Move(){
-	if (!idle){ //update direction
+	// if (!idle){ //update direction
+    //     CalculateMove();
+	// 	dir[0] = calcMove.x;
+	// 	dir[1] = calcMove.y;
+	// 	if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
+	// 	else dir[1] = Mathf.Round(dir[1]);
+	// }
+    if (!idle){
 		dir[0] = Input.GetActionStrength("right") - Input.GetActionStrength("left");
 		dir[1] = Input.GetActionStrength("down") - Input.GetActionStrength("up");
 		if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
@@ -132,6 +140,17 @@ public void Move(){
     }
 }
 
+public void CalculateMove(){
+    if (moveCooldown > 0){
+        moveCooldown -= 10;
+        return;
+    }
+    Vector2 newMove = new Vector2(0,0);
+
+    moveCooldown = moveRate;
+    calcMove = newMove;
+}
+
 public float GetMomentum(string XorY = ""){
     float mom;
     velocity = new Vector2(myMath.arrayMean(dirListx), myMath.arrayMean(dirListy));
@@ -174,12 +193,12 @@ public void ScreenShake(){
     if (screenShake == 0) return;
     if (shakeTimer < 1){
         screenShake = 0;
-        gameSpace.GlobalPosition = new Vector2(16, 16);
+        gameSpace.GlobalPosition = new Vector2(1000, 16);
         return;
     }
-    int rollx = (GD.Randf() < .5F) ? -1 : 1;
-    int rolly = (GD.Randf() < .5F) ? -1 : 1;
-    gameSpace.GlobalPosition = new Vector2(16 + (screenShake * rollx), 16 + (screenShake * rolly));
+    float rollx = (GD.Randf() < .5F) ? -.5F : .5F;
+    float rolly = (GD.Randf() < .5F) ? -.5F : .5F;
+    gameSpace.GlobalPosition = new Vector2(1000 + (screenShake * rollx), 16 + (screenShake * rolly));
     shakeTimer -= 10;
 }
 
@@ -235,7 +254,7 @@ public void EatFood(string type){
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-    eggBar.Call("drawEggs", eggs[eggCount - 1]);
+    // eggBar.Call("drawEggs", eggs[eggCount - 1]);
 }
 
 public void MakeEgg(bool automatic){
@@ -257,13 +276,7 @@ public void MakeEgg(bool automatic){
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
     eggCooldown = (automatic) ? 90 : 30;
-    eggBar.Call("drawEggs", "");
-}
-
-public override void _Input(InputEvent @event){
-    if (@event.IsActionPressed("egg_lay")){
-        MakeEgg(false);
-    }
+    // eggBar.Call("drawEggs", "");
 }
 
 public void DetectCollision(float power, float lowerBound, float invTime){
@@ -323,7 +336,7 @@ public void _on_Hitbox_area_entered(Node body){
         case "eggs":
             if (invincible || (int)body.Get("id") == id) return;
             knockb = (float)body.Get("knockback");
-            if (health - 1 > -1) heartIcons[health-1].Visible = false;
+            // if (health - 1 > -1) heartIcons[health-1].Visible = false;
             health -= (int)body.Get("damage");
             if (health < 0) health = 0;
             itemParent.Set("playerHealth", health);
@@ -352,7 +365,7 @@ public void _on_Hitbox_area_entered(Node body){
         case "health":
             if (health < 6){
                 health ++;
-                heartIcons[health-1].Visible = true;
+                // heartIcons[health-1].Visible = true;
                 itemParent.Set("playerHealth", health);
             }
             else EatFood("normal");

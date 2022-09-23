@@ -2,9 +2,9 @@ extends Control
 
 onready var eggParent = $Eggs
 onready var eggIcon = preload("res://Scenes/EggIcon.tscn")
-var normalSprite = preload("res://Sprites/Egg.png") #dont use this eventually
 var eggSprites = {
-	"normal": normalSprite, "fast": normalSprite, "big": normalSprite
+	"normal": preload("res://Sprites/Eggs/Egg.png"), "fast": preload("res://Sprites/Eggs/FastEgg.png"),
+	"big": preload("res://Sprites/Eggs/BigEgg.png")
 }
 var eggs = []
 var player = null

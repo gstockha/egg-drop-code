@@ -1,5 +1,6 @@
 extends Node
 
+var botMode = false
 var itemTimer = 0
 var powerTimer = 0
 var healthTimer = 0
@@ -8,7 +9,9 @@ var maxItems = 6
 var itemCount = 0
 var player = null
 var playerHealth = 6
-var offset = Vector2.ZERO
+var spawnRange = Vector2(7,953)
+var ybounds = []
+var adj = 100
 var items = {
 	"food": preload("res://Scenes/Corn.tscn"),
 	"health": preload("res://Scenes/Health.tscn")
@@ -20,8 +23,22 @@ var foodSprites = {
 
 func _ready():
 	itemTimer = 30
-	player = get_parent().get_node('Chicken')
-	offset = Global.gameSpaceOffset
+	botMode = get_parent().name == "Enemyspace"
+	if !botMode:
+		player = get_parent().get_node('Chicken')
+		spawnRange.x += Global.gameSpaceOffset.x
+		spawnRange.y += Global.gameSpaceOffset.y
+		ybounds.append(130+Global.gameSpaceOffset.x)
+		ybounds.append(550+Global.gameSpaceOffset.x)
+		ybounds.append(755+Global.gameSpaceOffset.x)
+	else:
+		player = get_parent().get_node('ChickenBot')
+		var offset = Global.gameSpaceOffset * .5
+		spawnRange = Vector2(986+offset.x,1469+offset.y)
+		ybounds.append(65+Global.gameSpaceOffset.x)
+		ybounds.append(225+Global.gameSpaceOffset.x)
+		ybounds.append(377.5+Global.gameSpaceOffset.x)
+		adj = 50
 
 func _process(delta):
 	var tick = 10 * delta
@@ -40,6 +57,9 @@ func _process(delta):
 			item.sprite.texture = foodSprites[item.type]
 		elif type == "power":
 			pass
+		if botMode:
+			item.scale *= .5
+			item.baseScale = item.scale
 	for item in get_children():
 		item.duration += tick
 		if item.duration > 180:
@@ -51,11 +71,11 @@ func _process(delta):
 func getLocation() -> Vector2:
 	var plrPos = player.global_position
 	var upperHalfRoll = ((randi() % 100 + 1) < 75)
-	var xx = rand_range(5+offset.x, 955+offset.y)
-	var yy = rand_range(130+offset.x, 550+offset.y) if upperHalfRoll else rand_range(550+offset.x, 755+offset.y)
-	while((xx < plrPos.x + 100 && xx > plrPos.x - 100) || (yy < plrPos.y + 100 && yy > plrPos.y - 100)):
-		xx = rand_range(5+offset.x, 955+offset.y)
-		yy = rand_range(130+offset.x, 550+offset.y) if upperHalfRoll else rand_range(550+offset.x, 755+offset.y)
+	var xx = rand_range(spawnRange.x, spawnRange.y)
+	var yy = rand_range(ybounds[0], ybounds[1]) if upperHalfRoll else rand_range(ybounds[1], ybounds[2])
+	while((xx < plrPos.x + adj && xx > plrPos.x - adj) || (yy < plrPos.y + adj && yy > plrPos.y - adj)):
+		xx = rand_range(spawnRange.x, spawnRange.y)
+		yy = rand_range(ybounds[0], ybounds[1]) if upperHalfRoll else rand_range(ybounds[1], ybounds[2])
 	return Vector2(xx, yy)
 	
 func getItemType() -> String: #food, health, or powerup
@@ -72,5 +92,8 @@ func getItemType() -> String: #food, health, or powerup
 
 func getCornType() -> String:
 	var roll = randi() % 100 + 1
-	var type = 'normal' if roll < 80 - (Global.level * 20) else 'three'
-	return type
+	if roll <= 60:
+		if roll <= 45 - (Global.level * 5): return "normal"
+		return "three"
+	if roll <= 85: return "fast"
+	return "big"
