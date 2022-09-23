@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Sprites/Heart.png" type="Texture" id=2]
-[ext_resource path="res://Scenes/EggIcon.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=4]
 
 [sub_resource type="StyleBoxFlat" id=3]
@@ -30,10 +29,13 @@ position = Vector2( 16, 16 )
 [node name="BG" type="Control" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BGPieceR" type="ColorRect" parent="BG"]
 margin_left = 976.0
-margin_right = 1344.0
+margin_right = 1488.0
 margin_bottom = 880.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 __meta__ = {
@@ -66,15 +68,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Bottom" type="Node2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Bottom"]
+margin_left = 992.0
+margin_top = 416.0
+margin_right = 1472.0
+margin_bottom = 816.0
+color = Color( 0.945098, 0.611765, 0.752941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Hearts" type="Control" parent="."]
 anchor_left = 0.012
-anchor_top = 0.918
+anchor_top = 0.959
 anchor_right = 0.012
-anchor_bottom = 0.918
+anchor_bottom = 0.959
 margin_left = -0.128
-margin_top = 0.159973
+margin_top = -35.9201
 margin_right = 399.872
-margin_bottom = 72.16
+margin_bottom = 36.08
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -193,34 +207,42 @@ __meta__ = {
 }
 
 [node name="EggBar" type="Control" parent="."]
-anchor_left = 0.72
-anchor_top = 0.959
-anchor_right = 0.72
-anchor_bottom = 0.959
-margin_left = -584.68
-margin_top = -19.92
-margin_right = 15.3199
-margin_bottom = 28.08
+anchor_left = 0.665
+anchor_top = 0.964
+anchor_right = 0.665
+anchor_bottom = 0.964
+margin_left = -843.496
+margin_top = -24.3201
+margin_right = 0.536011
+margin_bottom = 23.6799
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="EggActiveBG" type="Panel" parent="EggBar"]
-margin_left = 539.0
-margin_top = -3.0
-margin_right = 591.0
-margin_bottom = 50.0
+anchor_left = 0.985
+anchor_top = 0.49
+anchor_right = 0.985
+anchor_bottom = 0.49
+margin_left = -52.0001
+margin_top = -26.52
+margin_right = -6.10352e-05
+margin_bottom = 26.48
 custom_styles/panel = SubResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="EggBarBG" type="Panel" parent="EggBar"]
-margin_left = -18.0
-margin_top = 8.0
-margin_right = 544.0
-margin_bottom = 40.0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -618.0
+margin_top = -16.0
+margin_right = -56.0
+margin_bottom = 16.0
 custom_styles/panel = SubResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -231,24 +253,23 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-margin_left = -600.0
+margin_left = -616.0
 margin_top = -24.0
+margin_right = -8.0
 margin_bottom = 24.0
 
 [node name="EggActive" type="TextureRect" parent="EggBar/Eggs"]
-anchor_left = 0.943
-anchor_top = 0.448
-anchor_right = 0.943
-anchor_bottom = 0.448
-margin_left = -21.8
-margin_top = -21.504
-margin_right = 18.2
-margin_bottom = 18.992
+anchor_left = 0.99
+anchor_top = 0.422
+anchor_right = 0.99
+anchor_bottom = 0.422
+margin_left = -45.9761
+margin_top = -20.2559
+margin_right = -5.97607
+margin_bottom = 20.2401
 size_flags_vertical = 0
 expand = true
 stretch_mode = 4
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="EggIcon" parent="EggBar/Eggs" instance=ExtResource( 3 )]

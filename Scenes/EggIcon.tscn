@@ -1,14 +1,14 @@
 [gd_scene format=2]
 
 [node name="EggIcon" type="TextureRect"]
-anchor_left = 0.992
-anchor_top = 0.5
-anchor_right = 0.992
-anchor_bottom = 0.5
-margin_left = -89.2001
-margin_top = -22.0
-margin_right = -49.2001
-margin_bottom = 18.0
+anchor_left = 0.941
+anchor_top = 0.498
+anchor_right = 0.941
+anchor_bottom = 0.498
+margin_left = -20.6563
+margin_top = -20.24
+margin_right = 19.3438
+margin_bottom = 19.76
 expand = true
 stretch_mode = 1
 __meta__ = {

@@ -1,0 +1,8 @@
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\bin\ExportRelease\EGG DROP.dll
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\bin\ExportRelease\EGG DROP.pdb
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportRelease\EGG DROP.csproj.AssemblyReference.cache
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportRelease\EGG DROP.AssemblyInfoInputs.cache
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportRelease\EGG DROP.AssemblyInfo.cs
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportRelease\EGG DROP.csproj.CoreCompileInputs.cache
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportRelease\EGG DROP.dll
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportRelease\EGG DROP.pdb

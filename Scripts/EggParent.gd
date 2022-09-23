@@ -1,6 +1,6 @@
 extends Node2D
 
-var eggScene = preload("res://scenes/Egg.tscn")
+var eggScene = preload("res://Scenes/Egg.tscn")
 var eggTimer = 0
 var player = null
 var eggRates = {
@@ -35,13 +35,13 @@ func _physics_process(_delta):
 func makeEgg(id: int, type: String, position: Vector2):
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
-	egg.speed = typeKey["speed"]
 	egg.size = typeKey["size"]
 	egg.scale = Vector2(egg.size, egg.size)
+	add_child(egg)
+	egg.speed = typeKey["speed"]
 	egg.knockback = typeKey["knockback"]
 	egg.damage = typeKey["damage"]
 	egg.id = id
-	add_child(egg)
 	egg.global_position = position
 	if id != 99:
 		egg.sprite.modulate = Global.colorIdMap[id]

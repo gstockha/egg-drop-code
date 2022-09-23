@@ -2,18 +2,20 @@ extends Node
 
 var itemTimer = 0
 var powerTimer = 0
+var healthTimer = 0
 var powerCooldown = 120
 var maxItems = 6
 var itemCount = 0
 var player = null
 var playerHealth = 6
 var offset = Vector2.ZERO
-onready var items = {
+var items = {
 	"food": preload("res://Scenes/Corn.tscn"),
 	"health": preload("res://Scenes/Health.tscn")
 }
-onready var foodSprites = {
-	"normal": preload("res://Sprites/Corn.png")
+var foodSprites = {
+	"normal": preload("res://Sprites/Corn/Corn.png"), "three": preload("res://Sprites/Corn/Three.png"),
+	"fast": preload("res://Sprites/Corn/Fast.png"), "big": preload("res://Sprites/Corn/Big.png"),
 }
 
 func _ready():
@@ -24,9 +26,10 @@ func _ready():
 func _process(delta):
 	var tick = 10 * delta
 	powerTimer += tick
+	healthTimer += tick
 	itemTimer -= tick
 	if itemTimer < 1:
-		itemTimer = 50
+		itemTimer = 30
 		if itemCount == maxItems: return
 		var type = getItemType()
 		var item = items[type].instance()
@@ -57,16 +60,17 @@ func getLocation() -> Vector2:
 	
 func getItemType() -> String: #food, health, or powerup
 	var roll = randi() % 100 + 1
-	if powerTimer > powerCooldown:
+	if healthTimer > powerCooldown * .7:
 		if playerHealth < 4 && roll <= (50 - (playerHealth * 10)) || playerHealth < 6 && roll <= (20 - (playerHealth * 2)):
-			powerTimer = 0
+			healthTimer = 0
 			return "health" #health chance
+	if powerTimer > powerCooldown:
 		if roll <= 20:
 			powerTimer = 0
 #			return "power"
 	return "food"
 
 func getCornType() -> String:
-#	var roll = randi() % 100 + 1
-	var type = 'normal'
+	var roll = randi() % 100 + 1
+	var type = 'normal' if roll < 80 - (Global.level * 20) else 'three'
 	return type

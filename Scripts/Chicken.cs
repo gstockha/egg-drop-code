@@ -14,7 +14,7 @@ float[] dir = new float[] {0,0};
 float[] dirListx = new float[12];
 float[] dirListy = new float[12];
 bool idle, invincible, onFloor = false;
-int eggCount = 0;
+int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
 int maxEggs = 25;
 int health = 6;
@@ -112,7 +112,22 @@ public void Move(){
     }
     if (eggCooldown > 0){
         eggCooldown -= 10;
-        if (eggCooldown < 0) eggCooldown = 0;
+        if (eggCooldown <= 0){
+            GD.Print(eatBuffer);
+            eggCooldown = 0;
+            if (eatBuffer > 0){
+                eatBuffer --;
+                MakeEgg(true);
+                EatFood("normal");
+            }
+            else if (eggBuffer > 0){
+                if (eggCount > 0){
+                    eggBuffer --;
+                    MakeEgg(false);
+                }
+                else eggBuffer = 0;
+            }
+        }
     }
 }
 
@@ -205,8 +220,8 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
 }
 
 public void EatFood(string type){
-    if (eggCount + 1 >= maxEggs){
-        MakeEgg();
+    if (eggCount >= maxEggs){
+        MakeEgg(true);
         EatFood(type);
         return;
     }
@@ -222,7 +237,12 @@ public void EatFood(string type){
     eggBar.Call("drawEggs", eggs[eggCount - 1]);
 }
 
-public void MakeEgg(){
+public void MakeEgg(bool automatic){
+    if (eggCount < 1) return;
+    if (eggCooldown > 0){
+        if (!automatic) eggBuffer ++;
+        return;
+    }
     eggCount --;
     eggParent.Call("makeEgg", (int)Global.Get("id"), eggs[0], butthole.GlobalPosition);
     for (int i = 0; i < maxEggs - 1; i++){
@@ -235,13 +255,13 @@ public void MakeEgg(){
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
-    eggCooldown = 20;
+    eggCooldown = (automatic) ? 90 : 30;
     eggBar.Call("drawEggs", "");
 }
 
 public override void _Input(InputEvent @event){
     if (@event.IsActionPressed("egg_lay")){
-        if (eggCount > 0 && eggCooldown < 1) MakeEgg();
+        MakeEgg(false);
     }
 }
 
@@ -250,8 +270,10 @@ public void DetectCollision(float power, float lowerBound, float invTime){
     for (i = 0; i < rayCasts.Length; i++){
         if (rayCasts[i].IsColliding()) break;
     }
-    if (i == rayCasts.Length) return;
-    GD.Print(rays[i]);
+    if (i == rayCasts.Length){ //default if not detected
+        KnockBack("y", 1, power, lowerBound, invTime);
+        return;
+    }
     switch(rays[i]){
         case "bottom":
             KnockBack("y", -1, power, lowerBound, invTime);
@@ -290,7 +312,6 @@ public void DetectCollision(float power, float lowerBound, float invTime){
             KnockBack("y", 1, power, lowerBound, invTime);
             break;
     }
-    if (!invincible) KnockBack("y", 1, power, lowerBound, invTime); //default if not detected
 }
 
 public void _on_Hitbox_area_entered(Node body){
@@ -309,8 +330,21 @@ public void _on_Hitbox_area_entered(Node body){
             body.QueueFree();
             break;
         case "food":
+            if (eatBuffer > 0) return;
             type = (string)body.Get("type");
-            EatFood(type);
+            int c = 1;
+            if (type == "three"){
+                c = 3;
+                type = "normal";
+            }
+            for (int i = 0; i < c; i++){
+                if (c > 1 && eggCount == maxEggs){
+                    eatBuffer = c - i;
+                    if (eggCooldown < 1) eggCooldown = 1;
+                    break;
+                }
+                EatFood(type);
+            }
             body.QueueFree();
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             break;
@@ -323,6 +357,7 @@ public void _on_Hitbox_area_entered(Node body){
             else EatFood("normal");
             body.QueueFree();
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
+            Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             break;
     }
 }
