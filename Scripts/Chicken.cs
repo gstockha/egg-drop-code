@@ -27,7 +27,6 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
 Node Global;
-Position2D butthole;
 TextureRect[] heartIcons = new TextureRect[6];
 Control eggBar;
 
@@ -39,7 +38,6 @@ public override void _Ready(){
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
     eggBar = GetNode<Control>("../../EggBar");
-    butthole = GetNode<Position2D>("Butthole");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
@@ -245,7 +243,7 @@ public void MakeEgg(bool automatic){
         return;
     }
     eggCount --;
-    eggParent.Call("makeEgg", id, eggs[0], butthole.GlobalPosition);
+    eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))));
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;
         eggs[i] = eggs[i+1];

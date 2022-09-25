@@ -4,6 +4,7 @@ var eggScene = preload("res://Scenes/Egg.tscn")
 var eggTimer = 0
 var player = null
 var botMode = false
+var botOffset = null
 var eggTarget = null
 var eggRates = {
 	0: [8,12],
@@ -24,15 +25,12 @@ func _ready():
 	botMode = get_parent().name == "Enemyspace"
 	if !botMode:
 		player = get_parent().get_node('Chicken')
-		lowerBounds += Global.gameSpaceOffset.y
-		spawnRange = Vector2(Global.playerBounds.x+Global.gameSpaceOffset.x,
-		Global.playerBounds.y+Global.gameSpaceOffset.y)
+		spawnRange = Global.playerBounds
 		eggTarget = get_node('../../Enemyspace/EggParent')
 	else:
-		var botOffset = Vector2(Global.gameSpaceOffset.x * .5, Global.gameSpaceOffset.y * .5)
 		player = get_parent().get_node('ChickenBot')
-		lowerBounds = 435 + botOffset.y
-		spawnRange = Vector2(Global.botBounds.x+botOffset.x,Global.botBounds.y+botOffset.y)
+		lowerBounds = 425
+		spawnRange = Global.botBounds
 		for key in eggTypes:
 			eggTypes[key]["speed"] *= .5
 			eggTypes[key]["size"] *= .5
@@ -45,16 +43,15 @@ func _process(delta):
 
 func _physics_process(_delta):
 	for egg in get_children():
-		egg.global_position.y += egg.speed
-		if egg.global_position.y > lowerBounds:
+		egg.position.y += egg.speed
+		if egg.position.y > lowerBounds:
 			if egg.id != 99 && !botMode:
 				if eggTarget != null:
-					eggTarget.makeEgg(egg.id, egg.type, Vector2.ZERO, egg.global_position.x / spawnRange.y)
+					eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
 #				else: #network
 			egg.queue_free()
 		
-func makeEgg(id: int, type: String, position: Vector2, relativePerc = null):
-	if (relativePerc != null): position.x = spawnRange.x + ((spawnRange.y - spawnRange.x) * relativePerc)
+func makeEgg(id: int, type: String, pos: Vector2):
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	egg.type = type
@@ -65,7 +62,7 @@ func makeEgg(id: int, type: String, position: Vector2, relativePerc = null):
 	egg.knockback = typeKey["knockback"]
 	egg.damage = typeKey["damage"]
 	egg.id = id
-	egg.global_position = position
+	egg.position = pos
 	if id != 99:
 		egg.sprite.modulate = Global.colorIdMap[id]
 		if Global.id == id && !botMode: 

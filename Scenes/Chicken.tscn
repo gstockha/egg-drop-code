@@ -35,9 +35,6 @@ one_way_collision_margin = 0.0
 process_mode = 0
 one_shot = true
 
-[node name="Butthole" type="Position2D" parent="."]
-position = Vector2( 0, 15 )
-
 [node name="RayCasts" type="Node2D" parent="."]
 
 [node name="RayCastB" type="RayCast2D" parent="RayCasts"]

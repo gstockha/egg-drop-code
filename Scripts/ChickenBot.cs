@@ -16,7 +16,7 @@ float[] dirListy = new float[12];
 bool idle, invincible, onFloor = false;
 int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
-int moveRate = 300;
+int moveRate = 30;
 int maxEggs = 25;
 int health = 6;
 int id = 99;
@@ -28,7 +28,6 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
 Node Global;
-Position2D butthole;
 // TextureRect[] heartIcons = new TextureRect[6];
 // Control eggBar;
 
@@ -40,7 +39,6 @@ public override void _Ready(){
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
     // eggBar = GetNode<Control>("../../EggBar");
-    butthole = GetNode<Position2D>("Butthole");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
@@ -78,16 +76,10 @@ public override void _PhysicsProcess(float _delta){
 }
 
 public void Move(){
-	// if (!idle){ //update direction
-    //     CalculateMove();
-	// 	dir[0] = calcMove.x;
-	// 	dir[1] = calcMove.y;
-	// 	if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
-	// 	else dir[1] = Mathf.Round(dir[1]);
-	// }
-    if (!idle){
-		dir[0] = Input.GetActionStrength("right") - Input.GetActionStrength("left");
-		dir[1] = Input.GetActionStrength("down") - Input.GetActionStrength("up");
+	if (!idle){ //update direction
+        CalculateMove();
+		dir[0] = calcMove.x;
+		dir[1] = calcMove.y;
 		if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
 		else dir[1] = Mathf.Round(dir[1]);
 	}
@@ -96,11 +88,11 @@ public void Move(){
 		dir[1] = 0;
 	}
     onFloor = IsOnWall() && Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
-    if (dir[1] < 0 || onFloor) gravity = 0;
-    else{
-        gravity += weight;
-        if (gravity > weight * 200) gravity = weight * 200;
-    }
+    // if (dir[1] < 0 || onFloor) gravity = 0;
+    // else{
+    //     gravity += weight;
+    //     if (gravity > weight * 200) gravity = weight * 200;
+    // }
     int current = dirListx.Length - 1;
 	int i;
 	for (i = 0; i < current; i++){
@@ -113,13 +105,13 @@ public void Move(){
 	dirListy[current] = myMath.arrayMean(dirListy);
     momentum = GetMomentum();
     MoveAndSlide(new Vector2(velocity.x, velocity.y) * speed);
-    if (shoveCounter[0] > 0){
-        shoveCounter[0] -= 10;
-        MoveAndSlide(shoveVel * (shoveCounter[1] * (shoveCounter[0] / shoveCounter[1])));
-        if (shoveCounter[0] < 0){
-            shoveCounter[0] = 0;
-        }
-    }
+    // if (shoveCounter[0] > 0){
+    //     shoveCounter[0] -= 10;
+    //     MoveAndSlide(shoveVel * (shoveCounter[1] * (shoveCounter[0] / shoveCounter[1])));
+    //     if (shoveCounter[0] < 0){
+    //         shoveCounter[0] = 0;
+    //     }
+    // }
     if (eggCooldown > 0){
         eggCooldown -= 10;
         if (eggCooldown <= 0){
@@ -140,15 +132,63 @@ public void Move(){
     }
 }
 
-public void CalculateMove(){
+public void CalculateMove(float knockBackMod = 1){
     if (moveCooldown > 0){
-        moveCooldown -= 10;
+        moveCooldown -= 1;
         return;
     }
     Vector2 newMove = new Vector2(0,0);
-
+    Godot.Collections.Array eggs = eggParent.GetChildren();
+    Node2D egg;
+    float myx = Position.x;
+    float myy = Position.y;
+    int i;
+    int above = 0;
+    int below = 0;
+    int right = 0;
+    int left = 0;
+    Vector2 closest = Vector2.Zero;
+    for (i = 0; i < eggs.Count; i++){
+        egg = (Node2D)eggs[i];
+        if (244 <= egg.Position.x) left ++;
+        else right ++;
+        if (closest == Vector2.Zero || Position.DistanceTo(egg.Position) < Position.DistanceTo(closest)) closest = egg.Position;
+        if (200 <= egg.Position.y) above ++;
+        else below ++;
+    }
+    // GD.Print(Position.DistanceTo(closest));
+    int[] choice = new int[] {0,1};
+    if (left == right){
+        if (choice[GD.Randi() % 2] == 1) right --;
+        else left --;
+    }
+    if (above == below){
+        if (choice[GD.Randi() % 2] == 1) above --;
+        else below --;
+    }
+    // bool targWallx = (myx >= 244) ? (myx > 400) : (myx < 80);
+    // bool targWally = (myy >= 204) ? (myy > 320) : (myy < 80);
+    // if (Position.DistanceTo(closest) >= 150){
+    //     if (targWallx) closest = (myx >= 244) ? new Vector2(484, myy) : new Vector2(4, myy);
+    //     else if (targWally) closest = (myy >= 204) ? new Vector2(myx, 396) : new Vector2(myx, 4);
+    // }
+    if (Position.DistanceTo(closest) < 150){
+        int xSign = (closest.x < Position.x) ? 1 : -1;
+        newMove.x = (.5F + (GD.Randf() * .5F)) * xSign;
+        GD.Print(closest);
+        if (myy < 250){ //too high, danger zone
+            newMove.y = (closest.y < Position.y) ? .7F + (GD.Randf() * .3F) : -1 * (.2F + (GD.Randf() * .2F));
+        }
+        else{
+            newMove.y = (closest.y < Position.y) ? .3F + (GD.Randf() * .3F) : -1 * (.5F + (GD.Randf() * .5F));
+        }
+    }
+    else{
+        newMove.x = (left < right) ? .1F + (GD.Randf() * .5F) : -1 * (.1F + GD.Randf() * .5F);
+        newMove.y = (above < below) ? .1F + (GD.Randf() * .5F) : -1 * (.1F + GD.Randf() * .5F);
+    }
+    calcMove = newMove * knockBackMod;
     moveCooldown = moveRate;
-    calcMove = newMove;
 }
 
 public float GetMomentum(string XorY = ""){
@@ -237,6 +277,7 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
     shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
+    CalculateMove(.3F);
 }
 
 public void EatFood(string type){
@@ -264,7 +305,7 @@ public void MakeEgg(bool automatic){
         return;
     }
     eggCount --;
-    eggParent.Call("makeEgg", id, eggs[0], butthole.GlobalPosition);
+    eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))));
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;
         eggs[i] = eggs[i+1];

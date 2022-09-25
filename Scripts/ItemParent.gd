@@ -9,7 +9,7 @@ var maxItems = 6
 var itemCount = 0
 var player = null
 var playerHealth = 6
-var spawnRange = Vector2(7,953)
+var spawnRange = null
 var ybounds = []
 var adj = 100
 var items = {
@@ -26,18 +26,16 @@ func _ready():
 	botMode = get_parent().name == "Enemyspace"
 	if !botMode:
 		player = get_parent().get_node('Chicken')
-		spawnRange.x += Global.gameSpaceOffset.x
-		spawnRange.y += Global.gameSpaceOffset.y
-		ybounds.append(130+Global.gameSpaceOffset.x)
-		ybounds.append(550+Global.gameSpaceOffset.x)
-		ybounds.append(755+Global.gameSpaceOffset.x)
+		spawnRange = Global.playerBounds
+		ybounds.append(130)
+		ybounds.append(550)
+		ybounds.append(755)
 	else:
 		player = get_parent().get_node('ChickenBot')
-		var offset = Global.gameSpaceOffset * .5
-		spawnRange = Vector2(986+offset.x,1469+offset.y)
-		ybounds.append(65+Global.gameSpaceOffset.x)
-		ybounds.append(225+Global.gameSpaceOffset.x)
-		ybounds.append(377.5+Global.gameSpaceOffset.x)
+		spawnRange = Global.botBounds
+		ybounds.append(65)
+		ybounds.append(225)
+		ybounds.append(377.5)
 		adj = 50
 
 func _process(delta):
@@ -51,7 +49,7 @@ func _process(delta):
 		var type = getItemType()
 		var item = items[type].instance()
 		add_child(item)
-		item.global_position = getLocation()
+		item.position = getLocation()
 		if type == "food":
 			item.type = getCornType()
 			item.sprite.texture = foodSprites[item.type]
@@ -69,7 +67,7 @@ func _process(delta):
 			item.scale = item.baseScale * (.25 + (((30 - (item.duration - 160)) / 30) * .75))
 
 func getLocation() -> Vector2:
-	var plrPos = player.global_position
+	var plrPos = player.position
 	var upperHalfRoll = ((randi() % 100 + 1) < 75)
 	var xx = rand_range(spawnRange.x, spawnRange.y)
 	var yy = rand_range(ybounds[0], ybounds[1]) if upperHalfRoll else rand_range(ybounds[1], ybounds[2])
@@ -81,7 +79,7 @@ func getLocation() -> Vector2:
 func getItemType() -> String: #food, health, or powerup
 	var roll = randi() % 100 + 1
 	if healthTimer > powerCooldown * .7:
-		if playerHealth < 4 && roll <= (50 - (playerHealth * 10)) || playerHealth < 6 && roll <= (20 - (playerHealth * 2)):
+		if (playerHealth < 4 && roll <= (50 - (playerHealth * 10))) || (playerHealth < 6 && roll <= (20 - (playerHealth * 2))):
 			healthTimer = 0
 			return "health" #health chance
 	if powerTimer > powerCooldown:

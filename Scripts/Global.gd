@@ -8,6 +8,5 @@ var colorIdMap = {
 	4: ColorN("lightsalmon"), 5: ColorN("violet"), 6: ColorN("aquamarine"), 7: ColorN("tomato"), 8: ColorN("orange"),
 	9: ColorN("pink")
 }
-var gameSpaceOffset = Vector2(16,16)
-var playerBounds = Vector2(7,953)
-var botBounds = Vector2(988,1464)
+var playerBounds = Vector2(0,960)
+var botBounds = Vector2(0,480)
