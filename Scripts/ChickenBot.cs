@@ -252,12 +252,12 @@ public void ScreenShake(){
     if (screenShake == 0) return;
     if (shakeTimer < 1){
         screenShake = 0;
-        gameSpace.Position = new Vector2(996, 16);
+        gameSpace.Position = new Vector2(996, 216);
         return;
     }
     float rollx = (GD.Randf() < .5F) ? -.5F : .5F;
     float rolly = (GD.Randf() < .5F) ? -.5F : .5F;
-    gameSpace.Position = new Vector2(996 + (screenShake * rollx), 16 + (screenShake * rolly));
+    gameSpace.Position = new Vector2(996 + (screenShake * rollx), 216 + (screenShake * rolly));
     shakeTimer -= 10;
 }
 
