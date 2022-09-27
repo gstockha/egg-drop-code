@@ -16,7 +16,7 @@ float[] dirListy = new float[12];
 bool idle, invincible, onFloor = false;
 int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
-int moveRate = 30;
+int moveRate = 12;
 int maxEggs = 25;
 int health = 6;
 int id = 99;
@@ -64,6 +64,11 @@ public override void _Ready(){
     rayCasts[9] = GetNode<RayCast2D>("RayCasts/RayCastTR2");
     rayCasts[10] = GetNode<RayCast2D>("RayCasts/RayCastBL2");
     rayCasts[11] = GetNode<RayCast2D>("RayCasts/RayCastTL2");
+    for (i = 0; i < rayCasts.Length; i++){
+        if (rayCasts[i].CastTo.y != 0) rayCasts[i].Scale = new Vector2(10, 4);
+        else rayCasts[i].Scale = new Vector2(4, 10);
+    }
+    rayCasts[1].Scale = new Vector2(16,8);
     #endregion
     invTimer = GetNode<Timer>("Invincible");
 }
@@ -138,54 +143,68 @@ public void CalculateMove(float knockBackMod = 1){
         return;
     }
     Vector2 newMove = new Vector2(0,0);
+    float[] directions = new float[] {0,0,0,0}; //left, right, up, down
+    bool isClose = false;
     Godot.Collections.Array eggs = eggParent.GetChildren();
-    Node2D egg;
-    float myx = Position.x;
-    float myy = Position.y;
     int i;
-    int above = 0;
-    int below = 0;
-    int right = 0;
-    int left = 0;
-    Vector2 closest = Vector2.Zero;
-    for (i = 0; i < eggs.Count; i++){
-        egg = (Node2D)eggs[i];
-        if (244 <= egg.Position.x) left ++;
-        else right ++;
-        if (closest == Vector2.Zero || Position.DistanceTo(egg.Position) < Position.DistanceTo(closest)) closest = egg.Position;
-        if (200 <= egg.Position.y) above ++;
-        else below ++;
-    }
-    // GD.Print(Position.DistanceTo(closest));
-    int[] choice = new int[] {0,1};
-    if (left == right){
-        if (choice[GD.Randi() % 2] == 1) right --;
-        else left --;
-    }
-    if (above == below){
-        if (choice[GD.Randi() % 2] == 1) above --;
-        else below --;
-    }
-    // bool targWallx = (myx >= 244) ? (myx > 400) : (myx < 80);
-    // bool targWally = (myy >= 204) ? (myy > 320) : (myy < 80);
-    // if (Position.DistanceTo(closest) >= 150){
-    //     if (targWallx) closest = (myx >= 244) ? new Vector2(484, myy) : new Vector2(4, myy);
-    //     else if (targWally) closest = (myy >= 204) ? new Vector2(myx, 396) : new Vector2(myx, 4);
-    // }
-    if (Position.DistanceTo(closest) < 150){
-        int xSign = (closest.x < Position.x) ? 1 : -1;
-        newMove.x = (.5F + (GD.Randf() * .5F)) * xSign;
-        GD.Print(closest);
-        if (myy < 250){ //too high, danger zone
-            newMove.y = (closest.y < Position.y) ? .7F + (GD.Randf() * .3F) : -1 * (.2F + (GD.Randf() * .2F));
+    for (i = 0; i < rayCasts.Length; i++){
+        if (rayCasts[i].IsColliding()){
+            isClose = true;
+            switch(rays[i]){
+                case "bottom": directions[2] += 3; break;
+                case "top": directions[3] += 3; break;
+                case "right": directions[0] += 3; break;
+                case "left": directions[1] += 3; break;
+                case "br1": directions[0] += 2; directions[2] += 1; break;
+                case "tr1": directions[0] += 2; directions[3] += 1; break;
+                case "bl1": directions[1] += 2; directions[2] += 1; break;
+                case "tl1": directions[1] += 2; directions[3] += 1; break;
+                case "br2": directions[0] += 1; directions[2] += 2; break;
+                case "tr2": directions[0] += 1; directions[3] += 2; break;
+                case "bl2": directions[1] += 1; directions[2] += 2; break;
+                case "tl2": directions[1] += 1; directions[3] += 2; break;
+            }
         }
-        else{
-            newMove.y = (closest.y < Position.y) ? .3F + (GD.Randf() * .3F) : -1 * (.5F + (GD.Randf() * .5F));
+    }
+    if (isClose){
+        if (directions[0] == 0 && directions[1] == 0){
+            int sign = Mathf.Sign(calcMove.x);
+            if (Position.x < 200) directions[1] += 6;
+            else directions[0] += 6;
         }
+        int total = (int)(directions[0] + directions[1] + directions[2] + directions[3]);
+        for (i = 0; i < 4; i++) directions[i] = directions[i] / total;
+        GD.Print("\nleft: " + directions[0].ToString() + "\nright: " + directions[1].ToString() +
+        "\nup: " + directions[2].ToString() + "\ndown: " + directions[3].ToString());
+        newMove = new Vector2(Mathf.Sign(-directions[0] + directions[1]), -directions[2] + directions[3]);
     }
     else{
-        newMove.x = (left < right) ? .1F + (GD.Randf() * .5F) : -1 * (.1F + GD.Randf() * .5F);
-        newMove.y = (above < below) ? .1F + (GD.Randf() * .5F) : -1 * (.1F + GD.Randf() * .5F);
+        Vector2 closest = Vector2.Zero;
+        Node2D egg;
+        bool wallRight = Position.x > 420;
+        bool wallLeft = Position.x < 60;
+        for (i = 0; i < eggs.Count; i++){
+            egg = (Node2D)eggs[i];
+            if (244 <= egg.Position.x) directions[0] ++;
+            else directions[1] ++;
+            if (200 <= egg.Position.y) directions[2] ++;
+            else directions[3] ++;
+            if (closest == Vector2.Zero || Position.DistanceTo(egg.Position) < Position.DistanceTo(closest)) closest = egg.Position;
+        }
+        if (Position.DistanceTo(closest) > 120){
+            float xSign = 0;
+            if (directions[0] > directions[1]){
+                xSign = (wallRight) ? -.3F : 1;
+            }
+            else{
+                xSign = (wallLeft) ? -.3F : -1;
+            }
+            newMove.x = (.1F + (GD.Randf() * .5F)) * xSign;
+            newMove.y = (directions[2] < directions[3]) ? .1F + (GD.Randf() * .3F) : -1 * (.1F + GD.Randf() * .3F);
+        }
+        else{
+            newMove.x = (wallRight || wallLeft) ? 0 : calcMove.x;
+        }
     }
     calcMove = newMove * knockBackMod;
     moveCooldown = moveRate;
@@ -233,12 +252,12 @@ public void ScreenShake(){
     if (screenShake == 0) return;
     if (shakeTimer < 1){
         screenShake = 0;
-        gameSpace.GlobalPosition = new Vector2(1000, 16);
+        gameSpace.Position = new Vector2(996, 16);
         return;
     }
     float rollx = (GD.Randf() < .5F) ? -.5F : .5F;
     float rolly = (GD.Randf() < .5F) ? -.5F : .5F;
-    gameSpace.GlobalPosition = new Vector2(1000 + (screenShake * rollx), 16 + (screenShake * rolly));
+    gameSpace.Position = new Vector2(996 + (screenShake * rollx), 16 + (screenShake * rolly));
     shakeTimer -= 10;
 }
 
