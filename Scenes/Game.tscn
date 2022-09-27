@@ -1,9 +1,24 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Sprites/Heart.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/Game.cs" type="Script" id=5]
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.556863, 0.866667, 0.603922, 1 )
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.556863, 0.866667, 0.603922, 1 )
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -20,6 +35,29 @@ corner_radius_bottom_left = 60
 [node name="Game" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerBG" type="ColorRect" parent="."]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 88.0
+margin_bottom = 114.0
+rect_scale = Vector2( 13.3776, 8.21125 )
+color = Color( 0.654902, 0.639216, 0.780392, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EnemyBG" type="ColorRect" parent="."]
+margin_left = 992.0
+margin_top = 208.0
+margin_right = 1028.0
+margin_bottom = 258.0
+rect_scale = Vector2( 13.3776, 8.21125 )
+color = Color( 0.945098, 0.611765, 0.752941, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -28,7 +66,7 @@ __meta__ = {
 position = Vector2( 16, 16 )
 
 [node name="Enemyspace" parent="." instance=ExtResource( 3 )]
-position = Vector2( 996, 216 )
+position = Vector2( 992, 215 )
 
 [node name="BG" type="Control" parent="."]
 margin_right = 40.0
@@ -39,9 +77,10 @@ __meta__ = {
 
 [node name="BGPieceR" type="ColorRect" parent="BG"]
 margin_left = 976.0
-margin_top = 616.0
+margin_top = 615.0
 margin_right = 1496.0
-margin_bottom = 880.0
+margin_bottom = 879.0
+rect_scale = Vector2( 0.999585, 1.00393 )
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 
 [node name="BGPieceR2" type="ColorRect" parent="BG"]
@@ -50,6 +89,9 @@ margin_top = 16.0
 margin_right = 1477.0
 margin_bottom = 215.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BGPieceRL" type="ColorRect" parent="BG"]
 margin_left = 976.0
@@ -62,11 +104,11 @@ __meta__ = {
 }
 
 [node name="BGPieceRR" type="ColorRect" parent="BG"]
-margin_left = 1476.0
+margin_left = 1472.0
 margin_top = 16.0
-margin_right = 1492.0
+margin_right = 1488.0
 margin_bottom = 615.0
-rect_scale = Vector2( 1.26275, 1.00171 )
+rect_scale = Vector2( 1.50635, 1.00659 )
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -97,6 +139,129 @@ color = Color( 0.419608, 0.482353, 0.752941, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ScoresTop" type="VBoxContainer" parent="."]
+anchor_left = 0.665
+anchor_top = 0.009
+anchor_right = 0.665
+anchor_bottom = 0.009
+margin_left = -0.180054
+margin_top = 0.0799994
+margin_right = 479.82
+margin_bottom = 200.08
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="ScoresTop"]
+margin_right = 480.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Label2" type="Label" parent="ScoresTop"]
+margin_top = 29.0
+margin_right = 480.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Label3" type="Label" parent="ScoresTop"]
+margin_top = 58.0
+margin_right = 480.0
+margin_bottom = 83.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Label4" type="Label" parent="ScoresTop"]
+margin_top = 87.0
+margin_right = 480.0
+margin_bottom = 112.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Label5" type="Label" parent="ScoresTop"]
+margin_top = 116.0
+margin_right = 480.0
+margin_bottom = 141.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Label6" type="Label" parent="ScoresTop"]
+margin_top = 145.0
+margin_right = 480.0
+margin_bottom = 170.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Label7" type="Label" parent="ScoresTop"]
+margin_top = 174.0
+margin_right = 480.0
+margin_bottom = 199.0
+rect_min_size = Vector2( 0, 25 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="ScoresBottom" type="VBoxContainer" parent="."]
+anchor_left = 0.665
+anchor_top = 0.009
+anchor_right = 0.665
+anchor_bottom = 0.009
+margin_left = -0.180054
+margin_top = 632.08
+margin_right = 479.82
+margin_bottom = 832.08
+size_flags_vertical = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="ScoresBottom"]
+margin_right = 480.0
+margin_bottom = 28.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
+
+[node name="Label2" type="Label" parent="ScoresBottom"]
+margin_top = 32.0
+margin_right = 480.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
+
+[node name="Label3" type="Label" parent="ScoresBottom"]
+margin_top = 64.0
+margin_right = 480.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
+
+[node name="Label4" type="Label" parent="ScoresBottom"]
+margin_top = 96.0
+margin_right = 480.0
+margin_bottom = 124.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
+
+[node name="Label5" type="Label" parent="ScoresBottom"]
+margin_top = 128.0
+margin_right = 480.0
+margin_bottom = 156.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
+
+[node name="Label6" type="Label" parent="ScoresBottom"]
+margin_top = 160.0
+margin_right = 480.0
+margin_bottom = 188.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
+
+[node name="Label7" type="Label" parent="ScoresBottom"]
+margin_top = 192.0
+margin_right = 480.0
+margin_bottom = 220.0
+rect_min_size = Vector2( 0, 28 )
+custom_styles/normal = SubResource( 6 )
 
 [node name="Hearts" type="Control" parent="."]
 anchor_left = 0.012

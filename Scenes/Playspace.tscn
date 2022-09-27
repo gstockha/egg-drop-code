@@ -19,10 +19,8 @@ extents = Vector2( 472, 4 )
 [node name="Playspace" type="Node2D"]
 
 [node name="BG" type="ColorRect" parent="."]
-margin_left = -32.0
-margin_top = -32.0
-margin_right = 992.0
-margin_bottom = 832.0
+margin_right = 960.0
+margin_bottom = 800.0
 color = Color( 0.654902, 0.639216, 0.780392, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
