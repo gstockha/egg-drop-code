@@ -18,14 +18,6 @@ extents = Vector2( 472, 4 )
 
 [node name="Playspace" type="Node2D"]
 
-[node name="BG" type="ColorRect" parent="."]
-margin_right = 960.0
-margin_bottom = 800.0
-color = Color( 0.654902, 0.639216, 0.780392, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="BoundaryParent" type="Node2D" parent="."]
 
 [node name="BoundaryL" type="StaticBody2D" parent="BoundaryParent" groups=["walls"]]

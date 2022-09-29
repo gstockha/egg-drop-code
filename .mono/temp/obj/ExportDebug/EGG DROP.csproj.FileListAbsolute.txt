@@ -6,3 +6,12 @@ C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportDebug\EGG D
 C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportDebug\EGG DROP.csproj.CoreCompileInputs.cache
 C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportDebug\EGG DROP.dll
 C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportDebug\EGG DROP.pdb
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\bin\ExportDebug\EGG DROP.dll
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\bin\ExportDebug\EGG DROP.pdb
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.csproj.AssemblyReference.cache
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.AssemblyInfoInputs.cache
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.AssemblyInfo.cs
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.csproj.CoreCompileInputs.cache
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.dll
+C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.pdb

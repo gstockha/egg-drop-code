@@ -174,8 +174,8 @@ public void CalculateMove(float knockBackMod = 1){
         }
         int total = (int)(directions[0] + directions[1] + directions[2] + directions[3]);
         for (i = 0; i < 4; i++) directions[i] = directions[i] / total;
-        GD.Print("\nleft: " + directions[0].ToString() + "\nright: " + directions[1].ToString() +
-        "\nup: " + directions[2].ToString() + "\ndown: " + directions[3].ToString());
+        // GD.Print("\nleft: " + directions[0].ToString() + "\nright: " + directions[1].ToString() +
+        // "\nup: " + directions[2].ToString() + "\ndown: " + directions[3].ToString());
         newMove = new Vector2(Mathf.Sign(-directions[0] + directions[1]), -directions[2] + directions[3]);
     }
     else{
