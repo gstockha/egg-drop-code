@@ -26,13 +26,13 @@ func _ready():
 	botMode = get_parent().name == "Enemyspace"
 	if !botMode:
 		player = get_parent().get_node('Chicken')
-		spawnRange = Global.playerBounds
+		spawnRange = Vector2(Global.playerBounds.x+4, Global.playerBounds.y-4)
 		ybounds.append(130)
 		ybounds.append(550)
 		ybounds.append(755)
 	else:
 		player = get_parent().get_node('ChickenBot')
-		spawnRange = Global.botBounds
+		spawnRange = Vector2(Global.playerBounds.x+2, Global.playerBounds.y-2)
 		ybounds.append(65)
 		ybounds.append(225)
 		ybounds.append(377.5)

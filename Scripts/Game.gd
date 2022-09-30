@@ -17,7 +17,7 @@ func _ready():
 	nameArrows = get_node("NamePlates/Arrows").get_children()
 	for i in range(12):
 		colorPlates[i].self_modulate = Global.colorIdMap[i]
-		nameArrows[i].modulate = Global.colorIdMap[i]
+		nameArrows[i].self_modulate = Global.colorIdMap[i]
 		namePlates[i].text = Global.botNameMap[i]
 	#paint the player and target back grounds
 	playerBG.modulate = Global.colorIdMap[Global.id]
