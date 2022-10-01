@@ -9,6 +9,7 @@ var eggSender = 0 #who is sending eggs
 var rateBuffer = 0 #artifical egg drop lag for offline
 var botTimer = 60
 var botReceive = false #"receiving" from a bot?
+var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
 	0: [8,12],
 	1: [5,9],
@@ -46,24 +47,29 @@ func _process(delta):
 		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
 		if !Global.online:
 			if botMode:
-				if rateBuffer < 45: rateBuffer += 5
+				if rateBuffer < 60: rateBuffer += 5
 				eggTimer += rateBuffer
 			elif !botReceive:
 				rateBuffer += 1
 				if randi() % 100 + 1 < rateBuffer:
 					botTimer = eggTimer * .5
 					botReceive = true
+					botReceiveLoc = (randi() % 100) * .01
 		makeEgg(99, randType(Global.normalcy), Vector2(rand_range(spawnRange.x, spawnRange.y), 0))
 	elif botReceive:
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
-			rateBuffer -= 3
+			rateBuffer -= rand_range(2,5)
+			var choice = [-1,1]
+			botReceiveLoc += rand_range(.01,.25) * choice[randi() % 2]
+			while botReceiveLoc < 0.01 || botReceiveLoc > 1:
+				botReceiveLoc += rand_range(.01,.25) * choice[randi() % 2]
 			if rateBuffer <= 0:
-				print(rateBuffer)
 				rateBuffer = 0
 				botReceive = false
 			else: botTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1]) * .5
-			makeEgg(eggSender, randType(Global.normalcy), Vector2(rand_range(spawnRange.x, spawnRange.y), 0))
+			makeEgg(eggSender, randType(Global.normalcy),
+			Vector2(spawnRange.x + ((spawnRange.y - spawnRange.x) * botReceiveLoc), 0))
 
 func _physics_process(_delta):
 	for egg in get_children():

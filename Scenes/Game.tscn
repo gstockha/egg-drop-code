@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Sprites/Heart.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=4]
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=5]
+[ext_resource path="res://Scenes/StatusLabel.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=7]
 
 [sub_resource type="StyleBoxFlat" id=3]
@@ -488,12 +489,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
-margin_bottom = 62.0
+margin_right = 249.0
+margin_bottom = 60.99
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate1" instance=ExtResource( 6 )]
 
 [node name="NamePlate2" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 32.0
@@ -639,12 +642,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate2" instance=ExtResource( 6 )]
 
 [node name="NamePlate3" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 64.0
@@ -790,9 +795,9 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
@@ -941,12 +946,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate4" instance=ExtResource( 6 )]
 
 [node name="NamePlate5" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 128.0
@@ -1092,12 +1099,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate5" instance=ExtResource( 6 )]
 
 [node name="NamePlate6" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 160.0
@@ -1243,12 +1252,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = 1.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 65.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate6" instance=ExtResource( 6 )]
 
 [node name="ScoresBottom" type="VBoxContainer" parent="NamePlates"]
 anchor_left = 0.665
@@ -1403,12 +1414,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = 1.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 65.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate1" instance=ExtResource( 6 )]
 
 [node name="NamePlate2" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 38.0
@@ -1554,12 +1567,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate2" instance=ExtResource( 6 )]
 
 [node name="NamePlate3" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 70.0
@@ -1705,12 +1720,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate3" instance=ExtResource( 6 )]
 
 [node name="NamePlate4" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 102.0
@@ -1856,12 +1873,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate4" instance=ExtResource( 6 )]
 
 [node name="NamePlate5" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 134.0
@@ -2007,12 +2026,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate5" instance=ExtResource( 6 )]
 
 [node name="NamePlate6" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 166.0
@@ -2158,12 +2179,14 @@ __meta__ = {
 }
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6"]
-margin_left = 296.0
+margin_left = 185.0
 margin_top = -2.0
-margin_right = 360.0
+margin_right = 249.0
 margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
+
+[node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate6" instance=ExtResource( 6 )]
 
 [node name="Arrows" type="Control" parent="NamePlates"]
 anchor_left = 0.665

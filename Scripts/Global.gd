@@ -11,8 +11,8 @@ var colorIdMap = {
 	8: ColorN("orange"), 9: ColorN("tomato"), 10: ColorN("lime"), 11: ColorN("royalblue") 
 }
 var eggColorMap = {}
-var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "SunE)))", "xLiNkInXaSsAsSiNx", "You",
-"yay^^", "BasedMoron", "agentorange1972", "DAD", "dudelmaaoooo", "loganrulez2013"]
+var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "You",
+"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
 var playerBounds = Vector2(0,960)
 var botBounds = Vector2(0,480)
 
@@ -26,7 +26,9 @@ func _ready():
 		rgb[2] = 100
 		if i % 3 == 0:
 			rgb[0] = 255
-			if i == 3: rgb[1] += 75
+			if i == 3:
+				rgb[1] += 70
+				rgb[0] += 55
 			elif i == 6: rgb[2] += 75
 			else:
 				rgb[1] = 225
