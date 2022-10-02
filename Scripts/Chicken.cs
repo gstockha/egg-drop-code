@@ -28,7 +28,7 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 };
 Node Global;
 TextureRect[] heartIcons = new TextureRect[6];
-Control eggBar;
+Control eggBar, game;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -37,6 +37,7 @@ public override void _Ready(){
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
+    game = (Control)GetParent().GetParent();
     eggBar = GetNode<Control>("../../EggBar");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;

@@ -32,7 +32,7 @@ func _ready():
 		ybounds.append(755)
 	else:
 		player = get_parent().get_node('ChickenBot')
-		spawnRange = Vector2(Global.playerBounds.x+2, Global.playerBounds.y-2)
+		spawnRange = Vector2(Global.botBounds.x+2, Global.botBounds.y-2)
 		ybounds.append(65)
 		ybounds.append(225)
 		ybounds.append(377.5)
