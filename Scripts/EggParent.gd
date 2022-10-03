@@ -45,10 +45,11 @@ func _process(delta):
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
+		eggTimer = 5
 		if !Global.online:
 			if botMode:
 				if rateBuffer < 60: rateBuffer += 5
-				eggTimer += rateBuffer
+#				eggTimer += rateBuffer
 			elif !botReceive:
 				rateBuffer += 1
 				if randi() % 100 + 1 < rateBuffer:

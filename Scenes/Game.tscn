@@ -52,7 +52,6 @@ rect_scale = Vector2( 13.3776, 8.21125 )
 [node name="subBG" type="ColorRect" parent="PlayerBG"]
 margin_right = 72.0
 margin_bottom = 98.0
-rect_scale = Vector2( 13.3776, 8.21125 )
 
 [node name="EnemyBG" type="ColorRect" parent="."]
 margin_left = 992.0
@@ -64,13 +63,12 @@ rect_scale = Vector2( 13.3776, 8.21125 )
 [node name="subBG" type="ColorRect" parent="EnemyBG"]
 margin_right = 36.0
 margin_bottom = 50.0
-rect_scale = Vector2( 13.3776, 8.21125 )
 
 [node name="Playspace" parent="." instance=ExtResource( 1 )]
 position = Vector2( 16, 16 )
 
 [node name="Enemyspace" parent="." instance=ExtResource( 3 )]
-position = Vector2( 992, 215 )
+position = Vector2( 992, 206 )
 
 [node name="BG" type="Control" parent="."]
 margin_right = 40.0
@@ -81,7 +79,7 @@ __meta__ = {
 
 [node name="BGPieceR" type="ColorRect" parent="BG"]
 margin_left = 976.0
-margin_top = 615.0
+margin_top = 606.0
 margin_right = 1496.0
 margin_bottom = 879.0
 rect_scale = Vector2( 0.999585, 1.00393 )
@@ -91,7 +89,7 @@ color = Color( 0.419608, 0.482353, 0.752941, 1 )
 margin_left = 989.0
 margin_top = 16.0
 margin_right = 1477.0
-margin_bottom = 215.0
+margin_bottom = 208.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -129,17 +127,11 @@ margin_left = 16.0
 margin_right = 1496.0
 margin_bottom = 16.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="BGPieceL" type="ColorRect" parent="BG"]
 margin_right = 16.0
 margin_bottom = 816.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Hearts" type="Control" parent="."]
 anchor_left = 0.012
@@ -342,9 +334,9 @@ anchor_top = 0.009
 anchor_right = 0.665
 anchor_bottom = 0.009
 margin_left = 965.4
-margin_top = 17.64
+margin_top = 16.64
 margin_right = 1445.4
-margin_bottom = 217.64
+margin_bottom = 216.64
 
 [node name="NamePlate1" type="Label" parent="NamePlates/ScoresTop"]
 margin_right = 480.0
@@ -1113,8 +1105,8 @@ stretch_mode = 4
 [node name="NamePlate6" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 160.0
 margin_right = 480.0
-margin_bottom = 194.0
-rect_min_size = Vector2( 0, 34 )
+margin_bottom = 188.0
+rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 11 )
 valign = 1
@@ -1138,9 +1130,9 @@ anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
 margin_left = 332.24
-margin_top = -29.852
+margin_top = -26.852
 margin_right = 738.24
-margin_bottom = 35.148
+margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
 [node name="HeartIconBGs" type="Control" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
@@ -1255,9 +1247,9 @@ __meta__ = {
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6"]
 margin_left = 185.0
-margin_top = 1.0
+margin_top = -2.0
 margin_right = 249.0
-margin_bottom = 65.0
+margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
 
@@ -1269,14 +1261,14 @@ anchor_top = 0.009
 anchor_right = 0.665
 anchor_bottom = 0.009
 margin_left = 965.4
-margin_top = 617.64
+margin_top = 608.64
 margin_right = 1445.4
-margin_bottom = 817.64
+margin_bottom = 808.64
 
 [node name="NamePlate1" type="Label" parent="NamePlates/ScoresBottom"]
 margin_right = 480.0
-margin_bottom = 34.0
-rect_min_size = Vector2( 0, 34 )
+margin_bottom = 28.0
+rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 12 )
 valign = 1
@@ -1300,17 +1292,14 @@ anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
 margin_left = 332.24
-margin_top = -29.606
+margin_top = -26.852
 margin_right = 738.24
-margin_bottom = 35.394
+margin_bottom = 38.1479
 rect_scale = Vector2( 0.399, 0.4 )
 
 [node name="HeartIconBGs" type="Control" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HeartIcon1BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconBGs"]
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
@@ -1417,18 +1406,18 @@ __meta__ = {
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1"]
 margin_left = 185.0
-margin_top = 1.0
+margin_top = -2.0
 margin_right = 249.0
-margin_bottom = 65.0
+margin_bottom = 62.0
 rect_scale = Vector2( 0.5, 0.5 )
 stretch_mode = 4
 
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate1" instance=ExtResource( 6 )]
 
 [node name="NamePlate2" type="Label" parent="NamePlates/ScoresBottom"]
-margin_top = 38.0
+margin_top = 32.0
 margin_right = 480.0
-margin_bottom = 66.0
+margin_bottom = 60.0
 rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 11 )
@@ -1579,9 +1568,9 @@ stretch_mode = 4
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate2" instance=ExtResource( 6 )]
 
 [node name="NamePlate3" type="Label" parent="NamePlates/ScoresBottom"]
-margin_top = 70.0
+margin_top = 64.0
 margin_right = 480.0
-margin_bottom = 98.0
+margin_bottom = 92.0
 rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 11 )
@@ -1732,9 +1721,9 @@ stretch_mode = 4
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate3" instance=ExtResource( 6 )]
 
 [node name="NamePlate4" type="Label" parent="NamePlates/ScoresBottom"]
-margin_top = 102.0
+margin_top = 96.0
 margin_right = 480.0
-margin_bottom = 130.0
+margin_bottom = 124.0
 rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 11 )
@@ -1885,9 +1874,9 @@ stretch_mode = 4
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate4" instance=ExtResource( 6 )]
 
 [node name="NamePlate5" type="Label" parent="NamePlates/ScoresBottom"]
-margin_top = 134.0
+margin_top = 128.0
 margin_right = 480.0
-margin_bottom = 162.0
+margin_bottom = 156.0
 rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 11 )
@@ -2038,9 +2027,9 @@ stretch_mode = 4
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate5" instance=ExtResource( 6 )]
 
 [node name="NamePlate6" type="Label" parent="NamePlates/ScoresBottom"]
-margin_top = 166.0
+margin_top = 160.0
 margin_right = 480.0
-margin_bottom = 194.0
+margin_bottom = 188.0
 rect_min_size = Vector2( 0, 28 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/normal = SubResource( 11 )
@@ -2196,43 +2185,43 @@ anchor_top = 0.009
 anchor_right = 0.665
 anchor_bottom = 0.009
 margin_left = 965.4
-margin_top = 17.64
+margin_top = 9.64
 margin_right = 1445.4
-margin_bottom = 217.64
+margin_bottom = 209.64
 
 [node name="Arrow1" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 14.0
+margin_top = 20.0
 margin_right = 260.0
-margin_bottom = 34.0
+margin_bottom = 40.0
 rect_rotation = 45.0
 
 [node name="Arrow2" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 46.0
+margin_top = 52.0
 margin_right = 260.0
-margin_bottom = 66.0
+margin_bottom = 72.0
 rect_rotation = 45.0
 
 [node name="Arrow3" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 78.0
+margin_top = 84.0
 margin_right = 260.0
-margin_bottom = 98.0
+margin_bottom = 104.0
 rect_rotation = 45.0
 
 [node name="Arrow4" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 110.0
+margin_top = 116.0
 margin_right = 260.0
-margin_bottom = 130.0
+margin_bottom = 136.0
 rect_rotation = 45.0
 
 [node name="Arrow5" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 142.0
+margin_top = 148.0
 margin_right = 260.0
-margin_bottom = 162.0
+margin_bottom = 168.0
 rect_rotation = 45.0
 
 [node name="Arrow6" type="ColorRect" parent="NamePlates/Arrows"]
@@ -2244,48 +2233,49 @@ rect_rotation = 45.0
 
 [node name="Arrow7" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 620.0
+margin_top = 613.0
 margin_right = 260.0
-margin_bottom = 640.0
+margin_bottom = 633.0
 rect_rotation = 45.0
 
 [node name="Arrow8" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 652.0
+margin_top = 645.0
 margin_right = 260.0
-margin_bottom = 672.0
+margin_bottom = 665.0
 rect_rotation = 45.0
 
 [node name="Arrow9" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 684.0
+margin_top = 677.0
 margin_right = 260.0
-margin_bottom = 704.0
+margin_bottom = 697.0
 rect_rotation = 45.0
 
 [node name="Arrow10" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 716.0
+margin_top = 709.0
 margin_right = 260.0
-margin_bottom = 736.0
+margin_bottom = 729.0
 rect_rotation = 45.0
 
 [node name="Arrow11" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = 748.0
+margin_top = 741.0
 margin_right = 260.0
-margin_bottom = 768.0
+margin_bottom = 761.0
 rect_rotation = 45.0
 
 [node name="Arrow12" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = -20.0
+margin_top = -12.0
 margin_right = 260.0
+margin_bottom = 8.0
 rect_rotation = 45.0
 
-[node name="BGPieceArrowCover" type="ColorRect" parent="NamePlates/Arrows"]
-margin_left = 222.0
-margin_top = -18.0
-margin_right = 258.0
-margin_bottom = -6.0
+[node name="ArrowBlock" type="ColorRect" parent="NamePlates/Arrows"]
+margin_left = 220.0
+margin_top = -10.0
+margin_right = 260.0
+margin_bottom = 2.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )

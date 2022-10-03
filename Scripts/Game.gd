@@ -22,7 +22,7 @@ func _ready():
 			statusLabels.append(get_node("NamePlates/ScoresBottom/NamePlate" + str(i-6) + "/StatusLabel"))
 	nameArrows = get_node("NamePlates/Arrows").get_children()
 	for i in range(12):
-		playerStats.append({"name": Global.botNameMap[i], "color": Global.colorIdMap[i], "health": 6, "barId": i})
+		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i], "health": 6})
 		barKeys.append(i)
 		colorPlates[i].self_modulate = Global.colorIdMap[i]
 		nameArrows[i].self_modulate = Global.colorIdMap[i]
@@ -40,47 +40,55 @@ func _input(event):
 
 func registerDeath(id: int, lastHitId: int, disconnect: bool) -> void:
 	playerStats[id]["health"] = 0
-	if id == Global.eid:
+	var enemyDeath = id == Global.eid
+	if enemyDeath:
 #		$Enemyspace.queue_free()
 #		add_child(enemySpace.instance())
 		var start = Global.eid + 1 if Global.eid + 1 < 12 else 0
 		var tries = 0
 		for i in range(start, 12):
-			if playerStats[i]["health"] > 0:
+			if playerStats[i]["health"] >= 1 && i != Global.id:
 				Global.eid = i
 				break
-			if i == 11: i = 0
+			if i == 11: i = -1
 			tries += 1
-			if tries > 11:
-				print("you win!")
-				break
-	removeNameplate(id)
+			if tries > 11: break
+	if id != Global.eid || !enemyDeath: redrawNameplates()
+	else:
+		print("You win!")
+		Global.victory = true
 
-func removeNameplate(id: int) -> void:
-	var targ = id
-	if playerStats[id]["barId"] < 6:
-		for i in range(Global.id, -1, -1):
-			if i == -1 || playerStats[barKeys[i]]["health"] < 1:
-				targ = i
-				break
-			colorPlates[i+1].self_modulate = colorPlates[i].self_modulate
-			nameArrows[i+1].self_modulate = nameArrows[i].self_modulate
-			namePlates[i+1].text = namePlates[i].text
-			barKeys[i+1] = barKeys[i]
-			playerStats[barKeys[i]]["barId"] = i + 1
-	elif playerStats[id]["barId"] > 6:
-		for i in range(7, 12):
-			if i + 1 > 11 || playerStats[barKeys[i+1]]["health"] < 1:
-				targ = i
-				break
-			colorPlates[i].self_modulate = colorPlates[i+1].self_modulate
-			nameArrows[i].self_modulate = nameArrows[i+1].self_modulate
-			namePlates[i].text = namePlates[i+1].text
-			barKeys[i] = barKeys[i+1]
-			playerStats[barKeys[i+1]]["barId"] = i
-	colorPlates[targ].self_modulate = playerStats[id]["color"]
-	nameArrows[targ].self_modulate.a = 0
-	namePlates[targ].text = playerStats[id]["name"]
-	barKeys[targ] = id
-	print(barKeys)
-
+func redrawNameplates() -> void:
+	var upperOrder = []
+	var lowerOrder = []
+	var idOrder = []
+	var list = []
+	var targId = null
+	for i in range(12):
+		if playerStats[i]["health"] < 1:
+			if i < 6: upperOrder.append(i)
+			else: lowerOrder.append(i)
+		else:
+			if targId == null: targId = i
+			idOrder.append(i)
+	for i in range(len(upperOrder)): list.append(upperOrder[i])
+	for i in range(len(idOrder)): list.append(idOrder[i])
+	for i in range(len(lowerOrder)): list.append(lowerOrder[i])
+	for i in range(12):
+		colorPlates[i].self_modulate = Global.colorIdMap[list[i]]
+		namePlates[i].text = Global.botNameMap[list[i]]
+		nameArrows[i].self_modulate = Global.colorIdMap[list[i]]
+		if playerStats[list[i]]["health"] < 1:
+			colorPlates[i].self_modulate.a = .5
+			nameArrows[i].self_modulate.a = 0
+		else:
+			colorPlates[i].self_modulate.a = 1
+			nameArrows[i].self_modulate.a = 1
+	if targId != null && colorPlates[6].self_modulate != playerStats[Global.eid]["color"]:
+		if targId != Global.sid:
+			colorPlates[targId].self_modulate = colorPlates[6].self_modulate
+			namePlates[targId].text = namePlates[6].text
+			nameArrows[targId].self_modulate = nameArrows[6].self_modulate
+		colorPlates[6].self_modulate = playerStats[Global.eid]["color"]
+		namePlates[6].text = playerStats[Global.eid]["name"]
+		nameArrows[6].self_modulate = playerStats[Global.eid]["color"]
