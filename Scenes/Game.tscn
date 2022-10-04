@@ -433,34 +433,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -470,7 +474,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -586,44 +590,45 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -739,34 +744,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -776,7 +785,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -892,34 +901,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -929,7 +942,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -1045,34 +1058,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -1082,7 +1099,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -1198,34 +1215,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -1235,7 +1256,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -1357,34 +1378,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -1394,7 +1419,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -1510,52 +1535,55 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
+margin_left = -847.118
+margin_right = -807.118
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
+margin_left = 847.118
 margin_top = 2.0
-margin_right = 64.0
+margin_right = 911.118
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
-margin_left = 56.0
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
+margin_left = 903.118
 margin_top = 2.0
-margin_right = 120.0
+margin_right = 967.118
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
-margin_left = 112.0
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
+margin_left = 959.118
 margin_top = 2.0
-margin_right = 176.0
+margin_right = 1023.12
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
-margin_left = 168.0
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
+margin_left = 1015.12
 margin_top = 2.0
-margin_right = 232.0
+margin_right = 1079.12
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
-margin_left = 224.0
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
+margin_left = 1071.12
 margin_top = 2.0
-margin_right = 288.0
+margin_right = 1135.12
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
-margin_left = 280.0
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
+margin_left = 1127.12
 margin_top = 2.0
-margin_right = 344.0
+margin_right = 1191.12
 margin_bottom = 66.0
 texture = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2"]
 margin_left = 185.0
@@ -1663,34 +1691,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -1700,7 +1732,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -1816,34 +1848,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -1853,7 +1889,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -1969,34 +2005,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -2006,7 +2046,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -2122,34 +2162,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+[node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
 margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+[node name="HeartIcon2" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 56.0
 margin_top = 2.0
 margin_right = 120.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+[node name="HeartIcon3" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 112.0
 margin_top = 2.0
 margin_right = 176.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+[node name="HeartIcon4" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 168.0
 margin_top = 2.0
 margin_right = 232.0
 margin_bottom = 66.0
 texture = ExtResource( 2 )
 
-[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+[node name="HeartIcon5" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
@@ -2159,7 +2203,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
+[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
 margin_left = 280.0
 margin_top = 2.0
 margin_right = 344.0
@@ -2268,14 +2312,7 @@ rect_rotation = 45.0
 
 [node name="Arrow12" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0
-margin_top = -12.0
+margin_top = 773.0
 margin_right = 260.0
-margin_bottom = 8.0
+margin_bottom = 793.0
 rect_rotation = 45.0
-
-[node name="ArrowBlock" type="ColorRect" parent="NamePlates/Arrows"]
-margin_left = 220.0
-margin_top = -10.0
-margin_right = 260.0
-margin_bottom = 2.0
-color = Color( 0.419608, 0.482353, 0.752941, 1 )

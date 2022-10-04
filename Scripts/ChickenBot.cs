@@ -51,7 +51,7 @@ public override void _Ready(){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-    string pathStr = "../../NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIcon";
+    string pathStr = "../../NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives/HeartIcon";
     for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
     eggs = new string[maxEggs];
     #region raycasts
