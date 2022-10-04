@@ -76,7 +76,7 @@ func _physics_process(_delta):
 		egg.position.y += egg.speed
 		if egg.position.y > lowerBounds:
 			egg.queue_free()
-			if botMode && eggTarget == null: return
+			if eggTarget == null: return
 			if !Global.online:
 				eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
 #				else: #network
@@ -95,7 +95,7 @@ func makeEgg(id: int, type: String, pos: Vector2):
 	egg.position = pos
 	if id != 99:
 		egg.sprite.modulate = Global.eggColorMap[id]
-		if Global.id == id && !botMode: 
+		if Global.id == id: 
 			egg.speed *= 2
 #			egg.sprite.modulate.a = .75
 
