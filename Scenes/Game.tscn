@@ -38,9 +38,6 @@ corner_radius_bottom_left = 6
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="PlayerBG" type="ColorRect" parent="."]
 margin_left = 16.0
@@ -54,28 +51,31 @@ margin_right = 72.0
 margin_bottom = 98.0
 
 [node name="EnemyBG" type="ColorRect" parent="."]
-margin_left = 992.0
-margin_top = 208.0
-margin_right = 1028.0
-margin_bottom = 258.0
+margin_left = 991.0
+margin_top = 202.0
+margin_right = 1027.0
+margin_bottom = 252.0
 rect_scale = Vector2( 13.3776, 8.21125 )
 
 [node name="subBG" type="ColorRect" parent="EnemyBG"]
-margin_right = 36.0
-margin_bottom = 50.0
+margin_left = -0.0747528
+margin_top = -0.974274
+margin_right = 35.9252
+margin_bottom = 49.0257
 
 [node name="Playspace" parent="." instance=ExtResource( 1 )]
 position = Vector2( 16, 16 )
 
-[node name="Enemyspace" parent="." instance=ExtResource( 3 )]
-position = Vector2( 992, 206 )
+[node name="EnemyNode" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Enemyspace" parent="EnemyNode" instance=ExtResource( 3 )]
+position = Vector2( 992, 201 )
 
 [node name="BG" type="Control" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="BGPieceR" type="ColorRect" parent="BG"]
 margin_left = 976.0
@@ -87,9 +87,9 @@ color = Color( 0.419608, 0.482353, 0.752941, 1 )
 
 [node name="BGPieceR2" type="ColorRect" parent="BG"]
 margin_left = 989.0
-margin_top = 16.0
+margin_top = 14.0
 margin_right = 1477.0
-margin_bottom = 208.0
+margin_bottom = 206.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -334,9 +334,9 @@ anchor_top = 0.009
 anchor_right = 0.665
 anchor_bottom = 0.009
 margin_left = 965.4
-margin_top = 16.64
+margin_top = 14.64
 margin_right = 1445.4
-margin_bottom = 216.64
+margin_bottom = 214.64
 
 [node name="NamePlate1" type="Label" parent="NamePlates/ScoresTop"]
 margin_right = 480.0
@@ -1282,9 +1282,9 @@ anchor_top = 0.009
 anchor_right = 0.665
 anchor_bottom = 0.009
 margin_left = 965.4
-margin_top = 608.64
+margin_top = 607.64
 margin_right = 1445.4
-margin_bottom = 808.64
+margin_bottom = 807.64
 
 [node name="NamePlate1" type="Label" parent="NamePlates/ScoresBottom"]
 margin_right = 480.0
@@ -2229,9 +2229,9 @@ anchor_top = 0.009
 anchor_right = 0.665
 anchor_bottom = 0.009
 margin_left = 965.4
-margin_top = 9.64
+margin_top = 7.64
 margin_right = 1445.4
-margin_bottom = 209.64
+margin_bottom = 207.64
 
 [node name="Arrow1" type="ColorRect" parent="NamePlates/Arrows"]
 margin_left = 240.0

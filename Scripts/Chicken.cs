@@ -19,6 +19,7 @@ string[] eggs;
 int maxEggs = 25;
 int id = 99;
 int health = 6;
+int lastHitId = 99;
 Sprite sprite;
 Timer invTimer;
 Node2D eggParent, itemParent, gameSpace;
@@ -320,12 +321,15 @@ public void _on_Hitbox_area_entered(Node body){
     string type;
     switch (group[0]){
         case "eggs":
-            if (invincible || (int)body.Get("id") == id) return;
+            int eggId = (int)body.Get("id");
+            if (invincible || eggId == id) return;
             knockb = (float)body.Get("knockback");
             if (health - 1 > -1) heartIcons[health-1].Visible = false;
             health -= (int)body.Get("damage");
             if (health < 0) health = 0;
+            else game.Call("recordHealth", id, lastHitId, health);
             itemParent.Set("playerHealth", health);
+            if (eggId != 99) lastHitId = eggId;
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             body.QueueFree();
             break;
@@ -353,6 +357,8 @@ public void _on_Hitbox_area_entered(Node body){
                 health ++;
                 heartIcons[health-1].Visible = true;
                 itemParent.Set("playerHealth", health);
+                if (health == 6) lastHitId = 99;
+                game.Call("recordHealth", id, lastHitId, health);
             }
             else EatFood("normal");
             body.QueueFree();

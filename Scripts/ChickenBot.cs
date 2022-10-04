@@ -29,7 +29,7 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
 Node Global;
-TextureRect[] heartIcons = new TextureRect[6];
+// TextureRect[] heartIcons = new TextureRect[6];
 Control game;
 // Control eggBar;
 
@@ -40,7 +40,7 @@ public override void _Ready(){
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
-    game = (Control)GetParent().GetParent();
+    game = (Control)GetParent().GetParent().GetParent();
     // eggBar = GetNode<Control>("../../EggBar");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
@@ -51,8 +51,8 @@ public override void _Ready(){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-    string pathStr = "../../NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives/HeartIcon";
-    for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
+    // string pathStr = "../../NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives/HeartIcon";
+    // for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
     eggs = new string[maxEggs];
     #region raycasts
     rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
@@ -405,16 +405,15 @@ public void _on_Hitbox_area_entered(Node body){
             int eggId = (int)body.Get("id");
             if (invincible || eggId == id) return;
             knockb = (float)body.Get("knockback");
-            if (health - 1 > -1) heartIcons[health-1].Visible = false;
             health -= (int)body.Get("damage");
             if (eggId != 99) lastHitId = eggId;
             body.QueueFree();
-            health -= 5;
             if (health < 1){
                 health = 0;
                 game.Call("registerDeath", (int)Global.Get("eid"), lastHitId, false);
                 return;
             }
+            game.Call("recordHealth", (int)Global.Get("eid"), lastHitId, health);
             itemParent.Set("playerHealth", health);
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             break;
@@ -440,9 +439,10 @@ public void _on_Hitbox_area_entered(Node body){
         case "health":
             if (health < 6){
                 health ++;
-                heartIcons[health-1].Visible = true;
+                // heartIcons[health-1].Visible = true;
                 itemParent.Set("playerHealth", health);
                 if (health == 6) lastHitId = 99;
+                game.Call("recordHealth", (int)Global.Get("eid"), lastHitId, health);
             }
             else EatFood("normal");
             body.QueueFree();

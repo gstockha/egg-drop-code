@@ -107,6 +107,10 @@ fullscreen={
 2d_physics/layer_3="items"
 2d_physics/layer_4="walls"
 
+[mono]
+
+project/assembly_name="EGG DROP"
+
 [physics]
 
 common/enable_pause_aware_picking=true

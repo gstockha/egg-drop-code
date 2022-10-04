@@ -5,7 +5,6 @@ var eggTimer = 0
 var player = null
 var botMode = false #if this is the bot's eggparent
 var eggTarget = null #the enemy player bot node
-var eggSender = 0 #who is sending eggs
 var rateBuffer = 0 #artifical egg drop lag for offline
 var botTimer = 60
 var botReceive = false #"receiving" from a bot?
@@ -31,8 +30,8 @@ func _ready():
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+6,Global.playerBounds.y-6)
 		if !Global.online:
-			eggTarget = get_node('../../Enemyspace/EggParent')
-			eggSender = Global.id - 1 if Global.id - 1 >= 0 else 11
+			eggTarget = get_node('../../EnemyNode/Enemyspace/EggParent')
+			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	else:
 		player = get_parent().get_node('ChickenBot')
 		lowerBounds = 425
@@ -50,6 +49,7 @@ func _process(delta):
 				if rateBuffer < 60: rateBuffer += 5
 				eggTimer += rateBuffer
 			elif !botReceive:
+				if Global.sid == Global.eid: return
 				rateBuffer += 1
 				if randi() % 100 + 1 < rateBuffer:
 					botTimer = eggTimer * .5
@@ -68,7 +68,7 @@ func _process(delta):
 				rateBuffer = 0
 				botReceive = false
 			else: botTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1]) * .5
-			makeEgg(eggSender, randType(Global.normalcy),
+			makeEgg(Global.sid, randType(Global.normalcy),
 			Vector2(spawnRange.x + ((spawnRange.y - spawnRange.x) * botReceiveLoc), 0))
 
 func _physics_process(_delta):
@@ -76,10 +76,9 @@ func _physics_process(_delta):
 		egg.position.y += egg.speed
 		if egg.position.y > lowerBounds:
 			egg.queue_free()
-			if botMode: return
-			if egg.id == Global.id || egg.id == 99:
-				if !Global.online || eggTarget != null:
-					eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
+			if botMode && eggTarget == null: return
+			if !Global.online:
+				eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
 #				else: #network
 		
 func makeEgg(id: int, type: String, pos: Vector2):
