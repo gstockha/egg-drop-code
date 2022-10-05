@@ -17,6 +17,7 @@ var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "
 var playerBounds = Vector2(0,960)
 var botBounds = Vector2(0,480)
 var playerCount = 12
+var gameOver = false
 
 func _ready():
 	var rgb = [0,0,0]

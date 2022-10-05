@@ -22,17 +22,21 @@ var eggTypes = {
 }
 var lowerBounds = 850
 var spawnRange = Vector2.ZERO
+var myid = 0
+var slowMo = 1
 
 func _ready():
 	eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
 	botMode = get_parent().name == "Enemyspace"
 	if !botMode:
+		myid = Global.id
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+6,Global.playerBounds.y-6)
 		if !Global.online:
 			eggTarget = get_node('../../EnemyNode/Enemyspace/EggParent')
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	else:
+		myid = Global.eid
 		player = get_parent().get_node('ChickenBot')
 		lowerBounds = 425
 		spawnRange = Vector2(Global.botBounds.x+3,Global.botBounds.y-3)
@@ -73,13 +77,14 @@ func _process(delta):
 
 func _physics_process(_delta):
 	for egg in get_children():
-		egg.position.y += egg.speed
+		egg.position.y += egg.speed * slowMo
 		if egg.position.y > lowerBounds:
 			egg.queue_free()
-			if eggTarget == null: return
+			if (egg.id != myid && egg.id != 99) || eggTarget == null: return
 			if !Global.online:
-				eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
-#				else: #network
+				if !botMode: eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
+				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0))
+#			else: #network
 		
 func makeEgg(id: int, type: String, pos: Vector2):
 	var egg = eggScene.instance()
@@ -95,7 +100,7 @@ func makeEgg(id: int, type: String, pos: Vector2):
 	egg.position = pos
 	if id != 99:
 		egg.sprite.modulate = Global.eggColorMap[id]
-		if Global.id == id: 
+		if (!botMode && Global.id == id) || (botMode && Global.eid == id): 
 			egg.speed *= 2
 #			egg.sprite.modulate.a = .75
 

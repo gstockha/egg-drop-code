@@ -54,21 +54,23 @@ func _input(event):
 
 func _process(delta):
 	if botCount > 0:
-		botDamageBuffer += delta * botCount * (.0005 + (Global.level * .0002)) * 100
+		botDamageBuffer += delta * botCount * (.0002 * (Global.level + 1))
 		if randf() < botDamageBuffer:
 			botDamageBuffer = 0
 			var randId = round(rand_range(0,11))
-			randId = Global.sid
 			var tries = 0
-			while !playerStats[randId]["bot"] || randId == Global.eid:
+			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1:
 				randId = randId + 1 if randId + 1 < 12 else 0
 				tries += 1
 				if tries > 12: break
-			recordHealth(randId, 99, playerStats[randId]["health"] - 1)
+			if tries <= 12: registerHealth(randId, 99, playerStats[randId]["health"] - 1)
 	if !enemyActive:
+		if $EnemyNode.get_child_count() > 1: return
 		if playerStats[Global.eid]["bot"]: makeBot()
+		enemyActive = true
 
-func registerDeath(id: int, _lastHitId: int, _disconnect: bool) -> void:
+func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer = null) -> void:
+	if Global.gameOver: return
 	playerStats[id]["health"] = 0
 	heartIcons[id][0].get_parent().visible = false
 	colorPlates[id].self_modulate.a = .3
@@ -78,7 +80,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool) -> void:
 	statusLabels[id].text = ""
 	Global.playerCount -= 1
 	if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0:
-		print("you win!")
+		endGame(true)
 		return
 	if id == Global.eid: #seek new target
 		var s = id + 1 if id + 1 < 12 else 0
@@ -109,14 +111,36 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool) -> void:
 	if Global.eid == Global.sid: #turn off bot egg
 		eggParent.botReceive = false
 		$EnemyNode/Enemyspace/EggParent.eggTarget = eggParent
+	if delayed != null: delayed.queue_free()
 
-func recordHealth(id: int, lastHitId: int, health: int) -> void:
+func endGame(win: bool):
+	Global.gameOver = true
+	if win: print("you win!")
+	eggParent.eggTarget = null
+	eggParent.slowMo = .5
+	$EnemyNode/Enemyspace/EggParent.eggTarget = null
+	$EnemyNode/Enemyspace/EggParent.slowMo = .5
+	if is_instance_valid($Playspace/Chicken): $Playspace/Chicken.speed = 200
+	if is_instance_valid($EnemyNode/Enemyspace/ChickenBot): $EnemyNode/Enemyspace/ChickenBot.speed = 100
+
+func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	playerStats[id]["health"] = health
-	if id == Global.id: return
-	if health < 1:
-		registerDeath(id, lastHitId, false)
-		return
 	for i in range(6): heartIcons[id][i].visible = i < health
+	if health < 1 && id != Global.id:
+		var eParent = $EnemyNode/Enemyspace/EggParent
+		if id == Global.eid && eParent.slowMo != .5:
+			var deathTimer = Timer.new()
+			add_child(deathTimer)
+			deathTimer.connect("timeout", self, "registerDeath", [id, lastHitId, false, deathTimer])
+			deathTimer.start(3)
+			eParent.eggTarget = null
+			eParent.slowMo = .5
+			eParent.player = null
+			var chicken = $EnemyNode/Enemyspace/ChickenBot
+			chicken.idle = true
+			chicken.speed *= .5
+			$EnemyNode/Enemyspace/ItemParent.player = null
+		else: registerDeath(id, lastHitId, false)
 
 func makeBot() -> void:
 	enemyActive = true

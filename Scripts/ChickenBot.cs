@@ -92,6 +92,7 @@ public void Move(){
 		else dir[1] = Mathf.Round(dir[1]);
 	}
 	else{
+        invincible = true;
 		dir[0] = 0;
 		dir[1] = 0;
 	}
@@ -255,12 +256,12 @@ public void ScreenShake(){
     if (screenShake == 0) return;
     if (shakeTimer < 1){
         screenShake = 0;
-        gameSpace.Position = new Vector2(996, 216);
+        gameSpace.Position = new Vector2(992, 202);
         return;
     }
     float rollx = (GD.Randf() < .5F) ? -.5F : .5F;
     float rolly = (GD.Randf() < .5F) ? -.5F : .5F;
-    gameSpace.Position = new Vector2(996 + (screenShake * rollx), 216 + (screenShake * rolly));
+    gameSpace.Position = new Vector2(992 + (screenShake * rollx), 202 + (screenShake * rolly));
     shakeTimer -= 10;
 }
 
@@ -408,12 +409,9 @@ public void _on_Hitbox_area_entered(Node body){
             health -= (int)body.Get("damage");
             if (eggId != 99) lastHitId = eggId;
             body.QueueFree();
-            if (health < 1){
-                health = 0;
-                game.Call("registerDeath", (int)Global.Get("eid"), lastHitId, false);
-                return;
-            }
-            game.Call("recordHealth", (int)Global.Get("eid"), lastHitId, health);
+            health = 0;
+            if (health < 1) health = 0;
+            game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
             itemParent.Set("playerHealth", health);
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             break;
@@ -442,7 +440,7 @@ public void _on_Hitbox_area_entered(Node body){
                 // heartIcons[health-1].Visible = true;
                 itemParent.Set("playerHealth", health);
                 if (health == 6) lastHitId = 99;
-                game.Call("recordHealth", (int)Global.Get("eid"), lastHitId, health);
+                game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
             }
             else EatFood("normal");
             body.QueueFree();

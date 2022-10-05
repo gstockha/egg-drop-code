@@ -71,7 +71,7 @@ margin_right = 40.0
 margin_bottom = 40.0
 
 [node name="Enemyspace" parent="EnemyNode" instance=ExtResource( 3 )]
-position = Vector2( 992, 201 )
+position = Vector2( 992, 202 )
 
 [node name="BG" type="Control" parent="."]
 margin_right = 40.0

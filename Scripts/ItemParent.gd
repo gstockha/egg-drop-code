@@ -39,6 +39,7 @@ func _ready():
 		adj = 50
 
 func _process(delta):
+	if player == null: return
 	var tick = 10 * delta
 	powerTimer += tick
 	healthTimer += tick

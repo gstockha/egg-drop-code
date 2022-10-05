@@ -84,6 +84,7 @@ public void Move(){
 		else dir[1] = Mathf.Round(dir[1]);
 	}
 	else{
+        invincible = true;
 		dir[0] = 0;
 		dir[1] = 0;
 	}
@@ -324,10 +325,10 @@ public void _on_Hitbox_area_entered(Node body){
             int eggId = (int)body.Get("id");
             if (invincible || eggId == id) return;
             knockb = (float)body.Get("knockback");
-            if (health - 1 > -1) heartIcons[health-1].Visible = false;
             health -= (int)body.Get("damage");
             if (health < 0) health = 0;
-            else game.Call("recordHealth", id, lastHitId, health);
+            for (int i = 0; i < 6; i++) heartIcons[i].Visible = i < health;
+            game.Call("registerHealth", id, lastHitId, health);
             itemParent.Set("playerHealth", health);
             if (eggId != 99) lastHitId = eggId;
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
@@ -358,7 +359,7 @@ public void _on_Hitbox_area_entered(Node body){
                 heartIcons[health-1].Visible = true;
                 itemParent.Set("playerHealth", health);
                 if (health == 6) lastHitId = 99;
-                game.Call("recordHealth", id, lastHitId, health);
+                game.Call("registerHealth", id, lastHitId, health);
             }
             else EatFood("normal");
             body.QueueFree();
