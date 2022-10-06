@@ -73,8 +73,7 @@ func _process(delta):
 				rateBuffer = 0
 				botReceive = false
 			else: botTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1]) * .5
-			makeEgg(Global.sid, randType(Global.normalcy),
-			Vector2(spawnRange.x + ((spawnRange.y - spawnRange.x) * botReceiveLoc), 0))
+			makeEgg(Global.sid,randType(Global.normalcy),Vector2(spawnRange.x+((spawnRange.y-spawnRange.x)*botReceiveLoc),0))
 
 func _physics_process(_delta):
 	for egg in get_children():

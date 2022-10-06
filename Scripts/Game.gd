@@ -7,7 +7,7 @@ var statusLabels = []
 var playerStats = []
 var barKeys = []
 var heartIcons = []
-var enemyActive = true
+var botIsSpawned = true
 var enemySpace = preload("res://Scenes/Enemyspace.tscn")
 var botCount = 0
 var botDamageBuffer = 0
@@ -58,20 +58,21 @@ func _input(event):
 
 func _process(delta):
 	if botCount > 0:
-		botDamageBuffer += delta * botCount * (.0002 * (Global.level + 1))
+		botDamageBuffer += delta * botCount * (.0001 * (Global.level + 1))
 		if randf() < botDamageBuffer:
 			botDamageBuffer = 0
 			var randId = round(rand_range(0,11))
+			randId = Global.sid
 			var tries = 0
 			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1:
 				randId = randId + 1 if randId + 1 < 12 else 0
 				tries += 1
 				if tries > 12: break
 			if tries <= 12: registerHealth(randId, 99, playerStats[randId]["health"] - 1)
-	if !enemyActive:
+	if !botIsSpawned:
 		if $EnemyNode.get_child_count() > 0: return
 		if playerStats[Global.eid]["bot"]: makeBot()
-		enemyActive = true
+		botIsSpawned = true
 
 func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer = null) -> void:
 	playerStats[id]["health"] = 0
@@ -80,14 +81,15 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer =
 	namePlates[id].self_modulate.a = .5
 	nameArrows[id].visible = false
 	playerStats[id].visible = false
-	statusLabels[id].text = ""
+	if id != Global.id: statusLabels[id].text = ""
 	Global.playerCount -= 1
-	if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0: #win game
-		endGame(true)
-		return
-	if id == Global.id: #lose game
-		endGame(false)
-		return
+	if Global.gameOver == false:
+		if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0: #win game
+			endGame(true)
+			return
+		elif id == Global.id: #lose game
+			endGame(false)
+			return
 	if id == Global.eid: Global.eid = findNewTarget(id, true, true) #seek new target
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
 	if Global.eid == Global.sid: #turn off bot egg
@@ -114,8 +116,7 @@ func findNewTarget(id: int, below: bool, eid: bool) -> int:
 		if i == 11: i = -1
 	if eid && newId != null:
 		$EnemyNode/Enemyspace.queue_free()
-		enemyActive = false
-		if Global.gameOver: Global.sid = findNewTarget(newId, false, false) #find new sid for bot if spectating
+		botIsSpawned = false
 	return newId
 
 func registerHealth(id: int, lastHitId: int, health: int) -> void:
@@ -155,7 +156,7 @@ func endGame(win: bool):
 		
 
 func makeBot() -> void:
-	enemyActive = true
+	botIsSpawned = true
 	var espace = enemySpace.instance()
 	$EnemyNode.add_child(espace)
 	espace.global_position = Vector2(992, 201)
