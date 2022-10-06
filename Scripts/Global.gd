@@ -18,6 +18,7 @@ var playerBounds = Vector2(0,960)
 var botBounds = Vector2(0,480)
 var playerCount = 12
 var gameOver = false
+var win = null
 
 func _ready():
 	var rgb = [0,0,0]

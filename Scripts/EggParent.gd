@@ -7,6 +7,7 @@ var botMode = false #if this is the bot's eggparent
 var eggTarget = null #the enemy player bot node
 var rateBuffer = 0 #artifical egg drop lag for offline
 var botTimer = 60
+var botIsAbove = false
 var botReceive = false #"receiving" from a bot?
 var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
@@ -35,6 +36,7 @@ func _ready():
 		if !Global.online:
 			eggTarget = get_node('../../EnemyNode/Enemyspace/EggParent')
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
+			botIsAbove = true
 	else:
 		myid = Global.eid
 		player = get_parent().get_node('ChickenBot')
@@ -48,17 +50,16 @@ func _process(delta):
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
-		if !Global.online:
-			if botMode:
-				if rateBuffer < 60: rateBuffer += 5
-				eggTimer += rateBuffer
-			elif !botReceive:
-				if Global.sid == Global.eid: return
-				rateBuffer += 1
-				if randi() % 100 + 1 < rateBuffer:
-					botTimer = eggTimer * .5
-					botReceive = true
-					botReceiveLoc = (randi() % 100) * .01
+		if botMode && !Global.gameOver:
+			if rateBuffer < 60: rateBuffer += 5
+			eggTimer += rateBuffer
+		elif !botReceive && botIsAbove:
+			if Global.sid == Global.eid: return
+			rateBuffer += 1
+			if randi() % 100 + 1 < rateBuffer:
+				botTimer = eggTimer * .5
+				botReceive = true
+				botReceiveLoc = (randi() % 100) * .01
 		makeEgg(99, randType(Global.normalcy), Vector2(rand_range(spawnRange.x, spawnRange.y), 0))
 	elif botReceive:
 		if botTimer > 0: botTimer -= 10 * delta

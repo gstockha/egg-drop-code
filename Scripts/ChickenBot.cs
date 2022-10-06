@@ -304,6 +304,7 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
 }
 
 public void EatFood(string type){
+    if (idle) return;
     if (eggCount >= maxEggs){
         MakeEgg(true);
         EatFood(type);
@@ -327,7 +328,7 @@ public void EatFood(string type){
 }
 
 public void MakeEgg(bool automatic){
-    if (eggCount < 1) return;
+    if (eggCount < 1 || idle) return;
     if (eggCooldown > 0){
         if (!automatic) eggBuffer ++;
         return;
@@ -409,7 +410,6 @@ public void _on_Hitbox_area_entered(Node body){
             health -= (int)body.Get("damage");
             if (eggId != 99) lastHitId = eggId;
             body.QueueFree();
-            health = 0;
             if (health < 1) health = 0;
             game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
             itemParent.Set("playerHealth", health);

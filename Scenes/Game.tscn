@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Sprites/Heart.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=5]
 [ext_resource path="res://Scenes/StatusLabel.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=7]
+[ext_resource path="res://Fonts/baloo/Baloo-Regular.ttf" type="DynamicFontData" id=8]
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -33,6 +34,20 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="DynamicFont" id=14]
+size = 62
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=13]
+size = 44
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 8 )
 
 [node name="Game" type="Control"]
 anchor_right = 1.0
@@ -2316,3 +2331,42 @@ margin_top = 773.0
 margin_right = 260.0
 margin_bottom = 793.0
 rect_rotation = 45.0
+
+[node name="GameOverBG" type="ColorRect" parent="."]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 976.0
+margin_bottom = 816.0
+color = Color( 0, 0, 0, 0.607843 )
+
+[node name="Label" type="Label" parent="GameOverBG"]
+anchor_left = 0.5
+anchor_top = 0.464
+anchor_right = 0.5
+anchor_bottom = 0.464
+margin_left = -134.0
+margin_top = -47.2
+margin_right = 134.0
+margin_bottom = 47.8
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/font = SubResource( 14 )
+text = "YOU'VE BEEN PLUCKED"
+align = 1
+valign = 1
+
+[node name="SubLabel" type="Label" parent="GameOverBG"]
+anchor_left = 0.5
+anchor_top = 0.524
+anchor_right = 0.5
+anchor_bottom = 0.524
+margin_left = -176.0
+margin_top = -47.2
+margin_right = 176.0
+margin_bottom = 47.8
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/font = SubResource( 13 )
+text = "BY THE EGG GODS"
+align = 1
+valign = 1
