@@ -11,15 +11,18 @@ var botIsAbove = false
 var botReceive = false #"receiving" from a bot?
 var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
-	0: [8,12],
-	1: [5,9],
-	2: [3,6],
-	3: [1,3]
+	'0': [8,12],
+	'1': [6,9.5],
+	'2': [4,7],
+	'3': [2.5,5],
+	'4': [1.5,3.5],
+	'5': [.5,2]
 }
+var eggRateLevelStr = "0"
 var eggTypes = {
-	"normal": { "speed": 2.5, "size": 1.25, "knockback": 200.0, "damage": 1 },
+	"normal": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1 },
 	"fast": { "speed": 3.2, "size": 1, "knockback": 100.0, "damage": 1 },
-	"big": { "speed": 2.0, "size": 2, "knockback": 350.0, "damage": 1 }
+	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1 }
 }
 var lowerBounds = 850
 var spawnRange = Vector2.ZERO
@@ -27,7 +30,7 @@ var myid = 0
 var slowMo = 1
 
 func _ready():
-	eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
+	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
 	if !botMode:
 		myid = Global.id
@@ -49,13 +52,13 @@ func _ready():
 func _process(delta):
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
-		eggTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1])
-		if botMode && !Global.gameOver:
+		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
+		if botMode && !Global.playerDead:
 			if rateBuffer < 60: rateBuffer += 5
 			eggTimer += rateBuffer
 		elif !botReceive && botIsAbove:
 			if Global.sid == Global.eid: return
-			rateBuffer += 1
+			rateBuffer += 1 + (Global.level * .2)
 			if randi() % 100 + 1 < rateBuffer:
 				botTimer = eggTimer * .5
 				botReceive = true
@@ -72,7 +75,7 @@ func _process(delta):
 			if rateBuffer <= 0:
 				rateBuffer = 0
 				botReceive = false
-			else: botTimer = rand_range(eggRates[Global.level][0], eggRates[Global.level][1]) * .5
+			else: botTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1]) * .5
 			makeEgg(Global.sid,randType(Global.normalcy),Vector2(spawnRange.x+((spawnRange.y-spawnRange.x)*botReceiveLoc),0))
 
 func _physics_process(_delta):

@@ -87,6 +87,7 @@ func getItemType() -> String: #food, health, or powerup
 		if roll <= 20:
 			powerTimer = 0
 #			return "power"
+#			return "power"
 	return "food"
 
 func getCornType() -> String:
