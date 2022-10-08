@@ -91,6 +91,9 @@ func _process(delta):
 		if $EnemyContainer/Viewport.get_child_count() > 1: return
 		if playerStats[Global.eid]["bot"]: makeBot()
 		botIsSpawned = true
+		if !Global.playerDead:
+			eggParent.releaseEggQueue()
+			eggParent.eggQueue = false
 	if !Global.gameOver:
 		gameTime += delta
 		hudRefresh += delta
@@ -154,7 +157,11 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			chicken.idle = true
 			chicken.speed *= .5
 			chicken.get_child(0).texture = deadChicken
-			if !me: $EnemyContainer/Viewport/Enemyspace/ItemParent.player = null
+			if !me:
+				$EnemyContainer/Viewport/Enemyspace/ItemParent.player = null
+				if !Global.playerDead:
+					eggParent.eggQueue = true
+					eggParent.eggQueueTime = gameTime
 			else: #set up spectate mode
 				$PlayerContainer/Viewport/Playspace/ItemParent.player = null
 				for i in range(12):
@@ -196,7 +203,7 @@ func endGame(win: bool, winner: int):
 	if win || (!win && Global.playerCount < 2):
 		Global.gameOver = true
 		gameOverLabels["label"].text = "You won!" if win else playerStats[winner]["name"] + " wins!"
-		gameOverLabels["sublabel"].text = "EGGS: " + str(confirmedLaid)
+		gameOverLabels["sublabel"].text = "LAID: " + str(confirmedLaid)
 		gameOverLabels["sublabel"].text += "  SHELLS: " + str(confirmedShells)
 		if recordedTime == null: gameOverLabels["sublabel"].text += "  TIME: " + hud["timer"].text
 		else: gameOverLabels["sublabel"].text += "  TIME: " + recordedTime
@@ -221,7 +228,7 @@ func makeBot() -> void:
 	eggParent.eggTarget = $EnemyContainer/Viewport/Enemyspace/EggParent
 	if playerStats[Global.eid]["bot"]:
 		var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		chicken.position = Vector2(rand_range(Global.botBounds.x, Global.botBounds.y), chicken.position.y + rand_range(-20,20))
+		chicken.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10), chicken.position.y + rand_range(-20,20))
 		var eggRoll = randi() % 100 + 1
 		if eggRoll < 75: eggRoll = round(rand_range(0,5))
 		else: eggRoll = round(rand_range(5,20))
@@ -241,7 +248,7 @@ func makeBot() -> void:
 		eggP.botIsAbove = myEnemy != Global.id
 		var chickenY = chicken.position.y
 		var yroll
-		for _i in range(randi() % (12 + (Global.level * 4))):
+		for _i in range(rand_range(2 + (1 * Global.level), 8 + (3 * Global.level))):
 			yroll = round(rand_range(10,720))
 			while yroll < chickenY + 10 && yroll > chickenY - 10: yroll = round(rand_range(10,720))
 			eggP.makeEgg(99, eggP.randType(Global.normalcy), Vector2(rand_range(Global.botBounds.x, Global.botBounds.y), yroll))

@@ -8,6 +8,9 @@ var eggTarget = null #the enemy player bot node
 var rateBuffer = 0 #artifical egg drop lag for offline
 var botTimer = 60
 var botIsAbove = false
+var eggQueue = false #enabled when going from one bot to another
+var eggQueueList = []
+var eggQueueTime = 0
 var botReceive = false #"receiving" from a bot?
 var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
@@ -87,7 +90,12 @@ func _physics_process(_delta):
 			egg.queue_free()
 			if (egg.id != myid && egg.id != 99) || eggTarget == null: return
 			if !Global.online:
-				if !botMode: eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
+				if !botMode:
+					if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
+					else:
+						eggQueueList.append([egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0),
+						game.gameTime - eggQueueTime])
+						eggQueueTime = game.gameTime
 				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0))
 #			else: #network
 		
@@ -116,3 +124,18 @@ func randType(normalcy: int) -> String:
 	roll =  remainder - (roll - normalcy)
 	if (roll <= remainder * .75): return "fast"
 	return "big"
+
+func releaseEggQueue(timer: Timer = null):
+	if timer != null:
+		timer.stop()
+		timer.queue_free()
+	if len(eggQueueList) < 1 || Global.playerDead || Global.gameOver:
+		eggQueueList = []
+		return
+	print('queue release')
+	var eggInfo = eggQueueList.pop_front()
+	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2])
+	var queueTimer = Timer.new()
+	game.add_child(queueTimer)
+	queueTimer.connect("timeout", self, "releaseEggQueue", [queueTimer])
+	queueTimer.start(eggInfo[3])
