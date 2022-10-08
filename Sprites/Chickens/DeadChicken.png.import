@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Chicken.png-7ccffaf26a931bdb2578f2a6334648d6.stex"
+path="res://.import/DeadChicken.png-d55ffe18e60d3618c7f9b754608e40c7.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Chicken.png"
-dest_files=[ "res://.import/Chicken.png-7ccffaf26a931bdb2578f2a6334648d6.stex" ]
+source_file="res://Sprites/Chickens/DeadChicken.png"
+dest_files=[ "res://.import/DeadChicken.png-d55ffe18e60d3618c7f9b754608e40c7.stex" ]
 
 [params]
 

@@ -97,11 +97,6 @@ public void Move(){
 		dir[1] = 0;
 	}
     onFloor = IsOnWall() && Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
-    // if (dir[1] < 0 || onFloor) gravity = 0;
-    // else{
-    //     gravity += weight;
-    //     if (gravity > weight * 200) gravity = weight * 200;
-    // }
     int current = dirListx.Length - 1;
 	int i;
 	for (i = 0; i < current; i++){
@@ -114,13 +109,20 @@ public void Move(){
 	dirListy[current] = myMath.arrayMean(dirListy);
     momentum = GetMomentum();
     MoveAndSlide(new Vector2(velocity.x, velocity.y) * speed);
-    // if (shoveCounter[0] > 0){
-    //     shoveCounter[0] -= 10;
-    //     MoveAndSlide(shoveVel * (shoveCounter[1] * (shoveCounter[0] / shoveCounter[1])));
-    //     if (shoveCounter[0] < 0){
-    //         shoveCounter[0] = 0;
-    //     }
-    // }
+    if (idle){
+        if (dir[1] < 0 || onFloor) gravity = 0;
+        else{
+            gravity += weight;
+            if (gravity > weight * 200) gravity = weight * 200;
+        }
+        if (shoveCounter[0] > 0){
+            shoveCounter[0] -= 10;
+            MoveAndSlide(shoveVel * (shoveCounter[1] * (shoveCounter[0] / shoveCounter[1])));
+            if (shoveCounter[0] < 0){
+                shoveCounter[0] = 0;
+            }
+        }
+    }
     if (eggCooldown > 0){
         eggCooldown -= 10;
         if (eggCooldown <= 0){

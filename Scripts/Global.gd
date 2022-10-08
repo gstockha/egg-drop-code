@@ -6,11 +6,7 @@ var normalcy = 60 #percent chance a normal egg spawns
 var id = 5
 var eid = 6
 var sid = 4
-var colorIdMap = {
-	0: ColorN("violet"), 1: ColorN("palevioletred"), 2: ColorN("palegreen"), 3: ColorN("yellow"),
-	4: ColorN("lightsalmon"), 5: ColorN("lightskyblue"), 6: ColorN("lightpink"), 7: ColorN("aquamarine"),
-	8: ColorN("orange"), 9: ColorN("tomato"), 10: ColorN("lime"), 11: ColorN("royalblue") 
-}
+var colorIdMap = {}
 var eggColorMap = {}
 var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "You",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
@@ -36,8 +32,8 @@ func _ready():
 				rgb[0] += 55
 			elif i == 6: rgb[2] += 75
 			else:
-				rgb[1] = 225
-				rgb[2] -= 25
+				rgb[1] = 200
+				rgb[0] -= 25
 		elif i % 2 == 0 && i != 6 && i != 8:
 			rgb[1] = 255
 			if i == 4: rgb[0] += 75

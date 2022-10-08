@@ -248,7 +248,7 @@ public void MakeEgg(bool automatic){
     }
     eggCount --;
     eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))));
-    game.Set("confirmedEggs", (int)game.Get("confirmedEggs") + 1);
+    game.Set("confirmedLaid", (int)game.Get("confirmedLaid") + 1);
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;
         eggs[i] = eggs[i+1];

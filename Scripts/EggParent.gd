@@ -12,10 +12,10 @@ var botReceive = false #"receiving" from a bot?
 var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
 	'0': [8,12],
-	'1': [6,9.5],
-	'2': [4,7],
-	'3': [2.5,5],
-	'4': [1.5,3.5],
+	'1': [7,10.5],
+	'2': [6,9.2],
+	'3': [4,7],
+	'4': [2.5,5],
 	'5': [.5,2]
 }
 var eggRateLevelStr = "0"
@@ -28,6 +28,7 @@ var lowerBounds = 850
 var spawnRange = Vector2.ZERO
 var myid = 0
 var slowMo = 1
+var game = null
 
 func _ready():
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
@@ -40,6 +41,7 @@ func _ready():
 			eggTarget = get_node('../../EnemyNode/Enemyspace/EggParent')
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 			botIsAbove = true
+		game = get_parent().get_parent()
 	else:
 		myid = Global.eid
 		player = get_parent().get_node('ChickenBot')
@@ -58,7 +60,7 @@ func _process(delta):
 			eggTimer += rateBuffer
 		elif !botReceive && botIsAbove:
 			if Global.sid == Global.eid: return
-			rateBuffer += 1 + (Global.level * .2)
+			rateBuffer += .5 + (Global.level * .2)
 			if randi() % 100 + 1 < rateBuffer:
 				botTimer = eggTimer * .5
 				botReceive = true
@@ -67,7 +69,7 @@ func _process(delta):
 	elif botReceive:
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
-			rateBuffer -= rand_range(2,5)
+			rateBuffer -= rand_range(3,6)
 			var choice = [-1,1]
 			botReceiveLoc += rand_range(.01,.25) * choice[randi() % 2]
 			while botReceiveLoc < 0.01 || botReceiveLoc > 1:
@@ -90,6 +92,7 @@ func _physics_process(_delta):
 #			else: #network
 		
 func makeEgg(id: int, type: String, pos: Vector2):
+	if !botMode: game.confirmedEggs += 1
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	egg.type = type
