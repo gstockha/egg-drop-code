@@ -40,7 +40,7 @@ public override void _Ready(){
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
-    game = (Control)GetParent().GetParent().GetParent();
+    game = (Control)GetParent().GetParent().GetParent().GetParent();
     // eggBar = GetNode<Control>("../../EggBar");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
@@ -258,12 +258,12 @@ public void ScreenShake(){
     if (screenShake == 0) return;
     if (shakeTimer < 1){
         screenShake = 0;
-        gameSpace.Position = new Vector2(992, 202);
+        gameSpace.Position = new Vector2(0, 0);
         return;
     }
     float rollx = (GD.Randf() < .5F) ? -.5F : .5F;
     float rolly = (GD.Randf() < .5F) ? -.5F : .5F;
-    gameSpace.Position = new Vector2(992 + (screenShake * rollx), 202 + (screenShake * rolly));
+    gameSpace.Position = new Vector2(0 + (screenShake * rollx), 0 + (screenShake * rolly));
     shakeTimer -= 10;
 }
 

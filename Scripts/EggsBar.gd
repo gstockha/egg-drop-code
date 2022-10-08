@@ -10,7 +10,7 @@ var eggs = []
 var player = null
 
 func _ready():
-	player = get_node("../Playspace/Chicken")
+	player = get_node("../PlayerContainer/Viewport/Playspace/Chicken")
 	eggs.append($Eggs/EggActive)
 	var icon
 	for i in range(player.maxEggs-1):

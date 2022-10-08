@@ -38,10 +38,10 @@ func _ready():
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+6,Global.playerBounds.y-6)
 		if !Global.online:
-			eggTarget = get_node('../../EnemyNode/Enemyspace/EggParent')
+			eggTarget = get_node('../../../../EnemyContainer/Viewport/Enemyspace/EggParent')
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 			botIsAbove = true
-		game = get_parent().get_parent()
+		game = get_parent().get_parent().get_parent().get_parent()
 	else:
 		myid = Global.eid
 		player = get_parent().get_node('ChickenBot')
@@ -92,7 +92,6 @@ func _physics_process(_delta):
 #			else: #network
 		
 func makeEgg(id: int, type: String, pos: Vector2):
-	if !botMode: game.confirmedEggs += 1
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	egg.type = type
@@ -108,7 +107,7 @@ func makeEgg(id: int, type: String, pos: Vector2):
 		egg.sprite.modulate = Global.eggColorMap[id]
 		if (!botMode && Global.id == id) || (botMode && Global.eid == id): 
 			egg.speed *= 2
-#			egg.sprite.modulate.a = .75
+		elif !botMode: game.confirmedEggs += 1
 
 func randType(normalcy: int) -> String:
 	var roll = randi() % 100 + 1

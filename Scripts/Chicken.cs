@@ -38,8 +38,8 @@ public override void _Ready(){
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
-    game = (Control)GetParent().GetParent();
-    eggBar = GetNode<Control>("../../EggBar");
+    game = (Control)GetParent().GetParent().GetParent().GetParent();
+    eggBar = GetNode<Control>("../../../../EggBar");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
@@ -49,7 +49,7 @@ public override void _Ready(){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-    string pathStr = "../../Hearts/HeartIcon";
+    string pathStr = "../../../../Hearts/HeartIcon";
     for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
     eggs = new string[maxEggs];
     #region raycasts
@@ -175,12 +175,12 @@ public void ScreenShake(){
     if (screenShake == 0) return;
     if (shakeTimer < 1){
         screenShake = 0;
-        gameSpace.GlobalPosition = new Vector2(16, 16);
+        gameSpace.GlobalPosition = new Vector2(0, 0);
         return;
     }
     int rollx = (GD.Randf() < .5F) ? -1 : 1;
     int rolly = (GD.Randf() < .5F) ? -1 : 1;
-    gameSpace.GlobalPosition = new Vector2(16 + (screenShake * rollx), 16 + (screenShake * rolly));
+    gameSpace.GlobalPosition = new Vector2(0 + (screenShake * rollx), 0 + (screenShake * rolly));
     shakeTimer -= 10;
 }
 
