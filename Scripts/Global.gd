@@ -3,8 +3,8 @@ extends Node
 var online = false
 var level = 0
 var normalcy = 60 #percent chance a normal egg spawns
-var id = 5
-var eid = 6
+var id = 3
+var eid = 2
 var sid = 4
 var colorIdMap = {}
 var eggColorMap = {}

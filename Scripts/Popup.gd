@@ -1,3 +1,3 @@
 extends Node2D
 
-var fade = .75
+var fade = .7

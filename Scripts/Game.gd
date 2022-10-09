@@ -20,6 +20,7 @@ var confirmedEggs = 0
 var gameTime = 0
 var recordedTime = null
 var hudRefresh = 0
+var offsetIds = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11}
 onready var gameOverLabels = {"BG": $GameOverBG, "label": $GameOverBG/Label,
 "sublabel": $GameOverBG/SubLabel, "subsub": $GameOverBG/SubSubLabel}
 onready var hud = {"timer": $BottomHUD/Timer, "eggs": $BottomHUD/SentLabel, "laid": $BottomHUD/LaidLabel,
@@ -28,6 +29,8 @@ onready var playerBG = get_node("PlayerContainer/Viewport/PlayerBG")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
 
 func _ready():
+	Global.eid = Global.id + 1 if Global.id + 1 < 12 else 0
+	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	for i in range(1,13):
 		if (i < 7):
 			colorPlates.append(get_node("NamePlates/ScoresTop/NamePlate" + str(i)))
@@ -42,24 +45,34 @@ func _ready():
 			heartIcons.append(get_node("NamePlates/ScoresBottom/NamePlate" 
 			+ str(i-6) + "/Hearts/HeartIconActives").get_children())
 	nameArrows = get_node("NamePlates/Arrows").get_children()
-	var bot
+	var offset = 0
+	var storedOffset = 0
+	var id = 11
+	while id + offset != 5:
+		offset += 1
+		if id + offset > 11:
+			storedOffset = offset
+			offset = 0
+			id = 0
+	offset += storedOffset
 	for i in range(12):
-		if i != Global.id:
-			bot = true
-			botCount += 1
-		else: bot = false
-		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i], "health": 6, "bot": bot})
+		if offsetIds[i] + offset > 11: offsetIds[i] -= offset
+		else: offsetIds[i] += offset
+	for i in range(12): print(str(i) + ": " +  str(offsetIds[i]))
+	for i in range(12):
+		if i != Global.id: botCount += 1
+		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i], "health": 6, "bot": i != Global.id})
 		barKeys.append(i)
-		colorPlates[i].self_modulate = Global.colorIdMap[i]
-		nameArrows[i].self_modulate = Global.colorIdMap[i]
-		namePlates[i].text = Global.botNameMap[i]
+		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
+		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
+		namePlates[offsetIds[i]].text = Global.botNameMap[i]
 	#paint the player and target back grounds
 	playerBG.modulate = Global.colorIdMap[Global.id]
 	enemyBG.modulate = Global.colorIdMap[Global.eid]
 	#assign status labels
-	statusLabels[Global.id].text = '[YOU]'
-	statusLabels[Global.eid].text = '[TARGET]'
-	statusLabels[Global.sid].text = '[SEND]'
+	statusLabels[offsetIds[Global.id]].text = '[YOU]'
+	statusLabels[offsetIds[Global.eid]].text = '[TARGET]'
+	statusLabels[offsetIds[Global.sid]].text = '[SEND]'
 
 func _input(event):
 	if event.is_action_pressed("fullscreen"): OS.window_fullscreen = !OS.window_fullscreen
