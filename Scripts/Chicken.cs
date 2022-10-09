@@ -22,7 +22,7 @@ int health = 6;
 int lastHitId = 99;
 Sprite sprite;
 Timer invTimer;
-Node2D eggParent, itemParent, gameSpace;
+Node2D eggParent, itemParent, gameSpace, popupParent;
 RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
@@ -38,6 +38,7 @@ public override void _Ready(){
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
+    popupParent = GetNode<Node2D>("../../../../PopupParent");
     game = (Control)GetParent().GetParent().GetParent().GetParent();
     eggBar = GetNode<Control>("../../../../EggBar");
     baseScale = Scale;
@@ -210,8 +211,8 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
         invincible = true;
         invTimer.Start(invTime);
         squishPower += 200;
-        screenShake = 10 + (power * .025F);
-        shakeTimer = screenShake;
+        screenShake = 15 + (power * .025F);
+        shakeTimer = screenShake * 1.3F;
     }
     squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (squishPower / 200);
     if (squishAmount > .75F) squishAmount = .75F;
@@ -339,6 +340,7 @@ public void _on_Hitbox_area_entered(Node body){
         case "food":
             if (eatBuffer > 0) return;
             type = (string)body.Get("type");
+            popupParent.Call("makePopup", type, GlobalPosition, false);
             int c = 1;
             if (type == "three"){
                 c = 3;
@@ -367,6 +369,7 @@ public void _on_Hitbox_area_entered(Node body){
             body.QueueFree();
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
+            popupParent.Call("makePopup", "health", GlobalPosition, false);
             break;
     }
 }
