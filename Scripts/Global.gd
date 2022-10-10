@@ -3,13 +3,13 @@ extends Node
 var online = false
 var level = 0
 var normalcy = 60 #percent chance a normal egg spawns
-var id = 3
-var eid = 2
-var sid = 4
-var colorIdMap = {}
-var eggColorMap = {}
-var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "You",
-"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
+var id = 0
+var eid = 0
+var sid = 0
+var colorIdMap = []
+var eggColorMap = [Color.red, Color.purple, Color.green, Color.orange, Color.chartreuse, Color.cornflower,
+Color.fuchsia, Color.slateblue, Color.orangered, Color.gold, Color.cyan, Color.hotpink]
+var botNameMap = []
 var playerBounds = Vector2(0,960)
 var botBounds = Vector2(0,480)
 var playerCount = 12
@@ -19,8 +19,8 @@ var win = null
 
 func _ready():
 	var rgb = [0,0,0]
-	colorIdMap[0] = Color8(255,100,100)
-	eggColorMap[0] = colorIdMap[0] * 1.5
+	colorIdMap.append(Color8(255,100,100))
+#	eggColorMap[0] = colorIdMap[0] * 1.5
 	for i in range(1,12):
 		rgb[0] = 100
 		rgb[1] = 100
@@ -51,5 +51,11 @@ func _ready():
 		else:
 			rgb[0] = 255
 			rgb[1] = 125
-		colorIdMap[i] = Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2)
-		eggColorMap[i] = Color8(rgb[0],rgb[1],rgb[2])
+		colorIdMap.append(Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2))
+
+func arrangeNames():
+	botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "You",
+	"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
+	var nm = botNameMap[id]
+	botNameMap[id] = "You"
+	botNameMap[5] = nm

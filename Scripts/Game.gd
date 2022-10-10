@@ -20,17 +20,27 @@ var confirmedEggs = 0
 var gameTime = 0
 var recordedTime = null
 var hudRefresh = 0
-var offsetIds = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11}
+var offsetIds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 onready var gameOverLabels = {"BG": $GameOverBG, "label": $GameOverBG/Label,
 "sublabel": $GameOverBG/SubLabel, "subsub": $GameOverBG/SubSubLabel}
 onready var hud = {"timer": $BottomHUD/Timer, "eggs": $BottomHUD/SentLabel, "laid": $BottomHUD/LaidLabel,
 "shelled": $BottomHUD/ShelledLabel, "powerbar": $BottomHUD/PowerBar, "levelegg": $BottomHUD/LevelEgg, "level": $BottomHUD/LevelLabel}
 onready var playerBG = get_node("PlayerContainer/Viewport/PlayerBG")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
+onready var player = $PlayerContainer/Viewport/Playspace/Chicken
 
 func _ready():
+	randomize()
+	#define id
+	Global.id = randi() % 12
 	Global.eid = Global.id + 1 if Global.id + 1 < 12 else 0
 	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
+	eggParent.myid = Global.id
+	$EnemyContainer/Viewport/Enemyspace/EggParent.myid = Global.eid
+	player.id = Global.id
+	$EnemyContainer/Viewport/Enemyspace/ChickenBot.id = Global.eid
+	Global.arrangeNames()
+	#define nodes
 	for i in range(1,13):
 		if (i < 7):
 			colorPlates.append(get_node("NamePlates/ScoresTop/NamePlate" + str(i)))
@@ -45,9 +55,10 @@ func _ready():
 			heartIcons.append(get_node("NamePlates/ScoresBottom/NamePlate" 
 			+ str(i-6) + "/Hearts/HeartIconActives").get_children())
 	nameArrows = get_node("NamePlates/Arrows").get_children()
+	#create nameplate offset
 	var offset = 0
 	var storedOffset = 0
-	var id = 11
+	var id = Global.id
 	while id + offset != 5:
 		offset += 1
 		if id + offset > 11:
@@ -55,10 +66,13 @@ func _ready():
 			offset = 0
 			id = 0
 	offset += storedOffset
+	var c = 0
 	for i in range(12):
-		if offsetIds[i] + offset > 11: offsetIds[i] -= offset
+		if offsetIds[i] + offset > 11:
+			offsetIds[i] = c
+			c += 1
 		else: offsetIds[i] += offset
-	for i in range(12): print(str(i) + ": " +  str(offsetIds[i]))
+	#nameplates
 	for i in range(12):
 		if i != Global.id: botCount += 1
 		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i], "health": 6, "bot": i != Global.id})
@@ -122,11 +136,11 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 		delayed.stop()
 		delayed.queue_free()
 	playerStats[id]["health"] = 0
-	heartIcons[id][0].get_parent().visible = false
-	colorPlates[id].self_modulate.a = .3
-	namePlates[id].self_modulate.a = .5
-	nameArrows[id].visible = false
-	playerStats[id].visible = false
+	heartIcons[offsetIds[id]][0].get_parent().visible = false
+	colorPlates[offsetIds[id]].self_modulate.a = .3
+	namePlates[offsetIds[id]].self_modulate.a = .5
+	nameArrows[offsetIds[id]].visible = false
+#	playerStats[id].visible = false
 #	if id != Global.id: statusLabels[id].text = ''
 	if Global.gameOver == false:
 		if id == Global.eid && !Global.playerDead:
@@ -156,7 +170,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if Global.playerCount == 1: return
 	health = clamp(health, 0, 6)
 	playerStats[id]["health"] = health
-	for i in range(6): heartIcons[id][i].visible = i < health
+	for i in range(6): heartIcons[offsetIds[id]][i].visible = i < health
 	if health < 1:
 		Global.playerCount -= 1
 		var me = Global.id == id
@@ -170,7 +184,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			eParent.slowMo = .5
 			eParent.player = null
 			eParent.set_process(false)
-			var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot if !me else $PlayerContainer/Viewport/Playspace/Chicken
+			var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot if !me else player
 			chicken.idle = true
 			chicken.speed *= .5
 			chicken.get_child(0).texture = deadChicken
@@ -183,7 +197,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 				$PlayerContainer/Viewport/Playspace/ItemParent.player = null
 				for i in range(12):
 					if i == Global.id: continue
-					statusLabels[i].text = '' if i != Global.eid else '[SPEC]'
+					statusLabels[offsetIds[i]].text = '' if i != Global.eid else '[SPEC]'
 		else: registerDeath(id, lastHitId, false, null)
 
 func findNewTarget(id: int, below: bool, eid: bool) -> int:
@@ -200,18 +214,18 @@ func findNewTarget(id: int, below: bool, eid: bool) -> int:
 		return id
 	if eid:
 		for i in range(12):
-			if statusLabels[i].text == '[TARGET]' || statusLabels[i].text == '[SPEC]':
-				statusLabels[i].text = ''
+			if statusLabels[offsetIds[i]].text == '[TARGET]' || statusLabels[offsetIds[i]].text == '[SPEC]':
+				statusLabels[offsetIds[i]].text = ''
 				break
 		$EnemyContainer/Viewport/Enemyspace.queue_free()
 		botIsSpawned = false
-		statusLabels[newId].text = "[TARGET]" if !Global.playerDead else "[SPEC]"
+		statusLabels[offsetIds[newId]].text = "[TARGET]" if !Global.playerDead else "[SPEC]"
 	else:
 		for i in range(12):
-			if statusLabels[i].text == '[SEND]':
-				statusLabels[i].text = ''
+			if statusLabels[offsetIds[i]].text == '[SEND]':
+				statusLabels[offsetIds[i]].text = ''
 				break
-		if !Global.playerDead: statusLabels[newId].text = "[SEND]"
+		if !Global.playerDead: statusLabels[offsetIds[newId]].text = "[SEND]"
 	return newId
 
 func endGame(win: bool, winner: int):
@@ -230,7 +244,7 @@ func endGame(win: bool, winner: int):
 		Global.playerDead = true
 		$EnemyContainer/Viewport/Enemyspace/EggParent.botIsAbove = true
 		$EnemyContainer/Viewport/Enemyspace/EggParent.rateBuffer *= .1
-		var lastHit = $PlayerContainer/Viewport/Playspace/Chicken.lastHitId
+		var lastHit = player.lastHitId
 		var textChoices = ["YOU'VE BEEN PLUCKED", "YOU WERE SHELLED", "YOU WERE SCRAMBLED", "YOU GOT CLUCKED",
 		"YOU'VE BEEN FRIED", "YOU WERE TURNED INTO TENDIES", "YOU GOT COCK-A-DOODLE-DOO'D"]
 		gameOverLabels["label"].text = textChoices[randi() % len(textChoices)]
