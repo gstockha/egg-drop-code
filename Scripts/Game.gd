@@ -92,7 +92,9 @@ func _input(event):
 	if event.is_action_pressed("fullscreen"): OS.window_fullscreen = !OS.window_fullscreen
 	elif event.is_action_pressed("restart"):
 		if !Global.online: get_tree().reload_current_scene()
-	elif event.is_action_pressed("menu"): get_tree().quit()
+	elif event.is_action_pressed("menu"):
+		Global.defaults()
+		get_tree().quit()
 	if !Global.playerDead: return
 	if event.is_action_pressed("ui_up") || event.is_action_pressed("ui_down"):
 		if Global.gameOver: return
@@ -140,13 +142,10 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 	colorPlates[offsetIds[id]].self_modulate.a = .3
 	namePlates[offsetIds[id]].self_modulate.a = .5
 	nameArrows[offsetIds[id]].visible = false
-#	playerStats[id].visible = false
-#	if id != Global.id: statusLabels[id].text = ''
 	if Global.gameOver == false:
 		if id == Global.eid && !Global.playerDead:
 			confirmedShells += 1
 			var hisX = ($EnemyContainer/Viewport/Enemyspace/ChickenBot.global_position.x * 2) + 16
-			print(hisX)
 			$PopupParent.makePopup(playerStats[id]["name"], Vector2(hisX, 780), true)
 		if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0: #win game
 			endGame(true, Global.id)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Sprites/Items/Heart.png" type="Texture" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://Sprites/Chickens/DeadChicken.png" type="Texture" id=10]
 [ext_resource path="res://Scripts/PopupParent.gd" type="Script" id=11]
 [ext_resource path="res://Scripts/Blurfix.gd" type="Script" id=12]
+[ext_resource path="res://Sprites/Chickens/Chicken.png" type="Texture" id=13]
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -121,9 +122,176 @@ extra_spacing_bottom = -4
 font_data = ExtResource( 8 )
 
 [node name="Game" type="Control"]
-anchor_right = 1.0
+anchor_left = 0.026
+anchor_right = 0.974
 anchor_bottom = 1.0
+margin_left = -0.768002
+margin_right = 0.767944
 script = ExtResource( 5 )
+
+[node name="BG" type="ColorRect" parent="."]
+margin_left = -40.0
+margin_right = 1528.0
+margin_bottom = 882.0
+color = Color( 0.419608, 0.482353, 0.752941, 1 )
+
+[node name="Control" type="Control" parent="BG"]
+margin_left = -3.0
+margin_top = -4.0
+margin_right = 37.0
+margin_bottom = 36.0
+rect_scale = Vector2( 1.5, 1.5 )
+
+[node name="Sprite" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 25 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite2" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 75 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite3" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 125 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite4" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 175 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite5" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 225 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite6" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 275 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite7" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 325 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite8" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 375 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite9" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 425 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite10" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 475 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite11" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 525 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite12" type="Sprite" parent="BG/Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 575 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Control2" type="Control" parent="BG"]
+margin_left = 1573.0
+margin_top = -2.0
+margin_right = 1613.0
+margin_bottom = 38.0
+rect_scale = Vector2( -1.5, 1.5 )
+
+[node name="Sprite" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 25 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite2" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 75 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite3" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 125 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite4" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 175 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite5" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 225 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite6" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 275 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite7" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 325 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite8" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 375 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite9" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 425 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite10" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 475 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite11" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 525 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
+
+[node name="Sprite12" type="Sprite" parent="BG/Control2"]
+modulate = Color( 1, 1, 1, 0.588235 )
+position = Vector2( 20, 575 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 13 )
 
 [node name="PlayerContainer" type="ViewportContainer" parent="."]
 margin_left = 16.0
@@ -177,75 +345,15 @@ margin_bottom = 49.0257
 
 [node name="Enemyspace" parent="EnemyContainer/Viewport" instance=ExtResource( 3 )]
 
-[node name="BG" type="Control" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="BGPieceR" type="ColorRect" parent="BG"]
-margin_left = 976.0
-margin_top = 606.0
-margin_right = 1496.0
-margin_bottom = 879.0
-rect_scale = Vector2( 0.999585, 1.00393 )
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-
-[node name="BGPieceR2" type="ColorRect" parent="BG"]
-margin_left = 989.0
-margin_top = 14.0
-margin_right = 1477.0
-margin_bottom = 206.0
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BGPieceRL" type="ColorRect" parent="BG"]
-margin_left = 976.0
-margin_top = 16.0
-margin_right = 992.0
-margin_bottom = 617.0
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-
-[node name="BGPieceRR" type="ColorRect" parent="BG"]
-margin_left = 1472.0
-margin_top = 16.0
-margin_right = 1488.0
-margin_bottom = 615.0
-rect_scale = Vector2( 1.50635, 1.00659 )
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BGPieceB" type="ColorRect" parent="BG"]
-margin_top = 816.0
-margin_right = 976.0
-margin_bottom = 880.0
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BGPieceT" type="ColorRect" parent="BG"]
-margin_left = 16.0
-margin_right = 1496.0
-margin_bottom = 16.0
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-
-[node name="BGPieceL" type="ColorRect" parent="BG"]
-margin_right = 16.0
-margin_bottom = 816.0
-color = Color( 0.419608, 0.482353, 0.752941, 1 )
-
 [node name="Hearts" type="Control" parent="."]
 anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
 margin_left = -0.128
-margin_top = -32.9201
+margin_top = -33.9201
 margin_right = 399.872
-margin_bottom = 39.08
+margin_bottom = 38.08
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -366,9 +474,9 @@ anchor_top = 0.964
 anchor_right = 0.665
 anchor_bottom = 0.964
 margin_left = -843.496
-margin_top = -23.3201
+margin_top = -24.3202
 margin_right = 0.536011
-margin_bottom = 24.6799
+margin_bottom = 23.6798
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false

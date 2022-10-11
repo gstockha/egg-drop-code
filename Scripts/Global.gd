@@ -53,9 +53,21 @@ func _ready():
 			rgb[1] = 125
 		colorIdMap.append(Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2))
 
-func arrangeNames():
+func arrangeNames() -> void:
 	botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "You",
 	"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
 	var nm = botNameMap[id]
 	botNameMap[id] = "You"
 	botNameMap[5] = nm
+
+func defaults() -> void:
+	online = false
+	level = 0
+	normalcy = 60 #percent chance a normal egg spawns
+	id = 0
+	eid = 0
+	sid = 0
+	playerCount = 12
+	playerDead = false
+	gameOver = false
+	win = null

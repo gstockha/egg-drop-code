@@ -132,7 +132,6 @@ func releaseEggQueue(timer: Timer = null):
 	if len(eggQueueList) < 1 || Global.playerDead || Global.gameOver:
 		eggQueueList = []
 		return
-	print('queue release')
 	var eggInfo = eggQueueList.pop_front()
 	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2])
 	var queueTimer = Timer.new()
