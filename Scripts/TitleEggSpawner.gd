@@ -3,9 +3,9 @@ extends Node2D
 var eggScene = preload("res://Scenes/Egg.tscn")
 var eggTimer = 0
 var eggTypes = {
-	"normal": { "speed": 2.5, "size": 1.25 },
-	"fast": { "speed": 3.2, "size": 1 },
-	"big": { "speed": 2.0, "size": 2 }
+	"normal": { "speed": 2.5, "size": 2.5 },
+	"fast": { "speed": 3.2, "size": 2 },
+	"big": { "speed": 2.0, "size": 4 }
 }
 
 func _process(delta):
@@ -18,12 +18,12 @@ func _process(delta):
 		egg.scale = Vector2(typeMap["size"], typeMap["size"])
 		egg.speed = typeMap["speed"]
 		egg.modulate = Global.colorIdMap[randi() % 12]
-		egg.position = Vector2(rand_range(10, 1558), 0)
+		egg.position = Vector2(rand_range(10, 1558), -60)
 
 func _physics_process(_delta):
 	for egg in get_children():
 		egg.position.y += egg.speed
-		if egg.position.y > 900: egg.queue_free()
+		if egg.position.y > 960: egg.queue_free()
 
 func randType() -> String:
 	var roll = randi() % 100 + 1

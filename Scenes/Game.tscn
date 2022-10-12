@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Sprites/Items/Heart.png" type="Texture" id=2]
@@ -40,7 +40,7 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="DynamicFont" id=14]
+[sub_resource type="DynamicFont" id=29]
 size = 62
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
@@ -118,6 +118,13 @@ font_data = ExtResource( 8 )
 size = 50
 outline_size = 2
 outline_color = Color( 0.533333, 0.533333, 0.533333, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=30]
+size = 300
+outline_size = 3
+outline_color = Color( 0, 0, 0, 1 )
 extra_spacing_bottom = -4
 font_data = ExtResource( 8 )
 
@@ -295,13 +302,13 @@ texture = ExtResource( 13 )
 
 [node name="PlayerContainer" type="ViewportContainer" parent="."]
 margin_left = 16.0
-margin_top = 16.0
+margin_top = 10.0
 margin_right = 976.0
 margin_bottom = 816.0
 script = ExtResource( 12 )
 
 [node name="Viewport" type="Viewport" parent="PlayerContainer"]
-size = Vector2( 960, 800 )
+size = Vector2( 960, 806 )
 handle_input_locally = false
 hdr = false
 usage = 0
@@ -309,12 +316,12 @@ render_target_update_mode = 3
 
 [node name="PlayerBG" type="ColorRect" parent="PlayerContainer/Viewport"]
 margin_right = 72.0
-margin_bottom = 98.0
+margin_bottom = 100.0
 rect_scale = Vector2( 13.3776, 8.21125 )
 
 [node name="subBG" type="ColorRect" parent="PlayerContainer/Viewport/PlayerBG"]
 margin_right = 72.0
-margin_bottom = 98.0
+margin_bottom = 100.0
 
 [node name="Playspace" parent="PlayerContainer/Viewport" instance=ExtResource( 1 )]
 
@@ -2552,8 +2559,7 @@ margin_right = 318.5
 margin_bottom = 24.8
 grow_horizontal = 2
 grow_vertical = 2
-custom_fonts/font = SubResource( 14 )
-text = "YOU'VE BEEN PLUCKED"
+custom_fonts/font = SubResource( 29 )
 align = 1
 valign = 1
 
@@ -2569,7 +2575,6 @@ margin_bottom = 24.8
 grow_horizontal = 2
 grow_vertical = 2
 custom_fonts/font = SubResource( 15 )
-text = "BY THE EGG GODS"
 align = 1
 valign = 1
 
@@ -2585,8 +2590,6 @@ margin_bottom = 24.2
 grow_horizontal = 2
 custom_constants/line_spacing = -15
 custom_fonts/font = SubResource( 16 )
-text = "Press Up or Down to change spectate
-Press ESC to leave, R to restart"
 align = 1
 valign = 1
 
@@ -2742,3 +2745,23 @@ valign = 1
 
 [node name="PopupParent" type="Node2D" parent="."]
 script = ExtResource( 11 )
+
+[node name="PauseBG" type="ColorRect" parent="."]
+margin_left = -40.0
+margin_right = 1528.0
+margin_bottom = 882.0
+color = Color( 0, 0, 0, 0.607843 )
+
+[node name="StartTimer" type="Label" parent="PauseBG"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -129.5
+margin_top = -391.5
+margin_right = 129.5
+margin_bottom = 391.5
+custom_fonts/font = SubResource( 30 )
+text = "3"
+align = 1
+valign = 1

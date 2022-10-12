@@ -15,3 +15,4 @@ C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP
 C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.csproj.CoreCompileInputs.cache
 C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.dll
 C:\Users\George Stockhammer\Desktop\EGG-DROP\.mono\temp\obj\ExportDebug\EGG DROP.pdb
+C:\Users\AAAAAAA\Desktop\godotprojects\EGG DROP\.mono\temp\obj\ExportDebug\EGG DROP.GeneratedMSBuildEditorConfig.editorconfig

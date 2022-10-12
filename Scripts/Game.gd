@@ -32,7 +32,7 @@ onready var player = $PlayerContainer/Viewport/Playspace/Chicken
 func _ready():
 	randomize()
 	#define id
-	Global.id = randi() % 12
+	Global.id = 5#randi() % 12
 	Global.eid = Global.id + 1 if Global.id + 1 < 12 else 0
 	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	eggParent.myid = Global.id
@@ -94,7 +94,7 @@ func _input(event):
 		if !Global.online:
 			Global.defaults()
 			get_tree().reload_current_scene()
-	elif event.is_action_pressed("menu"): get_tree().quit()
+	elif event.is_action_pressed("menu"): get_tree().change_scene("res://Scenes/TitleScreen.tscn")
 	if !Global.playerDead: return
 	if event.is_action_pressed("ui_up") || event.is_action_pressed("ui_down"):
 		if Global.gameOver: return
