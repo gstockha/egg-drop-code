@@ -245,7 +245,7 @@ func endGame(win: bool, winner: int):
 		$EnemyContainer/Viewport/Enemyspace/EggParent.rateBuffer *= .1
 		var lastHit = player.lastHitId
 		var textChoices = ["YOU'VE BEEN PLUCKED", "YOU WERE SHELLED", "YOU WERE SCRAMBLED", "YOU GOT CLUCKED",
-		"YOU'VE BEEN FRIED", "YOU WERE TURNED INTO TENDIES", "YOU GOT COCK-A-DOODLE-DOO'D"]
+		"YOU'VE BEEN FRIED", "YOU GOT TURNED INTO TENDIES", "YOU GOT COCK-A-DOODLE-DOO'D", "YOU BECAME A FAMILY MEAL"]
 		gameOverLabels["label"].text = textChoices[randi() % len(textChoices)]
 		gameOverLabels["sublabel"].text = "BY "
 		gameOverLabels["sublabel"].text += playerStats[lastHit]["name"] if lastHit != 99 else "THE CHICKEN GODS"

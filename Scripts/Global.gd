@@ -16,6 +16,7 @@ var playerCount = 12
 var playerDead = false
 var gameOver = false
 var win = null
+var pausable = true
 
 func _ready():
 	var rgb = [0,0,0]
