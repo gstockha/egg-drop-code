@@ -89,12 +89,10 @@ func _ready():
 	statusLabels[offsetIds[Global.sid]].text = '[SEND]'
 
 func _input(event):
-	if event.is_action_pressed("fullscreen"): OS.window_fullscreen = !OS.window_fullscreen
-	elif event.is_action_pressed("restart"):
+	if event.is_action_pressed("restart"):
 		if !Global.online:
 			Global.defaults()
 			get_tree().reload_current_scene()
-	elif event.is_action_pressed("menu"): get_tree().change_scene("res://Scenes/TitleScreen.tscn")
 	if !Global.playerDead: return
 	if event.is_action_pressed("ui_up") || event.is_action_pressed("ui_down"):
 		if Global.gameOver: return

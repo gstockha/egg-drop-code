@@ -6,16 +6,16 @@ var finished = false
 func _ready():
 	get_tree().paused = true
 	$StartTimer.visible = false
-	Global.pausable = false
+	Global.countdown = true
 
 func _physics_process(delta):
+	if Global.menu: return
 	timer -= delta
 	var time = ceil(timer)
 	if timer <= 3 && timer > 0 && !finished:
 		$StartTimer.visible = true
 		$StartTimer.text = str(time)
 		var scl = 3 * ((time - timer) / 1)
-		print(scl)
 		scale = Vector2(scl, scl)
 	elif timer <= 0 && !finished:
 		finished = true
@@ -24,6 +24,6 @@ func _physics_process(delta):
 	elif timer <= -1:
 		$StartTimer.visible = false
 		get_tree().paused = false
-		Global.pausable = true
 		finished = true
+		Global.countdown = false
 		queue_free()

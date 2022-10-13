@@ -16,7 +16,8 @@ var playerCount = 12
 var playerDead = false
 var gameOver = false
 var win = null
-var pausable = true
+var menu = false
+var countdown = false
 
 func _ready():
 	var rgb = [0,0,0]
@@ -72,3 +73,5 @@ func defaults() -> void:
 	playerDead = false
 	gameOver = false
 	win = null
+	menu = false
+	countdown = false

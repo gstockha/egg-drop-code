@@ -5,6 +5,7 @@
 [ext_resource path="res://Scripts/TitleEggSpawner.gd" type="Script" id=3]
 [ext_resource path="res://Scenes/MusicLabel.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scenes/SoundsLabel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/ExitButton.tscn" type="PackedScene" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 100
@@ -23,14 +24,6 @@ extra_spacing_char = -1
 font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=3]
-size = 62
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-extra_spacing_bottom = -4
-extra_spacing_char = -2
-font_data = ExtResource( 1 )
-
-[sub_resource type="DynamicFont" id=20]
 size = 62
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
@@ -81,7 +74,7 @@ text = "Solo Prototype"
 align = 1
 valign = 1
 
-[node name="SoloButton" type="Button" parent="TitleOptions"]
+[node name="MainButton" type="Button" parent="TitleOptions"]
 margin_left = 537.5
 margin_top = 363.0
 margin_right = 1030.5
@@ -117,21 +110,7 @@ flat = true
 
 [node name="MusicLabel" parent="TitleOptions" instance=ExtResource( 4 )]
 
-[node name="ExitButton" type="Button" parent="TitleOptions"]
-margin_left = 537.5
-margin_top = 631.0
-margin_right = 1030.5
-margin_bottom = 732.0
-focus_mode = 0
-custom_colors/font_color_disabled = Color( 0.603922, 0.603922, 0.603922, 1 )
-custom_colors/font_color_focus = Color( 0.980392, 1, 0.243137, 1 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_colors/font_color_hover = Color( 0.980392, 1, 0.243137, 1 )
-custom_colors/font_color_pressed = Color( 1, 0.713726, 0.0862745, 1 )
-custom_fonts/font = SubResource( 20 )
-enabled_focus_mode = 0
-text = "EXIT GAME"
-flat = true
+[node name="ExitButton" parent="TitleOptions" instance=ExtResource( 6 )]
 
-[connection signal="button_up" from="TitleOptions/SoloButton" to="TitleOptions" method="_on_SoloButton_button_up"]
+[connection signal="button_up" from="TitleOptions/MainButton" to="TitleOptions" method="_on_MainButton_button_up"]
 [connection signal="button_down" from="TitleOptions/ExitButton" to="TitleOptions" method="_on_ExitButton_button_down"]
