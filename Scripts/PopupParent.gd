@@ -1,6 +1,6 @@
 extends Node2D
 
-var popup = preload('res://Scenes/Popup.tscn')
+var popup = preload('res://Scenes/UI/Popup.tscn')
 var popupMap = {"normal": ["+egg", null], "big": ["+bigegg", null], "fast": ["+fastegg", null], 
 "three": ["+3 eggs", null], "health": ["+1 hp", Color.pink]}
 

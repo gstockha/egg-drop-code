@@ -2,6 +2,7 @@ extends Node2D
 
 var timer = 3.5
 var finished = false
+onready var bg = get_node("../CountdownBG")
 
 func _ready():
 	get_tree().paused = true
@@ -11,6 +12,7 @@ func _ready():
 func _physics_process(delta):
 	if Global.menu: return
 	timer -= delta
+	bg.modulate.a -= delta * .2
 	var time = ceil(timer)
 	if timer <= 3 && timer > 0 && !finished:
 		$StartTimer.visible = true
@@ -26,4 +28,6 @@ func _physics_process(delta):
 		get_tree().paused = false
 		finished = true
 		Global.countdown = false
+		bg.visible = false
+		bg.queue_free()
 		queue_free()

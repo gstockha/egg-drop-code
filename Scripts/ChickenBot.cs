@@ -46,6 +46,7 @@ public override void _Ready(){
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
     id = (int)Global.Get("eid");
+    moveRate -= (int)Global.Get("difficulty") * 2;
     int i;
     for (i = 0; i < dirListx.Length; i++){
         dirListx[i] = 0;
@@ -293,8 +294,8 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
         invincible = true;
         invTimer.Start(invTime);
         squishPower += 200;
-        screenShake = 10 + (power * .025F);
-        shakeTimer = screenShake;
+        screenShake = 15 + (power * .025F);
+        shakeTimer = screenShake * 1.3F;
     }
     squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (squishPower / 200);
     if (squishAmount > .75F) squishAmount = .75F;

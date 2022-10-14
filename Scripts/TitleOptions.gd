@@ -11,7 +11,9 @@ func _input(event):
 			get_tree().paused = !get_tree().paused
 
 func _on_MainButton_button_up():
-	if title: get_tree().change_scene("res://Scenes/Game.tscn")
+	if title:
+		visible = false
+		get_node("../PlayerOptions").visible = true
 	else: #in-game CONTINUE
 		if !Global.online && !Global.countdown: get_tree().paused = false
 		visible = false
@@ -22,7 +24,7 @@ func _on_ExitButton_button_down():
 	else:
 		Global.defaults()
 		get_tree().paused = false
-		get_tree().change_scene("res://Scenes/TitleScreen.tscn")
+		get_tree().change_scene("res://Scenes/Screens/TitleScreen.tscn")
 
 func _on_MenuButton_button_down():
 	if visible || title: return

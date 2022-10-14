@@ -1,7 +1,7 @@
 extends Control
 
 onready var eggParent = $Eggs
-onready var eggIcon = preload("res://Scenes/EggIcon.tscn")
+onready var eggIcon = preload("res://Scenes/UI/EggIcon.tscn")
 var eggSprites = {
 	"normal": preload("res://Sprites/Eggs/Egg.png"), "fast": preload("res://Sprites/Eggs/FastEgg.png"),
 	"big": preload("res://Sprites/Eggs/BigEgg.png")

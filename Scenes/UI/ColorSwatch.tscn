@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=2]
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color( 0.407843, 0.407843, 0.407843, 1 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 0.8, 0.8, 0.8, 0 )
+
+[node name="ColorSwatch" type="Button"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -784.0
+margin_top = -441.0
+margin_right = -720.0
+margin_bottom = -377.0
+grow_horizontal = 2
+grow_vertical = 0
+rect_min_size = Vector2( 64, 64 )
+custom_styles/hover = SubResource( 3 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/normal = SubResource( 1 )
+shortcut_in_tooltip = false
+action_mode = 0
+keep_pressed_outside = true
+icon_align = 1

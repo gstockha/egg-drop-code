@@ -31,8 +31,7 @@ onready var player = $PlayerContainer/Viewport/Playspace/Chicken
 
 func _ready():
 	randomize()
-	#define id
-	Global.id = 5#randi() % 12
+	#define ids
 	Global.eid = Global.id + 1 if Global.id + 1 < 12 else 0
 	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	eggParent.myid = Global.id
@@ -283,7 +282,7 @@ func makeBot() -> void:
 
 func calculateGameTime() -> String:
 	var lev = Global.level
-	Global.level = clamp(floor(gameTime / 60), 0, 5)
+	Global.level = clamp(floor(gameTime / (60 - (Global.difficulty * 10))), 0, 5)
 	if lev != Global.level:
 		eggParent.eggRateLevelStr = str(Global.level)
 		hud["level"].text = str(Global.level+1)

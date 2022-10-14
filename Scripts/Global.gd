@@ -3,7 +3,7 @@ extends Node
 var online = false
 var level = 0
 var normalcy = 60 #percent chance a normal egg spawns
-var id = 0
+var id = 5
 var eid = 0
 var sid = 0
 var colorIdMap = []
@@ -18,6 +18,8 @@ var gameOver = false
 var win = null
 var menu = false
 var countdown = false
+var playerName = 'You'
+var difficulty = 0
 
 func _ready():
 	var rgb = [0,0,0]
@@ -56,11 +58,9 @@ func _ready():
 		colorIdMap.append(Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2))
 
 func arrangeNames() -> void:
-	botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "You",
+	botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
 	"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
-	var nm = botNameMap[id]
-	botNameMap[id] = "You"
-	botNameMap[5] = nm
+	botNameMap[id] = Global.playerName
 
 func defaults() -> void:
 	online = false
@@ -75,3 +75,4 @@ func defaults() -> void:
 	win = null
 	menu = false
 	countdown = false
+	difficulty = 0
