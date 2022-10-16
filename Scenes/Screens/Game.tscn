@@ -1,8 +1,8 @@
-[gd_scene load_steps=41 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Sprites/Menu/Speaker.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/Menu/Fullscreen.png" type="Texture" id=3]
 [ext_resource path="res://Sprites/Menu/Gear.png" type="Texture" id=4]
 [ext_resource path="res://Sprites/Eggs/Egg.png" type="Texture" id=5]
 [ext_resource path="res://Fonts/baloo/Baloo-Regular.ttf" type="DynamicFontData" id=6]
@@ -20,6 +20,13 @@
 [ext_resource path="res://Sprites/Chickens/DeadChicken.png" type="Texture" id=18]
 [ext_resource path="res://Scripts/Blurfix.gd" type="Script" id=19]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=20]
+
+[sub_resource type="StyleBoxFlat" id=34]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[sub_resource type="StreamTexture" id=35]
+flags = 4
+load_path = "res://.import/Speaker.png-f7b9aca197d30e5b7be70866d52484dc.stex"
 
 [sub_resource type="StyleBoxFlat" id=33]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
@@ -52,27 +59,6 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-
-[sub_resource type="DynamicFont" id=29]
-size = 62
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-extra_spacing_bottom = -4
-font_data = ExtResource( 6 )
-
-[sub_resource type="DynamicFont" id=15]
-size = 44
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-extra_spacing_bottom = -4
-font_data = ExtResource( 6 )
-
-[sub_resource type="DynamicFont" id=16]
-size = 32
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-extra_spacing_bottom = -4
-font_data = ExtResource( 6 )
 
 [sub_resource type="StyleBoxFlat" id=17]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -134,6 +120,27 @@ outline_color = Color( 0.533333, 0.533333, 0.533333, 1 )
 extra_spacing_bottom = -4
 font_data = ExtResource( 6 )
 
+[sub_resource type="DynamicFont" id=29]
+size = 62
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 6 )
+
+[sub_resource type="DynamicFont" id=15]
+size = 44
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 6 )
+
+[sub_resource type="DynamicFont" id=16]
+size = 32
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 6 )
+
 [sub_resource type="DynamicFont" id=30]
 size = 200
 outline_size = 3
@@ -163,162 +170,149 @@ margin_right = 1528.0
 margin_bottom = 882.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 
-[node name="Control" type="Control" parent="BG"]
+[node name="Chickens" type="Control" parent="BG"]
 margin_left = -3.0
 margin_top = -4.0
 margin_right = 37.0
 margin_bottom = 36.0
 rect_scale = Vector2( 1.5, 1.5 )
 
-[node name="Sprite" type="Sprite" parent="BG/Control"]
+[node name="Sprite" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 25 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite2" type="Sprite" parent="BG/Control"]
+[node name="Sprite2" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 74.3333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite3" type="Sprite" parent="BG/Control"]
+[node name="Sprite3" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 124.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite4" type="Sprite" parent="BG/Control"]
+[node name="Sprite4" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 174.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite5" type="Sprite" parent="BG/Control"]
+[node name="Sprite5" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 224.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite6" type="Sprite" parent="BG/Control"]
+[node name="Sprite6" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 274.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite7" type="Sprite" parent="BG/Control"]
+[node name="Sprite7" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 324.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite8" type="Sprite" parent="BG/Control"]
+[node name="Sprite8" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 374.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite9" type="Sprite" parent="BG/Control"]
+[node name="Sprite9" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 424.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite10" type="Sprite" parent="BG/Control"]
+[node name="Sprite10" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 474.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite11" type="Sprite" parent="BG/Control"]
+[node name="Sprite11" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 524.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite12" type="Sprite" parent="BG/Control"]
+[node name="Sprite12" type="Sprite" parent="BG/Chickens"]
 modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 574.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Control2" type="Control" parent="BG"]
+[node name="Chickens2" type="Control" parent="BG"]
 margin_left = 1573.0
 margin_top = -2.0
 margin_right = 1613.0
 margin_bottom = 38.0
 rect_scale = Vector2( -1.5, 1.5 )
 
-[node name="Sprite" type="Sprite" parent="BG/Control2"]
-visible = false
+[node name="Sprite3" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 25 )
+position = Vector2( 20, 128.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite2" type="Sprite" parent="BG/Control2"]
+[node name="Sprite4" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 79.6667 )
+position = Vector2( 20, 178.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite3" type="Sprite" parent="BG/Control2"]
+[node name="Sprite5" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 129.667 )
+position = Vector2( 20, 228.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite4" type="Sprite" parent="BG/Control2"]
+[node name="Sprite6" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 179.667 )
+position = Vector2( 20, 278.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite5" type="Sprite" parent="BG/Control2"]
+[node name="Sprite7" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 229.667 )
+position = Vector2( 20, 328.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite6" type="Sprite" parent="BG/Control2"]
+[node name="Sprite8" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 279.667 )
+position = Vector2( 20, 378.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite7" type="Sprite" parent="BG/Control2"]
+[node name="Sprite9" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 329.667 )
+position = Vector2( 20, 428.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite8" type="Sprite" parent="BG/Control2"]
+[node name="Sprite10" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 379.667 )
+position = Vector2( 20, 478.334 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite9" type="Sprite" parent="BG/Control2"]
+[node name="Sprite11" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 429.667 )
+position = Vector2( 20, 528.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
-[node name="Sprite10" type="Sprite" parent="BG/Control2"]
+[node name="Sprite12" type="Sprite" parent="BG/Chickens2"]
 modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 479.667 )
-scale = Vector2( 0.6, 0.6 )
-texture = ExtResource( 17 )
-
-[node name="Sprite11" type="Sprite" parent="BG/Control2"]
-modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 529.667 )
-scale = Vector2( 0.6, 0.6 )
-texture = ExtResource( 17 )
-
-[node name="Sprite12" type="Sprite" parent="BG/Control2"]
-modulate = Color( 1, 1, 1, 0.588235 )
-position = Vector2( 20, 579.667 )
+position = Vector2( 20, 578.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
 
@@ -326,9 +320,26 @@ texture = ExtResource( 17 )
 pause_mode = 2
 modulate = Color( 0.239216, 0.184314, 0.564706, 0.588235 )
 margin_left = 1475.0
-margin_top = 32.0
+margin_top = 49.0
 margin_right = 1531.0
-margin_bottom = 88.0
+margin_bottom = 105.0
+focus_mode = 0
+custom_styles/hover = SubResource( 34 )
+shortcut_in_tooltip = false
+action_mode = 0
+enabled_focus_mode = 0
+icon = SubResource( 35 )
+flat = true
+icon_align = 1
+expand_icon = true
+
+[node name="FullscreenButton" type="Button" parent="."]
+pause_mode = 2
+modulate = Color( 0.239216, 0.184314, 0.564706, 0.666667 )
+margin_left = 1467.0
+margin_top = 95.0
+margin_right = 1530.0
+margin_bottom = 157.0
 focus_mode = 0
 custom_styles/hover = SubResource( 33 )
 shortcut_in_tooltip = false
@@ -336,16 +347,15 @@ action_mode = 0
 enabled_focus_mode = 0
 icon = ExtResource( 3 )
 flat = true
-icon_align = 1
 expand_icon = true
 
 [node name="MenuButton" type="Button" parent="."]
 pause_mode = 2
-modulate = Color( 0.313726, 0.231373, 0.658824, 0.588235 )
+modulate = Color( 0.313726, 0.231373, 0.658824, 0.627451 )
 margin_left = 1470.0
-margin_top = -3.0
+margin_top = 1.0
 margin_right = 1529.0
-margin_bottom = 50.0
+margin_bottom = 54.0
 focus_mode = 0
 custom_styles/hover = SubResource( 32 )
 shortcut_in_tooltip = false
@@ -374,10 +384,12 @@ render_target_update_mode = 3
 margin_right = 72.0
 margin_bottom = 100.0
 rect_scale = Vector2( 13.3776, 8.21125 )
+color = Color( 0.717647, 0.717647, 0.717647, 1 )
 
 [node name="subBG" type="ColorRect" parent="PlayerContainer/Viewport/PlayerBG"]
 margin_right = 72.0
 margin_bottom = 100.0
+color = Color( 0.717647, 0.717647, 0.717647, 1 )
 
 [node name="Playspace" parent="PlayerContainer/Viewport" instance=ExtResource( 9 )]
 
@@ -399,12 +411,14 @@ render_target_update_mode = 3
 margin_right = 36.0
 margin_bottom = 50.0
 rect_scale = Vector2( 13.3776, 8.21125 )
+color = Color( 0.717647, 0.717647, 0.717647, 1 )
 
 [node name="subBG" type="ColorRect" parent="EnemyContainer/Viewport/EnemyBG"]
 margin_left = -0.0747528
 margin_top = -0.974274
 margin_right = 35.9252
 margin_bottom = 49.0257
+color = Color( 0.717647, 0.717647, 0.717647, 1 )
 
 [node name="Enemyspace" parent="EnemyContainer/Viewport" instance=ExtResource( 2 )]
 
@@ -2596,59 +2610,6 @@ margin_right = 255.0
 margin_bottom = 2.0
 color = Color( 0.419608, 0.482353, 0.752941, 1 )
 
-[node name="GameOverBG" type="ColorRect" parent="."]
-visible = false
-margin_left = 16.0
-margin_top = 16.0
-margin_right = 976.0
-margin_bottom = 816.0
-color = Color( 0, 0, 0, 0.607843 )
-
-[node name="Label" type="Label" parent="GameOverBG"]
-anchor_left = 0.5
-anchor_top = 0.464
-anchor_right = 0.5
-anchor_bottom = 0.464
-margin_left = -318.5
-margin_top = -70.2
-margin_right = 318.5
-margin_bottom = 24.8
-grow_horizontal = 2
-grow_vertical = 2
-custom_fonts/font = SubResource( 29 )
-align = 1
-valign = 1
-
-[node name="SubLabel" type="Label" parent="GameOverBG"]
-anchor_left = 0.5
-anchor_top = 0.524
-anchor_right = 0.5
-anchor_bottom = 0.524
-margin_left = -176.0
-margin_top = -70.2
-margin_right = 176.0
-margin_bottom = 24.8
-grow_horizontal = 2
-grow_vertical = 2
-custom_fonts/font = SubResource( 15 )
-align = 1
-valign = 1
-
-[node name="SubSubLabel" type="Label" parent="GameOverBG"]
-anchor_left = 0.5
-anchor_top = 0.596
-anchor_right = 0.5
-anchor_bottom = 0.596
-margin_left = -271.5
-margin_top = -70.8
-margin_right = 271.5
-margin_bottom = 24.2
-grow_horizontal = 2
-custom_constants/line_spacing = -15
-custom_fonts/font = SubResource( 16 )
-align = 1
-valign = 1
-
 [node name="BottomHUD" type="Control" parent="."]
 margin_left = 1392.0
 margin_top = 816.0
@@ -2799,17 +2760,73 @@ text = "1"
 align = 1
 valign = 1
 
-[node name="PopupParent" type="Node2D" parent="."]
-script = ExtResource( 16 )
+[node name="GameOverBG" type="ColorRect" parent="."]
+visible = false
+margin_left = 16.0
+margin_top = 10.0
+margin_right = 976.0
+margin_bottom = 816.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 0.607843 )
+
+[node name="Label" type="Label" parent="GameOverBG"]
+anchor_left = 0.5
+anchor_top = 0.464
+anchor_right = 0.5
+anchor_bottom = 0.464
+margin_left = -318.5
+margin_top = -70.2
+margin_right = 318.5
+margin_bottom = 24.8
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/font = SubResource( 29 )
+align = 1
+valign = 1
+
+[node name="SubLabel" type="Label" parent="GameOverBG"]
+anchor_left = 0.5
+anchor_top = 0.524
+anchor_right = 0.5
+anchor_bottom = 0.524
+margin_left = -176.0
+margin_top = -70.2
+margin_right = 176.0
+margin_bottom = 24.8
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/font = SubResource( 15 )
+align = 1
+valign = 1
+
+[node name="SubSubLabel" type="Label" parent="GameOverBG"]
+anchor_left = 0.5
+anchor_top = 0.596
+anchor_right = 0.5
+anchor_bottom = 0.596
+margin_left = -271.5
+margin_top = -70.8
+margin_right = 271.5
+margin_bottom = 24.2
+grow_horizontal = 2
+custom_constants/line_spacing = -15
+custom_fonts/font = SubResource( 16 )
+align = 1
+valign = 1
 
 [node name="CountdownBG" type="ColorRect" parent="."]
+visible = false
 anchor_top = 0.009
 anchor_bottom = 0.009
 margin_left = -40.0
 margin_top = -7.938
 margin_right = 1528.0
-margin_bottom = 872.062
+margin_bottom = 878.062
+mouse_filter = 2
 color = Color( 0, 0, 0, 1 )
+
+[node name="PopupParent" type="Node2D" parent="."]
+script = ExtResource( 16 )
 
 [node name="Countdown" type="Node2D" parent="."]
 pause_mode = 2
@@ -2881,6 +2898,7 @@ margin_bottom = 501.0
 margin_top = 493.0
 margin_bottom = 594.0
 
+[connection signal="button_up" from="FullscreenButton" to="Menu" method="_on_FullscreenButton_button_up"]
 [connection signal="button_down" from="MenuButton" to="Menu" method="_on_MenuButton_button_down"]
 [connection signal="button_up" from="Menu/MainButton" to="Menu" method="_on_MainButton_button_up"]
 [connection signal="button_down" from="Menu/ExitButton" to="Menu" method="_on_ExitButton_button_down"]

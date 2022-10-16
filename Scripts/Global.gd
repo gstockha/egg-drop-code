@@ -66,7 +66,6 @@ func defaults() -> void:
 	online = false
 	level = 0
 	normalcy = 60 #percent chance a normal egg spawns
-	id = 0
 	eid = 0
 	sid = 0
 	playerCount = 12

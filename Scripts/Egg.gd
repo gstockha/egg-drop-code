@@ -6,5 +6,6 @@ var knockback = 0
 var id = 99
 var damage = 1
 var type = ""
+var spdBoost = 1
 onready var sprite = $Sprite
 onready var hitBox = $CollisionShape2D

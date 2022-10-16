@@ -8,12 +8,14 @@ public class Chicken : KinematicBody2D
 Vector2 baseSpriteScale, baseScale, velocity, shoveVel = Vector2.Zero;
 float speed = 400;
 float momentum, eggCooldown, screenShake, shakeTimer, gravity = 0;
+float eggSpdBoost = 1;
 float baseWeight, weight = .007F;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
 float[] dirListx = new float[12];
 float[] dirListy = new float[12];
-bool idle, invincible, onFloor = false;
+float[] powerupDir = new float[] {0,0};
+bool idle, invincible, powerup, onFloor = false;
 int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
 int maxEggs = 25;
@@ -30,6 +32,7 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 Node Global;
 TextureRect[] heartIcons = new TextureRect[6];
 Control eggBar, game;
+ProgressBar powerBar;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -41,6 +44,7 @@ public override void _Ready(){
     popupParent = GetNode<Node2D>("../../../../PopupParent");
     game = (Control)GetParent().GetParent().GetParent().GetParent();
     eggBar = GetNode<Control>("../../../../EggBar");
+    powerBar = GetNode<ProgressBar>("../../../../BottomHUD/PowerBar");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
@@ -70,11 +74,20 @@ public override void _Ready(){
     invTimer = GetNode<Timer>("Invincible");
 }
 
-public override void _PhysicsProcess(float _delta){
+public override void _PhysicsProcess(float delta){
     Move();
     WallCheck();
     Squish(baseSpriteScale);
     ScreenShake();
+    if (powerup){
+        powerupDir[0] -= delta;
+        powerBar.Value = (powerupDir[0] / powerupDir[1]) * 100;
+        powerup = powerupDir[0] > 0;
+        if (!powerup){
+            eggSpdBoost = 1;
+            sprite.Modulate = Godot.Colors.White;
+        }
+    }
 }
 
 public void Move(){
@@ -248,7 +261,7 @@ public void MakeEgg(bool automatic){
         return;
     }
     eggCount --;
-    eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))));
+    eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))), eggSpdBoost);
     game.Set("confirmedLaid", (int)game.Get("confirmedLaid") + 1);
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;
@@ -370,6 +383,19 @@ public void _on_Hitbox_area_entered(Node body){
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             popupParent.Call("makePopup", "health", GlobalPosition, false);
+            break;
+        case "powerups":
+            type = (string)body.Get("type");
+            popupParent.Call("makePopup", type, GlobalPosition, false);
+            Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
+            powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
+            if (type == "butter"){
+                eggSpdBoost = 1.5F;
+                powerupDir[0] = 5;
+                powerupDir[1] = 5;
+                sprite.Modulate = Godot.Colors.Yellow;
+            }
+            body.QueueFree();
             break;
     }
 }

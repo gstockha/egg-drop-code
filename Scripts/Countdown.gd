@@ -8,6 +8,7 @@ func _ready():
 	get_tree().paused = true
 	$StartTimer.visible = false
 	Global.countdown = true
+	bg.visible = true
 
 func _physics_process(delta):
 	if Global.menu: return

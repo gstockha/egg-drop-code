@@ -18,8 +18,8 @@ var eggRates = {
 	'1': [7,10.5],
 	'2': [6,9.2],
 	'3': [4,7],
-	'4': [2.5,5],
-	'5': [.5,2]
+	'4': [3,5.5],
+	'5': [1.5,3.5]
 }
 var eggRateLevelStr = "0"
 var eggTypes = {
@@ -34,6 +34,7 @@ var slowMo = 1
 var game = null
 
 func _ready():
+	eggRateLevelStr = str(Global.level)
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
 	if !botMode:
@@ -59,7 +60,7 @@ func _process(delta):
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 		if botMode && !Global.playerDead:
-			if rateBuffer < 60: rateBuffer += 5
+			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 5
 			eggTimer += rateBuffer
 		elif !botReceive && botIsAbove:
 			if Global.sid == Global.eid: return
@@ -91,28 +92,32 @@ func _physics_process(_delta):
 			if (egg.id != myid && egg.id != 99) || eggTarget == null: return
 			if !Global.online:
 				if !botMode:
-					if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0))
-					else:
-						eggQueueList.append([egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0),
-						game.gameTime - eggQueueTime])
+					if !eggQueue:
+						eggTarget.makeEgg(egg.id, egg.type,
+						Vector2(Global.botBounds.y*((egg.position.x-11)/960),0), egg.spdBoost)
+					elif egg.id == myid:
+						eggQueueList.append([egg.id, egg.type,
+						Vector2(Global.botBounds.y*((egg.position.x-11)/960),0),
+						game.gameTime - eggQueueTime, egg.spdBoost])
 						eggQueueTime = game.gameTime
-				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0))
+				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0), egg.spdBoost)
 #			else: #network
 		
-func makeEgg(id: int, type: String, pos: Vector2):
+func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	egg.type = type
 	egg.size = typeKey["size"]
 	egg.scale = Vector2(egg.size, egg.size)
 	add_child(egg)
-	egg.speed = typeKey["speed"]
+	egg.speed = typeKey["speed"] * eggSpdBoost
+	egg.spdBoost = eggSpdBoost
 	egg.knockback = typeKey["knockback"]
 	egg.damage = typeKey["damage"]
 	egg.id = id
 	egg.position = pos
 	if id != 99:
-		egg.sprite.modulate = Global.eggColorMap[id]
+		egg.sprite.modulate = Global.colorIdMap[id]
 		if (!botMode && Global.id == id) || (botMode && Global.eid == id): 
 			egg.speed *= 2
 		elif !botMode: game.confirmedEggs += 1
@@ -133,7 +138,7 @@ func releaseEggQueue(timer: Timer = null):
 		eggQueueList = []
 		return
 	var eggInfo = eggQueueList.pop_front()
-	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2])
+	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
 	var queueTimer = Timer.new()
 	game.add_child(queueTimer)
 	queueTimer.connect("timeout", self, "releaseEggQueue", [queueTimer])

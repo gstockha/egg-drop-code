@@ -10,10 +10,11 @@ func _input(event):
 		if !Global.online && !Global.countdown:
 			get_tree().paused = !get_tree().paused
 
-func _on_MainButton_button_up():
+func _on_MainButton_button_up(): #solo game / continue
 	if title:
 		visible = false
 		get_node("../PlayerOptions").visible = true
+		get_node("../PlayerOptions/NameLabel/NameEdit").grab_focus()
 	else: #in-game CONTINUE
 		if !Global.online && !Global.countdown: get_tree().paused = false
 		visible = false
@@ -26,9 +27,13 @@ func _on_ExitButton_button_down():
 		get_tree().paused = false
 		get_tree().change_scene("res://Scenes/Screens/TitleScreen.tscn")
 
-func _on_MenuButton_button_down():
+func _on_MenuButton_button_down(): #in-game menu btn
 	if visible || title: return
 	visible = true
 	Global.menu = true
 	if !Global.online && !Global.countdown:
 		get_tree().paused = true
+
+
+func _on_FullscreenButton_button_up():
+	OS.window_fullscreen = !OS.window_fullscreen

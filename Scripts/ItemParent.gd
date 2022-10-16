@@ -13,12 +13,17 @@ var spawnRange = null
 var ybounds = []
 var adj = 100
 var items = {
-	"food": preload("res://Scenes/Corn.tscn"),
-	"health": preload("res://Scenes/Health.tscn")
+	"food": preload("res://Scenes/Corn.tscn"), "health": preload("res://Scenes/Health.tscn"),
+	"power": preload("res://Scenes/Powerup.tscn")
 }
 var foodSprites = {
 	"normal": preload("res://Sprites/Corn/Corn.png"), "three": preload("res://Sprites/Corn/Three.png"),
 	"fast": preload("res://Sprites/Corn/Fast.png"), "big": preload("res://Sprites/Corn/Big.png"),
+}
+var powerSprites = {
+	"shield": preload("res://Sprites/Items/ShieldItem.png"), "butter": preload("res://Sprites/Items/Butter.png"),
+	"gun": preload("res://Sprites/Items/CornGun.png"), "shrink": preload("res://Sprites/Items/Shrink.png"),
+	"wildcard": preload("res://Sprites/Items/Wildcard.png")
 }
 
 func _ready():
@@ -55,7 +60,10 @@ func _process(delta):
 			item.type = getCornType()
 			item.sprite.texture = foodSprites[item.type]
 		elif type == "power":
-			pass
+			itemTimer -= 15
+			item.type = getPowerType()
+			item.sprite.texture = powerSprites[item.type]
+			item.scale *= 2
 		if botMode:
 			item.scale *= .5
 			item.baseScale = item.scale
@@ -86,9 +94,17 @@ func getItemType() -> String: #food, health, or powerup
 	if powerTimer > powerCooldown:
 		if roll <= 20:
 			powerTimer = 0
-#			return "power"
-#			return "power"
+			return "power"
 	return "food"
+
+func getPowerType() -> String:
+	return 'butter'
+	var roll = randi() % 100 + 1
+	if roll <= 5 + (Global.level * 2): return "wildcard"
+	if roll <= 20 + (Global.level * 2): return "gun"
+	if roll <= 40 + Global.level: return "shrink"
+	if roll <= 70: return "butter"
+	return "shield"
 
 func getCornType() -> String:
 	var roll = randi() % 100 + 1

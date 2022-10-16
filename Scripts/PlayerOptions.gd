@@ -32,7 +32,7 @@ func _on_BackButton_button_up():
 	title.visible = true
 
 func _on_BeginButton_button_up():
-	Global.playerName = nameEdit.text
+	Global.playerName = nameEdit.text if nameEdit.text != '' else 'You'
 	Global.difficulty = difficultyButton.selected
 	transition.transition("fade_to_black")
 	transition.screen = 'title'
