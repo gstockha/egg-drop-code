@@ -89,7 +89,7 @@ func _physics_process(_delta):
 		egg.position.y += egg.speed * slowMo
 		if egg.position.y > lowerBounds:
 			egg.queue_free()
-			if (egg.id != myid && egg.id != 99) || eggTarget == null: return
+			if eggTarget == null || (egg.id != myid && egg.id != 99): return
 			if !Global.online:
 				if !botMode:
 					if !eggQueue:

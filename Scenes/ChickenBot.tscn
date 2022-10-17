@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scripts/ChickenBot.cs" type="Script" id=1]
 [ext_resource path="res://Sprites/Chickens/Chicken.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/Items/Shield.png" type="Texture" id=3]
 
 [sub_resource type="CircleShape2D" id=7]
 radius = 12.0
@@ -18,6 +19,11 @@ script = ExtResource( 1 )
 position = Vector2( -1, 1.25 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 2 )
+
+[node name="Shield" type="Sprite" parent="Sprite"]
+visible = false
+position = Vector2( 1.66666, -4.08334 )
+texture = ExtResource( 3 )
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_mask = 6

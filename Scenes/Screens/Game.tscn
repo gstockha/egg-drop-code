@@ -383,16 +383,23 @@ hdr = false
 usage = 0
 render_target_update_mode = 3
 
-[node name="PlayerBG" type="ColorRect" parent="PlayerContainer/Viewport"]
+[node name="PlayerBGBorder" type="ColorRect" parent="PlayerContainer/Viewport"]
 margin_right = 72.0
 margin_bottom = 100.0
 rect_scale = Vector2( 13.3776, 8.21125 )
-color = Color( 0.717647, 0.717647, 0.717647, 1 )
+
+[node name="PlayerBG" type="ColorRect" parent="PlayerContainer/Viewport"]
+margin_left = 9.5
+margin_top = 8.5
+margin_right = 79.8
+margin_bottom = 104.5
+rect_scale = Vector2( 13.3776, 8.21125 )
+color = Color( 0.780392, 0.780392, 0.780392, 1 )
 
 [node name="subBG" type="ColorRect" parent="PlayerContainer/Viewport/PlayerBG"]
-margin_right = 72.0
-margin_bottom = 100.0
-color = Color( 0.717647, 0.717647, 0.717647, 1 )
+margin_right = 70.3
+margin_bottom = 96.0
+color = Color( 0.780392, 0.780392, 0.780392, 1 )
 
 [node name="Playspace" parent="PlayerContainer/Viewport" instance=ExtResource( 9 )]
 
@@ -410,18 +417,25 @@ hdr = false
 usage = 0
 render_target_update_mode = 3
 
-[node name="EnemyBG" type="ColorRect" parent="EnemyContainer/Viewport"]
+[node name="EnemyBGBorder" type="ColorRect" parent="EnemyContainer/Viewport"]
 margin_right = 36.0
 margin_bottom = 50.0
 rect_scale = Vector2( 13.3776, 8.21125 )
-color = Color( 0.717647, 0.717647, 0.717647, 1 )
+
+[node name="EnemyBG" type="ColorRect" parent="EnemyContainer/Viewport"]
+margin_left = 6.0
+margin_top = 13.0
+margin_right = 41.0
+margin_bottom = 59.5
+rect_scale = Vector2( 13.3776, 8.21125 )
+color = Color( 0.780392, 0.780392, 0.780392, 1 )
 
 [node name="subBG" type="ColorRect" parent="EnemyContainer/Viewport/EnemyBG"]
 margin_left = -0.0747528
 margin_top = -0.974274
-margin_right = 35.9252
-margin_bottom = 49.0257
-color = Color( 0.717647, 0.717647, 0.717647, 1 )
+margin_right = 34.9252
+margin_bottom = 45.5257
+color = Color( 0.780392, 0.780392, 0.780392, 1 )
 
 [node name="Enemyspace" parent="EnemyContainer/Viewport" instance=ExtResource( 2 )]
 
@@ -773,15 +787,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 60.99
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate1" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate2" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 32.0
@@ -927,15 +940,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate2" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate3" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 64.0
@@ -1084,15 +1096,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate3" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate4" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 96.0
@@ -1241,15 +1252,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate4" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate5" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 128.0
@@ -1398,15 +1408,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate5" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate6" type="Label" parent="NamePlates/ScoresTop"]
 margin_top = 160.0
@@ -1555,15 +1564,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate6" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="ScoresBottom" type="VBoxContainer" parent="NamePlates"]
 anchor_left = 0.665
@@ -1718,15 +1726,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate1" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate2" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 32.0
@@ -1874,15 +1881,14 @@ margin_right = 1191.12
 margin_bottom = 66.0
 texture = ExtResource( 12 )
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate2" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate3" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 64.0
@@ -2031,15 +2037,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate3" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate4" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 96.0
@@ -2188,15 +2193,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate4" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate5" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 128.0
@@ -2345,15 +2349,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate5" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="NamePlate6" type="Label" parent="NamePlates/ScoresBottom"]
 margin_top = 160.0
@@ -2502,15 +2505,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6"]
-margin_left = 185.0
-margin_top = -2.0
-margin_right = 249.0
-margin_bottom = 62.0
-rect_scale = Vector2( 0.5, 0.5 )
-stretch_mode = 4
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate6" instance=ExtResource( 11 )]
+
+[node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6"]
+margin_left = 160.0
+margin_top = -32.0
+margin_right = 256.0
+margin_bottom = 64.0
+stretch_mode = 4
 
 [node name="Arrows" type="Control" parent="NamePlates"]
 anchor_left = 0.665

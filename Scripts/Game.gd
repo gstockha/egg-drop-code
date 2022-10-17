@@ -7,6 +7,7 @@ var statusLabels = []
 var playerStats = []
 var barKeys = []
 var heartIcons = []
+var powerIcons = []
 var botIsSpawned = true
 var enemySpace = preload("res://Scenes/Enemyspace.tscn")
 var deadChicken = preload("res://Sprites/Chickens/DeadChicken.png")
@@ -21,12 +22,16 @@ var gameTime = 0
 var recordedTime = null
 var hudRefresh = 0
 var offsetIds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+var powerups = {"shrink": preload("res://Sprites/Items/Shrink.png"), "shield": preload("res://Sprites/Items/ShieldItem.png"),
+"gun": preload("res://Sprites/Items/CornGun.png"), "butter": preload("res://Sprites/Items/Butter.png")}
 onready var gameOverLabels = {"BG": $GameOverBG, "label": $GameOverBG/Label,
 "sublabel": $GameOverBG/SubLabel, "subsub": $GameOverBG/SubSubLabel}
 onready var hud = {"timer": $BottomHUD/Timer, "eggs": $BottomHUD/SentLabel, "laid": $BottomHUD/LaidLabel,
 "shelled": $BottomHUD/ShelledLabel, "powerbar": $BottomHUD/PowerBar, "levelegg": $BottomHUD/LevelEgg, "level": $BottomHUD/LevelLabel}
 onready var playerBG = get_node("PlayerContainer/Viewport/PlayerBG")
+onready var playerBorder = get_node("PlayerContainer/Viewport/PlayerBGBorder")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
+onready var enemyBorder = get_node("EnemyContainer/Viewport/EnemyBGBorder")
 onready var player = $PlayerContainer/Viewport/Playspace/Chicken
 
 func _ready():
@@ -47,12 +52,14 @@ func _ready():
 			statusLabels.append(get_node("NamePlates/ScoresTop/NamePlate" + str(i) + "/StatusLabel"))
 			heartIcons.append(get_node("NamePlates/ScoresTop/NamePlate" 
 			+ str(i) + "/Hearts/HeartIconActives").get_children())
+			powerIcons.append(get_node("NamePlates/ScoresTop/NamePlate" + str(i) + "/Powerup"))
 		else:
 			colorPlates.append(get_node("NamePlates/ScoresBottom/NamePlate" + str(i-6)))
 			namePlates.append(get_node("NamePlates/ScoresBottom/NamePlate" + str(i-6) + "/Name"))
 			statusLabels.append(get_node("NamePlates/ScoresBottom/NamePlate" + str(i-6) + "/StatusLabel"))
 			heartIcons.append(get_node("NamePlates/ScoresBottom/NamePlate" 
 			+ str(i-6) + "/Hearts/HeartIconActives").get_children())
+			powerIcons.append(get_node("NamePlates/ScoresBottom/NamePlate" + str(i-6) + "/Powerup"))
 	nameArrows = get_node("NamePlates/Arrows").get_children()
 	#create nameplate offset
 	var offset = 0
@@ -81,7 +88,9 @@ func _ready():
 		namePlates[offsetIds[i]].text = Global.botNameMap[i]
 	#paint the player and target back grounds
 	playerBG.modulate = Global.colorIdMap[Global.id]
+	playerBorder.modulate = Global.colorIdMap[Global.id]
 	enemyBG.modulate = Global.colorIdMap[Global.eid]
+	enemyBorder.modulate = Global.colorIdMap[Global.eid]
 	#assign status labels
 	statusLabels[offsetIds[Global.id]].text = '[YOU]'
 	statusLabels[offsetIds[Global.eid]].text = '[TARGET]'
@@ -101,12 +110,12 @@ func _input(event):
 
 func _process(delta):
 	if botCount > 0: #make fake health changes
-		botDamageBuffer += delta * botCount * (.00005 + ((Global.level + 1) * .00005))
+		botDamageBuffer += delta * botCount * (.5 + ((Global.level + 1) * .00005))
 		if randf() < botDamageBuffer:
 			botDamageBuffer = 0
 			var randId = round(rand_range(0,11))
 			var tries = 0
-			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1:
+			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1 || randId == Global.sid:
 				randId = randId + 1 if randId + 1 < 12 else 0
 				tries += 1
 				if tries > 12: break
@@ -114,7 +123,7 @@ func _process(delta):
 				var choice = -1 if randf() < .75 else 1
 				registerHealth(randId, 99, playerStats[randId]["health"] + choice)
 	if !botIsSpawned:
-		if $EnemyContainer/Viewport.get_child_count() > 1: return
+		if $EnemyContainer/Viewport.get_child_count() > 2: return
 		if playerStats[Global.eid]["bot"]: makeBot()
 		botIsSpawned = true
 		if !Global.playerDead:
@@ -135,6 +144,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 		delayed.stop()
 		delayed.queue_free()
 	playerStats[id]["health"] = 0
+	powerIcons[offsetIds[id]].visible = false
 	heartIcons[offsetIds[id]][0].get_parent().visible = false
 	colorPlates[offsetIds[id]].self_modulate.a = .3
 	namePlates[offsetIds[id]].self_modulate.a = .5
@@ -158,7 +168,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 			return
 	if id == Global.eid: Global.eid = findNewTarget(id, true, true) #seek new target
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
-	if Global.eid == Global.sid: #turn off bot egg
+	if Global.eid == Global.sid:
 		eggParent.botReceive = false
 		$EnemyContainer/Viewport/Enemyspace/EggParent.eggTarget = eggParent
 
@@ -252,6 +262,7 @@ func makeBot() -> void:
 	botIsSpawned = true
 	$EnemyContainer/Viewport.add_child(enemySpace.instance())
 	enemyBG.modulate = playerStats[Global.eid]["color"]
+	enemyBorder.modulate = playerStats[Global.eid]["color"]
 	eggParent.eggTarget = $EnemyContainer/Viewport/Enemyspace/EggParent
 	if playerStats[Global.eid]["bot"]:
 		var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot
@@ -273,6 +284,7 @@ func makeBot() -> void:
 		var eggP = $EnemyContainer/Viewport/Enemyspace/EggParent
 		var myEnemy = findNewTarget(Global.eid, false, false)
 		eggP.botIsAbove = myEnemy != Global.id
+		if Global.sid == Global.eid: eggP.eggTarget = eggParent
 		var chickenY = chicken.position.y
 		var yroll
 		for _i in range(rand_range(2 + (1 * Global.level), 8 + (3 * Global.level))):
@@ -284,6 +296,8 @@ func calculateGameTime() -> String:
 	var lev = Global.level
 	Global.level = clamp(floor(gameTime / (60 - (Global.difficulty * 10))), 0, 5)
 	if lev != Global.level:
+		$PlayerContainer/Viewport/Playspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
+		$EnemyContainer/Viewport/Enemyspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
 		eggParent.eggRateLevelStr = str(Global.level)
 		hud["level"].text = str(Global.level+1)
 		var clr = Color.deeppink
@@ -309,3 +323,9 @@ func calculateGameTime() -> String:
 	var timerr = mins + ":"
 	timerr += str(secs) if secs > 9 else "0" + str(secs)
 	return timerr
+
+func setPowerupIcon(id: int, type: String) -> void:
+	if type == "": powerIcons[offsetIds[id]].visible = false
+	else:
+		powerIcons[offsetIds[id]].visible = true
+		powerIcons[offsetIds[id]].texture = powerups[type]

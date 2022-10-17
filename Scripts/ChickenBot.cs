@@ -9,11 +9,13 @@ Vector2 baseSpriteScale, baseScale, velocity, calcMove, shoveVel = Vector2.Zero;
 float speed = 200;
 float momentum, eggCooldown, screenShake, moveCooldown, shakeTimer, gravity = 0;
 float baseWeight, weight = .007F;
+float eggSpdBoost = 1;
 float[] shoveCounter = new float[] {0,0};
 float[] dir = new float[] {0,0};
 float[] dirListx = new float[12];
 float[] dirListy = new float[12];
-bool idle, invincible, onFloor = false;
+float[] powerupDir = new float[] {0,0};
+bool idle, invincible, powerup, shielded, onFloor = false;
 int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
 int moveRate = 12;
@@ -21,9 +23,10 @@ int maxEggs = 25;
 int health = 6;
 int id = 99;
 int lastHitId = 99;
-Sprite sprite;
+Sprite shield, sprite;
 Timer invTimer;
 Node2D eggParent, itemParent, gameSpace;
+Node2D gun = null;
 RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
@@ -31,12 +34,16 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 Node Global;
 // TextureRect[] heartIcons = new TextureRect[6];
 Control game;
-// Control eggBar;
+Area2D hitbox;
+CollisionShape2D collisionBox;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     Global = GetNode<Node>("/root/Global");
     sprite = GetNode<Sprite>("Sprite");
+    shield = GetNode<Sprite>("Sprite/Shield");
+    hitbox = GetNode<Area2D>("Hitbox");
+    collisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
     gameSpace = (Node2D)GetParent();
@@ -77,11 +84,16 @@ public override void _Ready(){
     invTimer = GetNode<Timer>("Invincible");
 }
 
-public override void _PhysicsProcess(float _delta){
+public override void _PhysicsProcess(float delta){
     Move();
     WallCheck();
     Squish(baseSpriteScale);
     ScreenShake();
+    if (powerup){
+        powerupDir[0] -= delta;
+        powerup = powerupDir[0] > 0;
+        if (!powerup) ResetPowerups();
+    }
 }
 
 public void Move(){
@@ -290,7 +302,7 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
         targetList[i] = dirChange * bounce;
     }
     float squishPower = power;
-    if (invTime != 0){
+    if (invTime != 0 && !shielded){
         invincible = true;
         invTimer.Start(invTime);
         squishPower += 200;
@@ -337,7 +349,7 @@ public void MakeEgg(bool automatic){
         return;
     }
     eggCount --;
-    eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))));
+    eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))), eggSpdBoost);
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;
         eggs[i] = eggs[i+1];
@@ -410,13 +422,15 @@ public void _on_Hitbox_area_entered(Node body){
             int eggId = (int)body.Get("id");
             if (invincible || eggId == id) return;
             knockb = (float)body.Get("knockback");
-            health -= (int)body.Get("damage");
-            if (eggId != 99) lastHitId = eggId;
-            body.QueueFree();
-            if (health < 1) health = 0;
-            game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
-            itemParent.Set("playerHealth", health);
+            if (!shielded){
+                health -= (int)body.Get("damage");
+                if (eggId != 99) lastHitId = eggId;
+                if (health < 1) health = 0;
+                game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
+                itemParent.Set("playerHealth", health);
+            }
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
+            body.QueueFree();
             break;
         case "food":
             if (eatBuffer > 0) return;
@@ -450,6 +464,61 @@ public void _on_Hitbox_area_entered(Node body){
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             break;
+        case "powerups":
+            type = (string)body.Get("type");
+            Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
+            powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
+            if (powerup) ResetPowerups();
+            if (type == "butter"){
+                eggSpdBoost = 1.5F;
+                powerupDir[0] = 5;
+                sprite.Modulate = Godot.Colors.Yellow;
+            }
+            else if (type == "shield"){
+                powerupDir[0] = 8;
+                shielded = true;
+                shield.Visible = true;
+            }
+            else if (type == "shrink"){
+                powerupDir[0] = 15;
+                baseSpriteScale = new Vector2(.3F, .3F);
+                collisionBox.Scale *= .5F;
+                hitbox.Scale *= .5F;
+            }
+            else if (type == "gun"){
+                powerupDir[0] = 12;
+                itemParent.Call("spawnGun");
+            }
+            else if (type == "wildcard") eggParent.Call("activateWildcard");
+            if (powerup){
+                powerupDir[1] = powerupDir[0];
+                game.Call("setPowerupIcon", id, type);
+            }
+            body.QueueFree();
+            break;
+    }
+}
+
+public void ResetPowerups(){
+    game.Call("setPowerupIcon", id, "");
+    powerupDir[0] = 0;
+    powerupDir[1] = 0;
+    if (eggSpdBoost != 1){
+        eggSpdBoost = 1;
+        sprite.Modulate = Godot.Colors.White;
+    }
+    else if (shielded){
+        shielded = false;
+        shield.Visible = false;
+    }
+    else if (baseSpriteScale.x < .6F){
+        baseSpriteScale = new Vector2(.6F, .6F);
+        collisionBox.Scale *= 2;
+        hitbox.Scale *= 2;
+    }
+    else if (gun != null){
+        gun.QueueFree();
+        gun = null;
     }
 }
 
