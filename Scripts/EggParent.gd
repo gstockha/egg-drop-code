@@ -23,9 +23,9 @@ var eggRates = {
 }
 var eggRateLevelStr = "0"
 var eggTypes = {
-	"normal": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1 },
-	"fast": { "speed": 3.2, "size": 1, "knockback": 100.0, "damage": 1 },
-	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1 }
+	"normal": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2 },
+	"fast": { "speed": 3.2, "size": 1, "knockback": 100.0, "damage": 1, "hp": 1 },
+	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1, "hp": 4 }
 }
 var lowerBounds = 850
 var spawnRange = Vector2.ZERO
@@ -114,6 +114,7 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	egg.spdBoost = eggSpdBoost
 	egg.knockback = typeKey["knockback"]
 	egg.damage = typeKey["damage"]
+	egg.hp = typeKey["hp"]
 	egg.id = id
 	egg.position = pos
 	if id != 99:
@@ -143,3 +144,13 @@ func releaseEggQueue(timer: Timer = null):
 	game.add_child(queueTimer)
 	queueTimer.connect("timeout", self, "releaseEggQueue", [queueTimer])
 	queueTimer.start(eggInfo[3])
+
+func activateWildcard() -> void:
+	var egg
+	var clr = Global.colorIdMap[myid]
+	for i in range(len(get_children())):
+		egg = get_child(i)
+		if egg.id == myid: continue
+		egg.id = myid
+		egg.sprite.modulate = clr
+		egg.speed *= 1.5

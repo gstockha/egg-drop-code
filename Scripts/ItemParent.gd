@@ -12,6 +12,7 @@ var playerHealth = 6
 var spawnRange = null
 var ybounds = []
 var adj = 100
+var Gun = preload("res://Scenes/CornGun.tscn")
 var items = {
 	"food": preload("res://Scenes/Corn.tscn"), "health": preload("res://Scenes/Health.tscn"),
 	"power": preload("res://Scenes/Powerup.tscn")
@@ -98,7 +99,6 @@ func getItemType() -> String: #food, health, or powerup
 	return "food"
 
 func getPowerType() -> String:
-	return 'butter'
 	var roll = randi() % 100 + 1
 	if roll <= 5 + (Global.level * 2): return "wildcard"
 	if roll <= 20 + (Global.level * 2): return "gun"
@@ -113,3 +113,9 @@ func getCornType() -> String:
 		return "three"
 	if roll <= 85: return "fast"
 	return "big"
+
+func spawnGun() -> void:
+	var gun = Gun.instance()
+	get_parent().add_child(gun)
+	gun.plr = player
+	player.gun = gun
