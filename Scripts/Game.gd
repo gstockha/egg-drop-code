@@ -27,7 +27,8 @@ var powerups = {"shrink": preload("res://Sprites/Items/Shrink.png"), "shield": p
 onready var gameOverLabels = {"BG": $GameOverBG, "label": $GameOverBG/Label,
 "sublabel": $GameOverBG/SubLabel, "subsub": $GameOverBG/SubSubLabel}
 onready var hud = {"timer": $BottomHUD/Timer, "eggs": $BottomHUD/SentLabel, "laid": $BottomHUD/LaidLabel,
-"shelled": $BottomHUD/ShelledLabel, "powerbar": $BottomHUD/PowerBar, "levelegg": $BottomHUD/LevelEgg, "level": $BottomHUD/LevelLabel}
+"shelled": $BottomHUD/ShelledLabel, "powerbar": $BottomHUD/PowerBar,
+"levelegg": $BottomHUD/LevelEgg, "level": $BottomHUD/LevelLabel}
 onready var playerBG = get_node("PlayerContainer/Viewport/PlayerBG")
 onready var playerBorder = get_node("PlayerContainer/Viewport/PlayerBGBorder")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
@@ -81,7 +82,8 @@ func _ready():
 	#nameplates
 	for i in range(12):
 		if i != Global.id: botCount += 1
-		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i], "health": 6, "bot": i != Global.id})
+		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i],
+		"health": 6, "bot": i != Global.id})
 		barKeys.append(i)
 		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
@@ -110,12 +112,12 @@ func _input(event):
 
 func _process(delta):
 	if botCount > 0: #make fake health changes
-		botDamageBuffer += delta * botCount * (.5 + ((Global.level + 1) * .00005))
+		botDamageBuffer += delta * botCount * (.00005 + ((Global.level + 1) * .00005))
 		if randf() < botDamageBuffer:
 			botDamageBuffer = 0
 			var randId = round(rand_range(0,11))
 			var tries = 0
-			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1 || randId == Global.sid:
+			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1:
 				randId = randId + 1 if randId + 1 < 12 else 0
 				tries += 1
 				if tries > 12: break
@@ -266,7 +268,8 @@ func makeBot() -> void:
 	eggParent.eggTarget = $EnemyContainer/Viewport/Enemyspace/EggParent
 	if playerStats[Global.eid]["bot"]:
 		var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		chicken.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10), chicken.position.y + rand_range(-20,20))
+		chicken.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
+		chicken.position.y + rand_range(-20,20))
 		var eggRoll = randi() % 100 + 1
 		if eggRoll < 75: eggRoll = round(rand_range(0,5))
 		else: eggRoll = round(rand_range(5,20))

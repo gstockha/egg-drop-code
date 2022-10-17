@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=58 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
@@ -6,8 +6,6 @@
 [ext_resource path="res://Sprites/Menu/Gear.png" type="Texture" id=4]
 [ext_resource path="res://Sprites/Eggs/Egg.png" type="Texture" id=5]
 [ext_resource path="res://Fonts/baloo/Baloo-Regular.ttf" type="DynamicFontData" id=6]
-[ext_resource path="res://Scenes/UI/SoundsLabel.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Scenes/UI/MusicLabel.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scenes/UI/ExitButton.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/UI/StatusLabel.tscn" type="PackedScene" id=11]
@@ -158,6 +156,96 @@ outline_color = Color( 0, 0, 0, 1 )
 extra_spacing_bottom = -4
 extra_spacing_char = -2
 font_data = ExtResource( 6 )
+
+[sub_resource type="StyleBoxFlat" id=37]
+bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="DynamicFont" id=38]
+size = 42
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+extra_spacing_char = -2
+font_data = ExtResource( 6 )
+
+[sub_resource type="MeshTexture" id=14]
+
+[sub_resource type="MeshTexture" id=39]
+
+[sub_resource type="MeshTexture" id=40]
+
+[sub_resource type="MeshTexture" id=41]
+
+[sub_resource type="StyleBoxFlat" id=42]
+bg_color = Color( 0, 1, 0.835294, 1 )
+border_width_left = 2
+border_width_top = 1
+border_width_right = 2
+border_width_bottom = 1
+border_color = Color( 0.0196078, 0.670588, 0.564706, 1 )
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id=43]
+bg_color = Color( 0.164706, 0.807843, 0.701961, 1 )
+border_width_left = 2
+border_width_top = 1
+border_width_right = 2
+border_width_bottom = 1
+border_color = Color( 0.0196078, 0.670588, 0.564706, 1 )
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="DynamicFont" id=22]
+size = 42
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+extra_spacing_char = -2
+font_data = ExtResource( 6 )
+
+[sub_resource type="MeshTexture" id=44]
+
+[sub_resource type="MeshTexture" id=45]
+
+[sub_resource type="MeshTexture" id=46]
+
+[sub_resource type="MeshTexture" id=47]
+
+[sub_resource type="StyleBoxFlat" id=48]
+bg_color = Color( 0, 1, 0.835294, 1 )
+border_width_left = 2
+border_width_top = 1
+border_width_right = 2
+border_width_bottom = 1
+border_color = Color( 0.0196078, 0.670588, 0.564706, 1 )
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id=28]
+bg_color = Color( 0.164706, 0.807843, 0.701961, 1 )
+border_width_left = 2
+border_width_top = 1
+border_width_right = 2
+border_width_bottom = 1
+border_color = Color( 0.0196078, 0.670588, 0.564706, 1 )
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id=49]
+bg_color = Color( 1, 1, 1, 0 )
 
 [node name="Game" type="Control"]
 anchor_left = 0.026
@@ -2893,30 +2981,91 @@ margin_left = 537.5
 margin_top = 293.0
 margin_right = 1030.5
 margin_bottom = 394.0
-focus_mode = 0
+focus_neighbour_top = NodePath("../ExitButton")
+focus_neighbour_bottom = NodePath("../SoundsLabel/SoundSlider")
 custom_colors/font_color_disabled = Color( 0, 0, 0, 1 )
 custom_colors/font_color_focus = Color( 0.980392, 1, 0.243137, 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_hover = Color( 0.980392, 1, 0.243137, 1 )
 custom_colors/font_color_pressed = Color( 1, 0.713726, 0.0862745, 1 )
 custom_fonts/font = SubResource( 31 )
-enabled_focus_mode = 0
+custom_styles/focus = SubResource( 37 )
 text = "CONTINUE"
 flat = true
 
-[node name="SoundsLabel" parent="Menu" instance=ExtResource( 7 )]
+[node name="SoundsLabel" type="Label" parent="Menu"]
+margin_left = 564.0
 margin_top = 383.0
+margin_right = 715.0
 margin_bottom = 447.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 38 )
+text = "SOUNDS"
+align = 1
+valign = 1
 
-[node name="MusicLabel" parent="Menu" instance=ExtResource( 8 )]
+[node name="SoundSlider" type="HSlider" parent="Menu/SoundsLabel"]
+margin_left = 165.0
+margin_top = 10.0
+margin_right = 429.767
+margin_bottom = 40.0
+rect_scale = Vector2( 1, 1.5 )
+focus_neighbour_top = NodePath("../../MainButton")
+focus_neighbour_bottom = NodePath("../../ExitButton")
+size_flags_vertical = 3
+custom_icons/tick = SubResource( 14 )
+custom_icons/grabber_disabled = SubResource( 39 )
+custom_icons/grabber_highlight = SubResource( 40 )
+custom_icons/grabber = SubResource( 41 )
+custom_styles/grabber_area_highlight = SubResource( 42 )
+custom_styles/grabber_area = SubResource( 43 )
+min_value = -100.0
+step = 10.0
+
+[node name="MusicLabel" type="Label" parent="Menu"]
+margin_left = 564.0
 margin_top = 437.0
+margin_right = 715.0
 margin_bottom = 501.0
+custom_colors/font_color = Color( 0.603922, 0.603922, 0.603922, 1 )
+custom_fonts/font = SubResource( 22 )
+text = "MUSIC"
+align = 2
+valign = 1
+
+[node name="MusicSlider" type="HSlider" parent="Menu/MusicLabel"]
+margin_left = 165.0
+margin_top = 10.0
+margin_right = 429.767
+margin_bottom = 40.0
+rect_scale = Vector2( 1, 1.5 )
+size_flags_vertical = 3
+custom_icons/tick = SubResource( 44 )
+custom_icons/grabber_disabled = SubResource( 45 )
+custom_icons/grabber_highlight = SubResource( 46 )
+custom_icons/grabber = SubResource( 47 )
+custom_styles/grabber_area_highlight = SubResource( 48 )
+custom_styles/grabber_area = SubResource( 28 )
+min_value = -100.0
+step = 10.0
+value = -100.0
+editable = false
+scrollable = false
 
 [node name="ExitButton" parent="Menu" instance=ExtResource( 10 )]
 margin_top = 493.0
 margin_bottom = 594.0
+focus_neighbour_top = NodePath("../SoundsLabel/SoundSlider")
+focus_neighbour_bottom = NodePath("../MainButton")
+focus_mode = 2
+custom_styles/focus = SubResource( 49 )
+enabled_focus_mode = 2
 
 [connection signal="button_up" from="FullscreenButton" to="Menu" method="_on_FullscreenButton_button_up"]
 [connection signal="button_down" from="MenuButton" to="Menu" method="_on_MenuButton_button_down"]
 [connection signal="button_up" from="Menu/MainButton" to="Menu" method="_on_MainButton_button_up"]
+[connection signal="focus_entered" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_entered"]
+[connection signal="focus_exited" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_exited"]
+[connection signal="focus_entered" from="Menu/MusicLabel/MusicSlider" to="Menu" method="_on_MusicSlider_focus_entered"]
+[connection signal="focus_exited" from="Menu/MusicLabel/MusicSlider" to="Menu" method="_on_MusicSlider_focus_exited"]
 [connection signal="button_down" from="Menu/ExitButton" to="Menu" method="_on_ExitButton_button_down"]

@@ -10,7 +10,7 @@ var lastText = ''
 func _ready():
 	difficultyButton.selected = Global.difficulty
 	nameEdit.text = Global.playerName
-	nameEdit.get_parent().self_modulate = Global.colorIdMap[Global.id]
+	$PreferredColor.self_modulate = Global.colorIdMap[Global.id]
 	lastText = nameEdit.text
 	for child in nameEdit.get_children():
 		if child is VScrollBar:
@@ -23,6 +23,7 @@ func _on_NameEdit_text_changed():
 	else: lastText = nameEdit.text
 
 func _on_NameEdit_focus_entered():
+	$NameLabel.self_modulate = Color('faff3e')
 	if !default: return
 	default = false
 	nameEdit.text = ''
@@ -36,3 +37,16 @@ func _on_BeginButton_button_up():
 	Global.difficulty = difficultyButton.selected
 	transition.transition("fade_to_black")
 	transition.screen = 'title'
+
+func _on_DifficultyButton_focus_entered():
+	$DifficultyLabel.self_modulate = Color('faff3e')
+
+func _on_DifficultyButton_focus_exited():
+	$DifficultyLabel.self_modulate = Color.white
+
+func _on_NameEdit_focus_exited():
+	$NameLabel.self_modulate = Color.white
+	if nameEdit.text == '':
+		nameEdit.text = 'You'
+		default = true
+
