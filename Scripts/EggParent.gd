@@ -60,7 +60,7 @@ func _process(delta):
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 		if botMode && !Global.playerDead:
-			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 5
+			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 5 + Global.difficulty
 			eggTimer += rateBuffer
 		elif !botReceive && botIsAbove:
 			if Global.sid == Global.eid: return
@@ -73,7 +73,7 @@ func _process(delta):
 	elif botReceive:
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
-			rateBuffer -= rand_range(3,6)
+			rateBuffer -= rand_range(3,6) - (Global.difficulty * .5)
 			var choice = [-1,1]
 			botReceiveLoc += rand_range(.01,.25) * choice[randi() % 2]
 			while botReceiveLoc < 0.01 || botReceiveLoc > 1:
@@ -98,7 +98,7 @@ func _physics_process(_delta):
 					elif egg.id == myid:
 						eggQueueList.append([egg.id, egg.type,
 						Vector2(Global.botBounds.y*((egg.position.x-11)/960),0),
-						game.gameTime - eggQueueTime, egg.spdBoost])
+						egg.spdBoost, game.gameTime - eggQueueTime])
 						eggQueueTime = game.gameTime
 				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0), egg.spdBoost)
 #			else: #network
@@ -143,7 +143,7 @@ func releaseEggQueue(timer: Timer = null):
 	var queueTimer = Timer.new()
 	game.add_child(queueTimer)
 	queueTimer.connect("timeout", self, "releaseEggQueue", [queueTimer])
-	queueTimer.start(eggInfo[3])
+	queueTimer.start(eggInfo[4])
 
 func activateWildcard() -> void:
 	var egg

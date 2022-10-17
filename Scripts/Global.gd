@@ -76,4 +76,3 @@ func defaults() -> void:
 	win = null
 	menu = false
 	countdown = false
-	difficulty = 0

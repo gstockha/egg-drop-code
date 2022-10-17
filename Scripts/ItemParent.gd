@@ -118,4 +118,5 @@ func spawnGun() -> void:
 	var gun = Gun.instance()
 	get_parent().add_child(gun)
 	gun.plr = player
+	gun.id = player.id
 	player.gun = gun

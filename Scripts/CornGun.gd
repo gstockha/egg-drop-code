@@ -3,6 +3,7 @@ extends Node2D
 var cooldown = 0
 var right = false
 var Bullet = preload("res://Scenes/Bullet.tscn")
+var id = null
 
 var plr = null
 onready var par = get_parent()
@@ -16,5 +17,6 @@ func _physics_process(delta):
 		if right: bullet.global_position.x = plr.global_position.x + 15
 		else: bullet.global_position.x = plr.global_position.x - 15
 		bullet.global_position.y = plr.global_position.y
+		bullet.id = id
 		right = !right
 		plr.Squish(Vector2(plr.baseSpriteScale.x * 1.3, plr.baseSpriteScale.x * .7))

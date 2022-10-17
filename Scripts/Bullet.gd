@@ -1,6 +1,8 @@
 extends Area2D
+var id = null
 
 func _on_Bullet_area_entered(area):
+	if id == area.id: return
 	queue_free()
 	area.hp -= 1
 	if area.hp < 1: area.queue_free()
