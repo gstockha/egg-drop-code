@@ -410,9 +410,9 @@ texture = ExtResource( 17 )
 [node name="MuteButton" type="Button" parent="."]
 pause_mode = 2
 modulate = Color( 0.239216, 0.184314, 0.564706, 0.588235 )
-margin_left = 1475.0
+margin_left = 1473.0
 margin_top = 49.0
-margin_right = 1531.0
+margin_right = 1529.0
 margin_bottom = 105.0
 focus_mode = 0
 custom_styles/hover = SubResource( 34 )

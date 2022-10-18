@@ -297,7 +297,7 @@ func makeBot() -> void:
 
 func calculateGameTime() -> String:
 	var lev = Global.level
-	Global.level = clamp(floor(gameTime / (60 - (Global.difficulty * 10))), 0, 5)
+	Global.level = clamp(floor(gameTime / (90 - (Global.difficulty * 20))), 0, 5)
 	if lev != Global.level:
 		$PlayerContainer/Viewport/Playspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
 		$EnemyContainer/Viewport/Enemyspace/ItemParent.powerCooldown = 120 - (Global.level * 7)

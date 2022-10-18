@@ -353,22 +353,20 @@ margin_bottom = 294.0
 custom_fonts/font = ExtResource( 2 )
 text = "Name:"
 
-[node name="NameEdit" type="TextEdit" parent="PlayerOptions/NameLabel"]
+[node name="NameEdit" type="LineEdit" parent="PlayerOptions/NameLabel"]
 margin_left = 196.0
 margin_right = 986.0
 margin_bottom = 96.0
 focus_neighbour_top = NodePath("../../BackButton")
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_constants/line_spacing = 0
-custom_constants/completion_lines = 0
-custom_constants/completion_max_width = 0
-custom_constants/completion_scroll_width = 0
 custom_fonts/font = ExtResource( 2 )
 custom_styles/focus = SubResource( 7 )
 custom_styles/normal = SubResource( 8 )
 text = "You"
-caret_block_mode = true
+max_length = 12
+context_menu_enabled = false
 caret_blink = true
+caret_blink_speed = 1.0
 
 [node name="PreferredColor" type="Label" parent="PlayerOptions"]
 anchor_left = 0.5
@@ -479,8 +477,8 @@ flat = true
 [node name="MuteButton" type="Button" parent="."]
 pause_mode = 2
 modulate = Color( 0.239216, 0.184314, 0.564706, 0.588235 )
-margin_left = 1512.0
-margin_right = 1568.0
+margin_left = 1510.0
+margin_right = 1566.0
 margin_bottom = 56.0
 focus_mode = 0
 custom_styles/hover = SubResource( 11 )
@@ -516,7 +514,6 @@ expand_icon = true
 [connection signal="button_down" from="TitleOptions/ExitButton" to="TitleOptions" method="_on_ExitButton_button_down"]
 [connection signal="focus_entered" from="PlayerOptions/NameLabel/NameEdit" to="PlayerOptions" method="_on_NameEdit_focus_entered"]
 [connection signal="focus_exited" from="PlayerOptions/NameLabel/NameEdit" to="PlayerOptions" method="_on_NameEdit_focus_exited"]
-[connection signal="text_changed" from="PlayerOptions/NameLabel/NameEdit" to="PlayerOptions" method="_on_NameEdit_text_changed"]
 [connection signal="focus_entered" from="PlayerOptions/DifficultyLabel/DifficultyButton" to="PlayerOptions" method="_on_DifficultyButton_focus_entered"]
 [connection signal="focus_exited" from="PlayerOptions/DifficultyLabel/DifficultyButton" to="PlayerOptions" method="_on_DifficultyButton_focus_exited"]
 [connection signal="button_up" from="PlayerOptions/BackButton" to="PlayerOptions" method="_on_BackButton_button_up"]

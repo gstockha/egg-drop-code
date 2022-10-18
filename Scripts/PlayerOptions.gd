@@ -13,14 +13,8 @@ func _ready():
 	$PreferredColor.self_modulate = Global.colorIdMap[Global.id]
 	lastText = nameEdit.text
 	for child in nameEdit.get_children():
-		if child is VScrollBar:
-			nameEdit.remove_child(child)
-		elif child is HScrollBar:
-			nameEdit.remove_child(child)
-
-func _on_NameEdit_text_changed():
-	if nameEdit.text.length() > 12: nameEdit.text = lastText
-	else: lastText = nameEdit.text
+		if child is VScrollBar: nameEdit.remove_child(child)
+		elif child is HScrollBar: nameEdit.remove_child(child)
 
 func _on_NameEdit_focus_entered():
 	$NameLabel.self_modulate = Color('faff3e')
@@ -49,4 +43,3 @@ func _on_NameEdit_focus_exited():
 	if nameEdit.text == '':
 		nameEdit.text = 'You'
 		default = true
-

@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fctAmaHGZ1pEeFgXzvbvpr+T++GyL1cIDmJFWvnMX766tgNPlHFBPNKyAzc/O5ajx03GkJso0laMQJVveH+cuQ==",
+  "dgSpecHash": "g97nLg+jayKCOsvjq4yWpRUSNARo38Xyd83I1w6rl/dGgiGIraDG0zNgW3ECTN1PtEQEtmHURD5R2a9znNrrAQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\AAAAAAA\\Desktop\\godotprojects\\EGG DROP\\EGG DROP.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\AAAAAAA\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.2\\microsoft.netframework.referenceassemblies.1.0.2.nupkg.sha512",
-    "C:\\Users\\AAAAAAA\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net472\\1.0.2\\microsoft.netframework.referenceassemblies.net472.1.0.2.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\George Stockhammer\\Desktop\\EGG-DROP\\EGG DROP.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
