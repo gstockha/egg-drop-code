@@ -274,7 +274,7 @@ func makeBot() -> void:
 		if eggRoll < 75: eggRoll = round(rand_range(0,5))
 		else: eggRoll = round(rand_range(5,20))
 		chicken.eggCount = eggRoll
-		chicken.scale = Vector2(chicken.baseScale.x + (.05 * eggRoll), chicken.baseScale.y + (.05 * eggRoll))
+		chicken.scale = Vector2(chicken.baseScale.x + (.07 * eggRoll), chicken.baseScale.y + (.07 * eggRoll))
 		chicken.baseSpriteScale = chicken.sprite.scale
 		chicken.weight = chicken.baseWeight + (eggRoll * .0002)
 		chicken.health = playerStats[Global.eid]["health"]

@@ -330,7 +330,7 @@ public void EatFood(string type){
         eggCount ++;
     }
     sprite.Scale = baseSpriteScale;
-    Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
+    Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
@@ -356,7 +356,7 @@ public void MakeEgg(bool automatic){
         eggs[i+1] = null;
     }
     sprite.Scale = baseSpriteScale;
-    Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
+    Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));

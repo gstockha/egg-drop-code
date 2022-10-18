@@ -101,10 +101,10 @@ func getItemType() -> String: #food, health, or powerup
 func getPowerType() -> String:
 	var roll = randi() % 100 + 1
 	if roll <= 5 + (Global.level * 2): return "wildcard"
-	if roll <= 20 + (Global.level * 2): return "gun"
+	if roll <= 20 + (Global.level * 2): return "shield"
 	if roll <= 40 + Global.level: return "shrink"
 	if roll <= 70: return "butter"
-	return "shield"
+	return "gun"
 
 func getCornType() -> String:
 	var roll = randi() % 100 + 1
