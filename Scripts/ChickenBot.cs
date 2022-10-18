@@ -475,7 +475,7 @@ public void _on_Hitbox_area_entered(Node body){
                 sprite.Modulate = Godot.Colors.Yellow;
             }
             else if (type == "shield"){
-                powerupDir[0] = 8;
+                powerupDir[0] = 10;
                 shielded = true;
                 shield.Visible = true;
             }
