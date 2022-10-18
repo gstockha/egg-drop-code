@@ -228,7 +228,7 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
         invTimer.Start(invTime);
         squishPower += 200;
         screenShake = 15 + (power * .025F);
-        shakeTimer = screenShake * 1.3F;
+        shakeTimer = 25 + screenShake * 1.3F;
     }
     squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (squishPower / 200);
     if (squishAmount > .75F) squishAmount = .75F;
