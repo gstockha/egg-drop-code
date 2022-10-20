@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=2]
+[gd_scene load_steps=60 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
@@ -18,19 +18,6 @@
 [ext_resource path="res://Sprites/Chickens/DeadChicken.png" type="Texture" id=18]
 [ext_resource path="res://Scripts/Blurfix.gd" type="Script" id=19]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=20]
-
-[sub_resource type="StyleBoxFlat" id=34]
-bg_color = Color( 0.6, 0.6, 0.6, 0 )
-
-[sub_resource type="StreamTexture" id=35]
-flags = 4
-load_path = "res://.import/Speaker.png-f7b9aca197d30e5b7be70866d52484dc.stex"
-
-[sub_resource type="StyleBoxFlat" id=33]
-bg_color = Color( 0.6, 0.6, 0.6, 0 )
-
-[sub_resource type="StyleBoxFlat" id=32]
-bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -73,13 +60,13 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id=26]
-bg_color = Color( 1, 1, 1, 1 )
+bg_color = Color( 1, 1, 1, 0.882353 )
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id=36]
+[sub_resource type="StyleBoxFlat" id=52]
 bg_color = Color( 1, 1, 1, 0 )
 
 [sub_resource type="DynamicFont" id=18]
@@ -120,6 +107,22 @@ outline_size = 2
 outline_color = Color( 0.533333, 0.533333, 0.533333, 1 )
 extra_spacing_bottom = -4
 font_data = ExtResource( 6 )
+
+[sub_resource type="StyleBoxFlat" id=50]
+bg_color = Color( 1, 1, 1, 0.784314 )
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color( 0.811765, 0.811765, 0.811765, 1 )
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id=51]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
 [sub_resource type="DynamicFont" id=29]
 size = 62
@@ -246,6 +249,19 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id=49]
 bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="StyleBoxFlat" id=32]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[sub_resource type="StyleBoxFlat" id=33]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[sub_resource type="StyleBoxFlat" id=34]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[sub_resource type="StreamTexture" id=35]
+flags = 4
+load_path = "res://.import/Speaker.png-f7b9aca197d30e5b7be70866d52484dc.stex"
 
 [node name="Game" type="Control"]
 anchor_left = 0.026
@@ -406,56 +422,6 @@ modulate = Color( 1, 1, 1, 0.588235 )
 position = Vector2( 20, 578.333 )
 scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 17 )
-
-[node name="MuteButton" type="Button" parent="."]
-pause_mode = 2
-modulate = Color( 0.239216, 0.184314, 0.564706, 0.588235 )
-margin_left = 1473.0
-margin_top = 49.0
-margin_right = 1529.0
-margin_bottom = 105.0
-focus_mode = 0
-custom_styles/hover = SubResource( 34 )
-shortcut_in_tooltip = false
-action_mode = 0
-enabled_focus_mode = 0
-icon = SubResource( 35 )
-flat = true
-icon_align = 1
-expand_icon = true
-
-[node name="FullscreenButton" type="Button" parent="."]
-pause_mode = 2
-modulate = Color( 0.239216, 0.184314, 0.564706, 0.666667 )
-margin_left = 1467.0
-margin_top = 95.0
-margin_right = 1530.0
-margin_bottom = 157.0
-focus_mode = 0
-custom_styles/hover = SubResource( 33 )
-shortcut_in_tooltip = false
-action_mode = 0
-enabled_focus_mode = 0
-icon = ExtResource( 3 )
-flat = true
-expand_icon = true
-
-[node name="MenuButton" type="Button" parent="."]
-pause_mode = 2
-modulate = Color( 0.313726, 0.231373, 0.658824, 0.627451 )
-margin_left = 1470.0
-margin_top = 1.0
-margin_right = 1529.0
-margin_bottom = 54.0
-focus_mode = 0
-custom_styles/hover = SubResource( 32 )
-shortcut_in_tooltip = false
-action_mode = 0
-enabled_focus_mode = 0
-icon = ExtResource( 4 )
-flat = true
-icon_align = 1
-expand_icon = true
 
 [node name="PlayerContainer" type="ViewportContainer" parent="."]
 margin_left = 16.0
@@ -2720,7 +2686,7 @@ margin_right = 32.0
 margin_bottom = 32.0
 custom_styles/panel = SubResource( 17 )
 
-[node name="PowerBarBG" type="ProgressBar" parent="BottomHUD"]
+[node name="TimerBarBG" type="ProgressBar" parent="BottomHUD"]
 anchor_left = -5.0
 anchor_top = 1.087
 anchor_right = -5.0
@@ -2733,18 +2699,20 @@ rect_scale = Vector2( -1, 1 )
 custom_styles/bg = SubResource( 19 )
 percent_visible = false
 
-[node name="PowerBar" type="ProgressBar" parent="BottomHUD"]
+[node name="TimerBar" type="ProgressBar" parent="BottomHUD"]
+modulate = Color( 0.341176, 0.890196, 1, 1 )
 anchor_left = -5.0
 anchor_top = 1.087
 anchor_right = -5.0
 anchor_bottom = 1.087
-margin_left = 64.0
+margin_left = -196.0
 margin_top = -10.48
-margin_right = 324.0
+margin_right = 64.0
 margin_bottom = 9.52
-rect_scale = Vector2( -1, 1 )
 custom_styles/fg = SubResource( 26 )
-custom_styles/bg = SubResource( 36 )
+custom_styles/bg = SubResource( 52 )
+min_value = 1.0
+value = 1.0
 percent_visible = false
 
 [node name="Timer" type="Label" parent="BottomHUD"]
@@ -2866,6 +2834,18 @@ text = "1"
 align = 1
 valign = 1
 
+[node name="PowerBar" type="ProgressBar" parent="BottomHUD"]
+visible = false
+anchor_left = -22.6
+anchor_right = -22.6
+margin_left = -150.0
+margin_top = -30.0
+margin_right = 150.0
+margin_bottom = -16.0
+custom_styles/fg = SubResource( 50 )
+custom_styles/bg = SubResource( 51 )
+percent_visible = false
+
 [node name="GameOverBG" type="ColorRect" parent="."]
 visible = false
 margin_left = 16.0
@@ -2974,6 +2954,7 @@ anchor_top = 0.009
 anchor_bottom = 0.009
 margin_right = 1568.0
 margin_bottom = 880.0
+mouse_filter = 2
 color = Color( 0, 0, 0, 0.784314 )
 
 [node name="MainButton" type="Button" parent="Menu"]
@@ -3061,11 +3042,61 @@ focus_mode = 2
 custom_styles/focus = SubResource( 49 )
 enabled_focus_mode = 2
 
-[connection signal="button_up" from="FullscreenButton" to="Menu" method="_on_FullscreenButton_button_up"]
-[connection signal="button_down" from="MenuButton" to="Menu" method="_on_MenuButton_button_down"]
+[node name="MenuButton" type="Button" parent="."]
+pause_mode = 2
+modulate = Color( 0.313726, 0.231373, 0.658824, 0.627451 )
+margin_left = 1470.0
+margin_top = 1.0
+margin_right = 1529.0
+margin_bottom = 54.0
+focus_mode = 0
+custom_styles/hover = SubResource( 32 )
+shortcut_in_tooltip = false
+action_mode = 0
+enabled_focus_mode = 0
+icon = ExtResource( 4 )
+flat = true
+icon_align = 1
+expand_icon = true
+
+[node name="FullscreenButton" type="Button" parent="."]
+pause_mode = 2
+modulate = Color( 0.239216, 0.184314, 0.564706, 0.666667 )
+margin_left = 1467.0
+margin_top = 95.0
+margin_right = 1530.0
+margin_bottom = 157.0
+focus_mode = 0
+custom_styles/hover = SubResource( 33 )
+shortcut_in_tooltip = false
+action_mode = 0
+enabled_focus_mode = 0
+icon = ExtResource( 3 )
+flat = true
+expand_icon = true
+
+[node name="MuteButton" type="Button" parent="."]
+pause_mode = 2
+modulate = Color( 0.239216, 0.184314, 0.564706, 0.588235 )
+margin_left = 1473.0
+margin_top = 49.0
+margin_right = 1529.0
+margin_bottom = 105.0
+focus_mode = 0
+custom_styles/hover = SubResource( 34 )
+shortcut_in_tooltip = false
+action_mode = 0
+enabled_focus_mode = 0
+icon = SubResource( 35 )
+flat = true
+icon_align = 1
+expand_icon = true
+
 [connection signal="button_up" from="Menu/MainButton" to="Menu" method="_on_MainButton_button_up"]
 [connection signal="focus_entered" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_entered"]
 [connection signal="focus_exited" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_exited"]
 [connection signal="focus_entered" from="Menu/MusicLabel/MusicSlider" to="Menu" method="_on_MusicSlider_focus_entered"]
 [connection signal="focus_exited" from="Menu/MusicLabel/MusicSlider" to="Menu" method="_on_MusicSlider_focus_exited"]
 [connection signal="button_down" from="Menu/ExitButton" to="Menu" method="_on_ExitButton_button_down"]
+[connection signal="button_down" from="MenuButton" to="Menu" method="_on_MenuButton_button_down"]
+[connection signal="button_up" from="FullscreenButton" to="Menu" method="_on_FullscreenButton_button_up"]

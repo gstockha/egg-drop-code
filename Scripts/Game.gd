@@ -34,6 +34,7 @@ onready var playerBorder = get_node("PlayerContainer/Viewport/PlayerBGBorder")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
 onready var enemyBorder = get_node("EnemyContainer/Viewport/EnemyBGBorder")
 onready var player = $PlayerContainer/Viewport/Playspace/Chicken
+onready var timerBar = $BottomHUD/TimerBar
 
 func _ready():
 	randomize()
@@ -297,7 +298,9 @@ func makeBot() -> void:
 
 func calculateGameTime() -> String:
 	var lev = Global.level
-	Global.level = clamp(floor(gameTime / (90 - (Global.difficulty * 20))), 0, 5)
+	var timeBase = 90 - (Global.difficulty * 20) 
+	Global.level = clamp(floor(gameTime / timeBase), 0, 5)
+	timerBar.value = (((gameTime - (timeBase * Global.level)) / timeBase) * 100) + 1
 	if lev != Global.level:
 		$PlayerContainer/Viewport/Playspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
 		$EnemyContainer/Viewport/Enemyspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
@@ -319,6 +322,7 @@ func calculateGameTime() -> String:
 			eggClr = Color.pink
 		hud["level"].modulate = clr
 		hud["levelegg"].modulate = eggClr
+		timerBar.modulate = clr
 		$EnemyContainer/Viewport/Enemyspace/EggParent.eggRateLevelStr = str(Global.level)
 	var mins = int(gameTime) / 60
 	var secs = int(gameTime - (mins * 60))

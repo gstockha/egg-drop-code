@@ -410,17 +410,18 @@ public void _on_Hitbox_area_entered(Node body){
             else if (type == "shrink"){
                 powerupDir[0] = 15;
                 baseSpriteScale = new Vector2(.3F, .3F);
-                powerBar.Modulate = Godot.Colors.SkyBlue;
+                powerBar.Modulate = Godot.Colors.Cyan;
                 collisionBox.Scale *= .5F;
                 hitbox.Scale *= .5F;
             }
             else if (type == "gun"){
                 powerupDir[0] = 12;
-                powerBar.Modulate = Godot.Colors.GreenYellow;
+                powerBar.Modulate = Godot.Colors.Chartreuse;
                 itemParent.Call("spawnGun");
             }
             else if (type == "wildcard") eggParent.Call("activateWildcard");
             if (powerup){
+                powerBar.Visible = true;
                 powerupDir[1] = powerupDir[0];
                 game.Call("setPowerupIcon", id, type);
             }
@@ -433,6 +434,7 @@ public void ResetPowerups(){
     game.Call("setPowerupIcon", id, "");
     powerupDir[0] = 0;
     powerupDir[1] = 0;
+    powerBar.Visible = false;
     if (eggSpdBoost != 1){
         eggSpdBoost = 1;
         sprite.Modulate = Godot.Colors.White;
