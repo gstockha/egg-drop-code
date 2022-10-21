@@ -241,8 +241,9 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
 public void EatFood(string type){
     if (idle) return;
     if (eggCount >= maxEggs){
+        int eggCnt = eggCount;
         MakeEgg(true);
-        EatFood(type);
+        if (eggCnt != eggCount) EatFood(type);
         return;
     }
     else{

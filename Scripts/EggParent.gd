@@ -5,9 +5,11 @@ var eggTimer = 0
 var player = null
 var botMode = false #if this is the bot's eggparent
 var eggTarget = null #the enemy player bot node
-var rateBuffer = 0 #artifical egg drop lag for offline
-var botTimer = 60
-var botIsAbove = false
+var rateBuffer = 0 #artifical egg drop lag for offline, or artificial egg receive from invisible sending bots above
+var botTimer = 60 #artifical bot receive cooldown
+var botLayEgg = [false, 0,0] #bool, buffer, and timer
+var botEggCount = 0
+var botIsAbove = false #synoymous with not online + non-bot player
 var eggQueue = false #enabled when going from one bot to another
 var eggQueueList = []
 var eggQueueTime = 0
@@ -19,7 +21,7 @@ var eggRates = {
 	'2': [6,9.2],
 	'3': [4,7],
 	'4': [3,5.5],
-	'5': [1.5,3.5]
+	'5': [2,4]
 }
 var eggRateLevelStr = "0"
 var eggTypes = {
@@ -56,10 +58,11 @@ func _ready():
 			eggTypes[key]["size"] *= .5
 
 func _process(delta):
+	
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
-		if botMode && !Global.playerDead:
+		if botMode && !Global.playerDead: #bot's eggparent stop producing neutral eggs so much if receiving from above
 			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 5 + Global.difficulty
 			eggTimer += rateBuffer
 		elif !botReceive && botIsAbove:
@@ -70,7 +73,7 @@ func _process(delta):
 				botReceive = true
 				botReceiveLoc = (randi() % 100) * .01
 		makeEgg(99, randType(Global.normalcy), Vector2(rand_range(spawnRange.x, spawnRange.y), 0))
-	elif botReceive:
+	elif botReceive: #receive artificial eggs from above
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
 			rateBuffer -= rand_range(3,6) - (Global.difficulty * .5)
@@ -83,6 +86,23 @@ func _process(delta):
 				botReceive = false
 			else: botTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1]) * .5
 			makeEgg(Global.sid,randType(Global.normalcy),Vector2(spawnRange.x+((spawnRange.y-spawnRange.x)*botReceiveLoc),0))
+	if botMode: #actually lay eggs when visible
+		if !botLayEgg[0]:
+			if botEggCount > 0: botLayEgg[1] += delta * botEggCount
+			if randi() % 150 < botLayEgg[1]:
+				botLayEgg[2] = eggTimer * .5
+				botLayEgg[0] = true
+		else:
+			botLayEgg[2] -= delta * 10
+			if botLayEgg[2] < 1:
+				botLayEgg[1] -= rand_range(.0003,.0008)
+#				print('botlayegg1: ' + str(botLayEgg[1]) + ', eggcount: ' + str(player.eggCount))
+				if player.eggCount < 1 || botLayEgg[1] < 0:
+					botLayEgg[0] = false
+					botLayEgg[1] = 0
+					return
+				player.MakeEgg(false)
+				botLayEgg[2] = rand_range(3, 8)
 
 func _physics_process(_delta):
 	for egg in get_children():
@@ -106,10 +126,10 @@ func _physics_process(_delta):
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
+	add_child(egg)
 	egg.type = type
 	egg.size = typeKey["size"]
 	egg.scale = Vector2(egg.size, egg.size)
-	add_child(egg)
 	egg.speed = typeKey["speed"] * eggSpdBoost
 	egg.spdBoost = eggSpdBoost
 	egg.knockback = typeKey["knockback"]

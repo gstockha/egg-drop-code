@@ -21,6 +21,7 @@ var confirmedEggs = 0
 var gameTime = 0
 var recordedTime = null
 var hudRefresh = 0
+var targetHearts = []
 var offsetIds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 var powerups = {"shrink": preload("res://Sprites/Items/Shrink.png"), "shield": preload("res://Sprites/Items/ShieldItem.png"),
 "gun": preload("res://Sprites/Items/CornGun.png"), "butter": preload("res://Sprites/Items/Butter.png")}
@@ -98,6 +99,7 @@ func _ready():
 	statusLabels[offsetIds[Global.id]].text = '[YOU]'
 	statusLabels[offsetIds[Global.eid]].text = '[TARGET]'
 	statusLabels[offsetIds[Global.sid]].text = '[SEND]'
+	for i in range(6): targetHearts.append(get_node("EnemyContainer/Viewport/Hearts/HeartIconActives/HeartIcon" + str(i+1)))
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -126,7 +128,7 @@ func _process(delta):
 				var choice = -1 if randf() < .75 else 1
 				registerHealth(randId, 99, playerStats[randId]["health"] + choice)
 	if !botIsSpawned:
-		if $EnemyContainer/Viewport.get_child_count() > 2: return
+		if $EnemyContainer/Viewport.get_child_count() > 3: return
 		if playerStats[Global.eid]["bot"]: makeBot()
 		botIsSpawned = true
 		if !Global.playerDead:
@@ -149,6 +151,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 	playerStats[id]["health"] = 0
 	powerIcons[offsetIds[id]].visible = false
 	heartIcons[offsetIds[id]][0].get_parent().visible = false
+	if id == Global.eid: targetHearts[0].get_parent().visible = false
 	colorPlates[offsetIds[id]].self_modulate.a = .3
 	namePlates[offsetIds[id]].self_modulate.a = .5
 	nameArrows[offsetIds[id]].visible = false
@@ -180,6 +183,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	health = clamp(health, 0, 6)
 	playerStats[id]["health"] = health
 	for i in range(6): heartIcons[offsetIds[id]][i].visible = i < health
+	if id == Global.eid: for i in range(6): targetHearts[i].visible = i < health
 	if health < 1:
 		Global.playerCount -= 1
 		var me = Global.id == id
@@ -279,6 +283,8 @@ func makeBot() -> void:
 		chicken.baseSpriteScale = chicken.sprite.scale
 		chicken.weight = chicken.baseWeight + (eggRoll * .0002)
 		chicken.health = playerStats[Global.eid]["health"]
+		targetHearts[0].get_parent().visible = true
+		for i in range(6): targetHearts[i].visible = i < chicken.health
 		#make fake velocity
 		var rnd = [-1,1]
 		for i in range(len(chicken.dirListx)):
@@ -286,9 +292,12 @@ func makeBot() -> void:
 			chicken.dirListy[i] = rnd[randi() % 2]
 		#make fake eggs
 		var eggP = $EnemyContainer/Viewport/Enemyspace/EggParent
+		eggP.botEggCount = eggRoll
 		var myEnemy = findNewTarget(Global.eid, false, false)
 		eggP.botIsAbove = myEnemy != Global.id
-		if Global.sid == Global.eid: eggP.eggTarget = eggParent
+		if Global.sid == Global.eid:
+			eggP.eggTarget = eggParent
+			eggParent.botReceive = false
 		var chickenY = chicken.position.y
 		var yroll
 		for _i in range(rand_range(2 + (1 * Global.level), 8 + (3 * Global.level))):

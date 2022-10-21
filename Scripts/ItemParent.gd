@@ -65,6 +65,7 @@ func _process(delta):
 			item.type = getPowerType()
 			item.sprite.texture = powerSprites[item.type]
 			item.scale *= 2
+			item.baseScale = item.scale
 		if botMode:
 			item.scale *= .5
 			item.baseScale = item.scale
@@ -89,7 +90,7 @@ func getLocation() -> Vector2:
 func getItemType() -> String: #food, health, or powerup
 	var roll = randi() % 100 + 1
 	if healthTimer > powerCooldown * .7:
-		if (playerHealth < 4 && roll <= (50 - (playerHealth * 10))) || (playerHealth < 6 && roll <= (20 - (playerHealth * 2))):
+		if (playerHealth < 4 && roll <= (45 - (playerHealth * 12))) || (playerHealth < 6 && roll <= (15 - (playerHealth * 1))):
 			healthTimer = 0
 			return "health" #health chance
 	if powerTimer > powerCooldown:
@@ -119,4 +120,5 @@ func spawnGun() -> void:
 	get_parent().add_child(gun)
 	gun.plr = player
 	gun.id = player.id
+	if botMode: gun.scl = .5
 	player.gun = gun

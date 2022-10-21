@@ -34,7 +34,7 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 Node Global;
 // TextureRect[] heartIcons = new TextureRect[6];
 Control game;
-Area2D hitbox;
+Area2D hitbox, itemArea, eggArea;
 CollisionShape2D collisionBox;
 
 // Called when the node enters the scene tree for the first time.
@@ -46,6 +46,8 @@ public override void _Ready(){
     collisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
+    itemArea = GetNode<Area2D>("ItemArea");
+    eggArea = GetNode<Area2D>("EggArea");
     gameSpace = (Node2D)GetParent();
     game = (Control)GetParent().GetParent().GetParent().GetParent();
     // eggBar = GetNode<Control>("../../EggBar");
@@ -59,8 +61,6 @@ public override void _Ready(){
         dirListx[i] = 0;
         dirListy[i] = 0;
     }
-    // string pathStr = "../../NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives/HeartIcon";
-    // for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
     eggs = new string[maxEggs];
     #region raycasts
     rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
@@ -163,29 +163,38 @@ public void CalculateMove(float knockBackMod = 1){
     }
     Vector2 newMove = new Vector2(0,0);
     float[] directions = new float[] {0,0,0,0}; //left, right, up, down
-    bool isClose = false;
-    Godot.Collections.Array eggs = eggParent.GetChildren();
     int i;
-    for (i = 0; i < rayCasts.Length; i++){
-        if (rayCasts[i].IsColliding()){
-            isClose = true;
-            switch(rays[i]){
-                case "bottom": directions[2] += 3; break;
-                case "top": directions[3] += 3; break;
-                case "right": directions[0] += 3; break;
-                case "left": directions[1] += 3; break;
-                case "br1": directions[0] += 2; directions[2] += 1; break;
-                case "tr1": directions[0] += 2; directions[3] += 1; break;
-                case "bl1": directions[1] += 2; directions[2] += 1; break;
-                case "tl1": directions[1] += 2; directions[3] += 1; break;
-                case "br2": directions[0] += 1; directions[2] += 2; break;
-                case "tr2": directions[0] += 1; directions[3] += 2; break;
-                case "bl2": directions[1] += 1; directions[2] += 2; break;
-                case "tl2": directions[1] += 1; directions[3] += 2; break;
+    Godot.Collections.Array items = eggArea.GetOverlappingAreas();
+    bool isClose = items.Count > 0;
+    Node2D item;
+    if (isClose){
+        float add;
+        for (i = 0; i < items.Count; i++){
+            item = (Node2D)items[i];
+            add = Mathf.Clamp(4 - ((Position.DistanceTo(item.Position)) / 20), 3, 1);
+            if (item.Position.y > Position.y) directions[2] += add;
+            else directions[3] += add;
+            if (item.Position.x > Position.x) directions[0] += add;
+            else directions[1] += add;
+        }
+        for (i = 0; i < rayCasts.Length; i++){
+            if (rayCasts[i].IsColliding()){
+                switch(rays[i]){
+                    case "bottom": directions[2] += 3; break;
+                    case "top": directions[3] += 3; break;
+                    case "right": directions[0] += 3; break;
+                    case "left": directions[1] += 3; break;
+                    case "br1": directions[0] += 2; directions[2] += 1; break;
+                    case "tr1": directions[0] += 2; directions[3] += 1; break;
+                    case "bl1": directions[1] += 2; directions[2] += 1; break;
+                    case "tl1": directions[1] += 2; directions[3] += 1; break;
+                    case "br2": directions[0] += 1; directions[2] += 2; break;
+                    case "tr2": directions[0] += 1; directions[3] += 2; break;
+                    case "bl2": directions[1] += 1; directions[2] += 2; break;
+                    case "tl2": directions[1] += 1; directions[3] += 2; break;
+                }
             }
         }
-    }
-    if (isClose){
         if (directions[0] == 0 && directions[1] == 0){
             int sign = Mathf.Sign(calcMove.x);
             if (Position.x < 200) directions[1] += 6;
@@ -193,37 +202,64 @@ public void CalculateMove(float knockBackMod = 1){
         }
         int total = (int)(directions[0] + directions[1] + directions[2] + directions[3]);
         for (i = 0; i < 4; i++) directions[i] = directions[i] / total;
-        // GD.Print("\nleft: " + directions[0].ToString() + "\nright: " + directions[1].ToString() +
-        // "\nup: " + directions[2].ToString() + "\ndown: " + directions[3].ToString());
         newMove = new Vector2(Mathf.Sign(-directions[0] + directions[1]), -directions[2] + directions[3]);
     }
     else{
-        Vector2 closest = Vector2.Zero;
-        Node2D egg;
-        bool wallRight = Position.x > 420;
-        bool wallLeft = Position.x < 60;
-        for (i = 0; i < eggs.Count; i++){
-            egg = (Node2D)eggs[i];
-            if (244 <= egg.Position.x) directions[0] ++;
-            else directions[1] ++;
-            if (200 <= egg.Position.y) directions[2] ++;
-            else directions[3] ++;
-            if (closest == Vector2.Zero || Position.DistanceTo(egg.Position) < Position.DistanceTo(closest)) closest = egg.Position;
+        // Godot.Collections.Array eggs = eggParent.GetChildren();
+        float closest = 999;
+        // Node2D item;
+        // float mod = 1;
+        // for (i = 0; i < eggs.Count; i++){
+        //     item = (Node2D)eggs[i];
+        //     if (closest == 999 || Position.DistanceTo(item.Position) < closest) closest = Position.DistanceTo(item.Position);
+        // }
+        // if (closest > 60){
+        items = itemArea.GetOverlappingAreas();
+        float dist;
+        // closest = 999;
+        float healthClosest = 999;
+        int target = -1;
+        for (i = 0; i < items.Count; i++){
+            item = (Area2D)items[i];
+            dist = Position.DistanceTo(item.Position);
+            if (health < 6 && item.IsInGroup("Health")){
+                if (dist >= healthClosest) continue;
+                healthClosest = dist;
+                target = i;
+            }
+            else if (healthClosest == 999 && dist < closest){
+                closest = dist;
+                target = i;
+            }
         }
-        if (Position.DistanceTo(closest) > 120){
-            float xSign = 0;
-            if (directions[0] > directions[1]){
-                xSign = (wallRight) ? -.3F : 1;
+        if (target != -1){
+            // mod = (healthClosest == 999) ? (closest / 120) * .5F : (healthClosest / 120) * .5F;
+            // mod = Mathf.Clamp(mod, 0, 1);
+            item = (Area2D)items[target];
+            if (item.Position.x < Position.x){
+                directions[0] = 1;
             }
-            else{
-                xSign = (wallLeft) ? -.3F : -1;
+            else directions[1] = 1;
+            if (item.Position.y < Position.y){
+                directions[2] = 1;
             }
-            newMove.x = (.1F + (GD.Randf() * .5F)) * xSign;
-            newMove.y = (directions[2] < directions[3]) ? .1F + (GD.Randf() * .3F) : -1 * (.1F + GD.Randf() * .3F);
+            else directions[3] = 1;
         }
         else{
-            newMove.x = (wallRight || wallLeft) ? 0 : calcMove.x;
+            Godot.Collections.Array eggs = eggParent.GetChildren();
+            for (i = 0; i < eggs.Count; i++){
+                item = (Node2D)eggs[i];
+                if (244 <= item.Position.x) directions[0] ++;
+                else directions[1] ++;
+                if (200 <= item.Position.y) directions[2] ++;
+                else directions[3] ++;
+            }
         }
+        // }
+        int total = (int)(directions[0] + directions[1] + directions[2] + directions[3]);
+        for (i = 0; i < 4; i++) directions[i] = directions[i] / total;
+        newMove = new Vector2(Mathf.Sign(-directions[0] + directions[1]), -directions[2] + directions[3]);
+        if (newMove == Vector2.Zero) newMove.x = (Position.x > 420 || Position.x < 60) ? 0 : calcMove.x;
     }
     calcMove = newMove * knockBackMod;
     moveCooldown = moveRate;
@@ -321,13 +357,15 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
 public void EatFood(string type){
     if (idle) return;
     if (eggCount >= maxEggs){
+        int eggCnt = eggCount;
         MakeEgg(true);
-        EatFood(type);
+        if (eggCnt != eggCount) EatFood(type);
         return;
     }
     else{
         eggs[eggCount] = type;
         eggCount ++;
+        eggParent.Set("botEggCount", eggCount * .001F);
     }
     sprite.Scale = baseSpriteScale;
     Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
@@ -349,6 +387,7 @@ public void MakeEgg(bool automatic){
         return;
     }
     eggCount --;
+    eggParent.Set("botEggCount", eggCount * .001F);
     eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))), eggSpdBoost);
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;

@@ -493,6 +493,131 @@ color = Color( 0.780392, 0.780392, 0.780392, 1 )
 
 [node name="Enemyspace" parent="EnemyContainer/Viewport" instance=ExtResource( 2 )]
 
+[node name="Hearts" type="Control" parent="EnemyContainer/Viewport"]
+anchor_left = 0.012
+anchor_top = 0.959
+anchor_right = 0.012
+anchor_bottom = 0.959
+margin_left = -0.76
+margin_top = -14.6
+margin_right = 499.24
+margin_bottom = 45.4
+rect_scale = Vector2( 0.399, 0.4 )
+
+[node name="HeartIconBGs" type="Control" parent="EnemyContainer/Viewport/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon1BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_top = 2.0
+margin_right = 64.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon2BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 56.0
+margin_top = 2.0
+margin_right = 120.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon3BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 112.0
+margin_top = 2.0
+margin_right = 176.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon4BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 168.0
+margin_top = 2.0
+margin_right = 232.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon5BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 224.0
+margin_top = 2.0
+margin_right = 288.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon6BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
+modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
+margin_left = 280.0
+margin_top = 2.0
+margin_right = 344.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIconActives" type="Control" parent="EnemyContainer/Viewport/Hearts"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HeartIcon1" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
+margin_top = 2.0
+margin_right = 64.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon2" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
+margin_left = 56.0
+margin_top = 2.0
+margin_right = 120.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon3" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
+margin_left = 112.0
+margin_top = 2.0
+margin_right = 176.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon4" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
+margin_left = 168.0
+margin_top = 2.0
+margin_right = 232.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+
+[node name="HeartIcon5" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
+margin_left = 224.0
+margin_top = 2.0
+margin_right = 288.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeartIcon6" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
+margin_left = 280.0
+margin_top = 2.0
+margin_right = 344.0
+margin_bottom = 66.0
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Hearts" type="Control" parent="."]
 anchor_left = 0.012
 anchor_top = 0.959
