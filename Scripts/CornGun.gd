@@ -5,9 +5,10 @@ var right = false
 var Bullet = preload("res://Scenes/Bullet.tscn")
 var id = null
 var scl = 1
-
+var audio = false
 var plr = null
 onready var par = get_parent()
+onready var sfx = $GunSFX
 
 func _physics_process(delta):
 	cooldown -= delta
@@ -22,3 +23,6 @@ func _physics_process(delta):
 		bullet.scale *= scl
 		right = !right
 		plr.Squish(Vector2(plr.baseSpriteScale.x * 1.3, plr.baseSpriteScale.x * .7))
+		if audio:
+			sfx.stop()
+			sfx.play(0)

@@ -365,7 +365,7 @@ public void EatFood(string type){
     else{
         eggs[eggCount] = type;
         eggCount ++;
-        eggParent.Set("botEggCount", eggCount * .001F);
+        eggParent.Set("botEggCount", eggCount * .0001F);
     }
     sprite.Scale = baseSpriteScale;
     Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
@@ -381,13 +381,14 @@ public void EatFood(string type){
 }
 
 public void MakeEgg(bool automatic){
+    if (eggs[0] == "") eggs[0] = "normal";
     if (eggCount < 1 || idle) return;
     if (eggCooldown > 0){
         if (!automatic) eggBuffer ++;
         return;
     }
     eggCount --;
-    eggParent.Set("botEggCount", eggCount * .001F);
+    eggParent.Set("botEggCount", eggCount * .0001F);
     eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))), eggSpdBoost);
     for (int i = 0; i < maxEggs - 1; i++){
         if (eggs[i+1] == null) break;
@@ -491,6 +492,7 @@ public void _on_Hitbox_area_entered(Node body){
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             break;
         case "health":
+            if (health < 1) return;
             if (health < 6){
                 health ++;
                 // heartIcons[health-1].Visible = true;

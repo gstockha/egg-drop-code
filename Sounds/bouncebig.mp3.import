@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/bouncebig.mp3-75b0ab53af32800e2f733820622aefb3.mp3str"
+
+[deps]
+
+source_file="res://Sounds/bouncebig.mp3"
+dest_files=[ "res://.import/bouncebig.mp3-75b0ab53af32800e2f733820622aefb3.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

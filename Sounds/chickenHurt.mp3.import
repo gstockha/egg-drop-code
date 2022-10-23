@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/chickenHurt.mp3-f05c4bd8b3bac7b1b1e03e32c60629cc.mp3str"
+
+[deps]
+
+source_file="res://Sounds/chickenHurt.mp3"
+dest_files=[ "res://.import/chickenHurt.mp3-f05c4bd8b3bac7b1b1e03e32c60629cc.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

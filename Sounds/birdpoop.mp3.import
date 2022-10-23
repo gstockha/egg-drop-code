@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/birdpoop.mp3-2ca03c19cbdcd4e44a6e62ae639a30aa.mp3str"
+
+[deps]
+
+source_file="res://Sounds/birdpoop.mp3"
+dest_files=[ "res://.import/birdpoop.mp3-2ca03c19cbdcd4e44a6e62ae639a30aa.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

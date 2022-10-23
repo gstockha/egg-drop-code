@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/boing2.mp3-13bdb9b183a0e1802cb05100041314a7.mp3str"
+
+[deps]
+
+source_file="res://Sounds/boing2.mp3"
+dest_files=[ "res://.import/boing2.mp3-13bdb9b183a0e1802cb05100041314a7.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

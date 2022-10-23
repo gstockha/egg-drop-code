@@ -26,6 +26,7 @@ var powerSprites = {
 	"gun": preload("res://Sprites/Items/CornGun.png"), "shrink": preload("res://Sprites/Items/Shrink.png"),
 	"wildcard": preload("res://Sprites/Items/Wildcard.png")
 }
+var pop = null
 
 func _ready():
 	itemTimer = 30
@@ -36,6 +37,7 @@ func _ready():
 		ybounds.append(130)
 		ybounds.append(550)
 		ybounds.append(755)
+		pop = get_node("../PopSFX")
 	else:
 		player = get_parent().get_node('ChickenBot')
 		spawnRange = Vector2(Global.botBounds.x+2, Global.botBounds.y-2)
@@ -74,6 +76,7 @@ func _process(delta):
 		if item.duration > 180:
 			item.queue_free()
 			itemCount -= 1
+			if pop: pop.play()
 		elif item.duration > 160:
 			item.scale = item.baseScale * (.25 + (((30 - (item.duration - 160)) / 30) * .75))
 
@@ -121,4 +124,5 @@ func spawnGun() -> void:
 	gun.plr = player
 	gun.id = player.id
 	if botMode: gun.scl = .5
+	else: gun.audio = true
 	player.gun = gun

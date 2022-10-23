@@ -3,6 +3,7 @@ extends Node2D
 var timer = 3.5
 var finished = false
 onready var bg = get_node("../CountdownBG")
+onready var sfx = get_node("../GameSFX")
 
 func _ready():
 	get_tree().paused = true
@@ -24,6 +25,7 @@ func _physics_process(delta):
 		finished = true
 		scale = Vector2(1, 1)
 		$StartTimer.text = "EGG DROP!!!"
+		sfx.playSound("start")
 	elif timer <= -1:
 		$StartTimer.visible = false
 		get_tree().paused = false

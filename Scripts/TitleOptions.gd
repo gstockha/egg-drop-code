@@ -79,3 +79,6 @@ func _on_MusicSlider_focus_entered():
 
 func _on_MusicSlider_focus_exited():
 	$MusicLabel.self_modulate = Color.white
+
+func _on_MuteButton_button_down():
+	pass # Replace with function body.

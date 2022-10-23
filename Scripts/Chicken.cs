@@ -36,6 +36,7 @@ Control eggBar, game;
 ProgressBar powerBar;
 Area2D hitbox;
 CollisionShape2D collisionBox;
+AudioStreamPlayer sfx, subfx, bocksfx, eatsfx;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -46,6 +47,10 @@ public override void _Ready(){
     collisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
+    sfx = GetNode<AudioStreamPlayer>("../PlayerSFX");
+    subfx = GetNode<AudioStreamPlayer>("../SubPlayerSFX");
+    eatsfx = GetNode<AudioStreamPlayer>("../EatSFX");
+    bocksfx = GetNode<AudioStreamPlayer>("../BockSFX");
     gameSpace = (Node2D)GetParent();
     popupParent = GetNode<Node2D>("../../../../PopupParent");
     game = (Control)GetParent().GetParent().GetParent().GetParent();
@@ -174,6 +179,13 @@ public void WallCheck(){
         dirChange = Mathf.Sign(Mathf.Round(GetSlideCollision(0).Normal.y));
     }
     KnockBack(direction, dirChange, speed * .5F, .05F, 0);
+    if (health > 0){
+        if (!shielded){
+            if (eggCount < 11) sfx.Call("playSound", "bounce");
+            else sfx.Call("playSound", "bouncebig");
+        }
+        else sfx.Call("playSound", "boingsmall");
+    }
 }
 
 public void Squish(Vector2 scale){
@@ -265,6 +277,12 @@ public void MakeEgg(bool automatic){
         return;
     }
     eggCount --;
+    // int soundId;
+    // //if (eggSpdBoost <= 1){
+    // if (eggs[0] == "big") soundId = 1;
+    // else if (eggs[0] == "fast") soundId = 2;
+    // else soundId = 0;
+    //}
     eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))), eggSpdBoost);
     game.Set("confirmedLaid", (int)game.Get("confirmedLaid") + 1);
     for (int i = 0; i < maxEggs - 1; i++){
@@ -279,6 +297,8 @@ public void MakeEgg(bool automatic){
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
     eggCooldown = (automatic) ? 90 : 30;
     eggBar.Call("drawEggs", "");
+    bocksfx.Call("playSound", "bock", GD.Randi() % 3);
+    if (eggSpdBoost > 1) subfx.Call("playSound", "butter");
 }
 
 public override void _Input(InputEvent @event){
@@ -355,6 +375,14 @@ public void _on_Hitbox_area_entered(Node body){
             }
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             body.QueueFree();
+            if (health > 0){
+                if (!shielded) subfx.Call("playSound", "splat");
+                else sfx.Call("playSound", "boing");
+            }
+            else{
+                subfx.Call("playSound", "splat");
+                sfx.Call("playSound", "hurt");
+            }
             break;
         case "food":
             if (eatBuffer > 0) return;
@@ -375,8 +403,13 @@ public void _on_Hitbox_area_entered(Node body){
             }
             body.QueueFree();
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
+            int soundId = 1;
+            if (type == "big") soundId = 0;
+            else if (type == "fast") soundId = 2;
+            eatsfx.Call("playSound", "eat", soundId);
             break;
         case "health":
+            if (health < 1) return;
             if (health < 6){
                 health ++;
                 heartIcons[health-1].Visible = true;
@@ -389,6 +422,7 @@ public void _on_Hitbox_area_entered(Node body){
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             popupParent.Call("makePopup", "health", GlobalPosition, false);
+            subfx.Call("playSound", "healing");
             break;
         case "powerups":
             type = (string)body.Get("type");
@@ -427,6 +461,7 @@ public void _on_Hitbox_area_entered(Node body){
                 game.Call("setPowerupIcon", id, type);
             }
             body.QueueFree();
+            subfx.Call("playSound", "power");
             break;
     }
 }
@@ -436,6 +471,7 @@ public void ResetPowerups(){
     powerupDir[0] = 0;
     powerupDir[1] = 0;
     powerBar.Visible = false;
+    powerBar.Value = 0;
     if (eggSpdBoost != 1){
         eggSpdBoost = 1;
         sprite.Modulate = Godot.Colors.White;
@@ -443,6 +479,7 @@ public void ResetPowerups(){
     else if (shielded){
         shielded = false;
         shield.Visible = false;
+        subfx.Call("playSound", "pop");
     }
     else if (baseSpriteScale.x < .6F){
         baseSpriteScale = new Vector2(.6F, .6F);

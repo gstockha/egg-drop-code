@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/metashift.mp3-76ef92425b80793dd40e7bfa63f90810.mp3str"
+
+[deps]
+
+source_file="res://Sounds/metashift.mp3"
+dest_files=[ "res://.import/metashift.mp3-76ef92425b80793dd40e7bfa63f90810.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

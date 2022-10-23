@@ -157,10 +157,12 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 	nameArrows[offsetIds[id]].visible = false
 	if Global.gameOver == false:
 		if id == Global.eid && !Global.playerDead:
+			$GameSFX.playSound("killconfirm")
 			confirmedShells += 1
 			var hisX = ($EnemyContainer/Viewport/Enemyspace/ChickenBot.global_position.x * 2) + 16
 			$PopupParent.makePopup(playerStats[id]["name"], Vector2(hisX, 780), true)
 		if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0: #win game
+			$GameSFX.playSound("win")
 			endGame(true, Global.id)
 			return
 		elif id == Global.id:
@@ -181,9 +183,12 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if Global.playerCount == 1: return
 	health = clamp(health, 0, 6)
+	var prevhp = playerStats[id]["health"]
 	playerStats[id]["health"] = health
 	for i in range(6): heartIcons[offsetIds[id]][i].visible = i < health
-	if id == Global.eid: for i in range(6): targetHearts[i].visible = i < health
+	if id == Global.eid:
+		if prevhp > health: $GameSFX.playSound("hit", randi() % 3)
+		for i in range(6): targetHearts[i].visible = i < health
 	if health < 1:
 		Global.playerCount -= 1
 		var me = Global.id == id
@@ -279,6 +284,7 @@ func makeBot() -> void:
 		if eggRoll < 75: eggRoll = round(rand_range(0,5))
 		else: eggRoll = round(rand_range(5,20))
 		chicken.eggCount = eggRoll
+		if eggRoll - 1 > 0: for i in range(eggRoll-1): chicken.eggs[i] = 'normal'
 		chicken.scale = Vector2(chicken.baseScale.x + (.07 * eggRoll), chicken.baseScale.y + (.07 * eggRoll))
 		chicken.baseSpriteScale = chicken.sprite.scale
 		chicken.weight = chicken.baseWeight + (eggRoll * .0002)

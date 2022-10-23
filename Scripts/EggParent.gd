@@ -18,8 +18,8 @@ var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
 	'0': [8,12],
 	'1': [7,10.5],
-	'2': [6,9.2],
-	'3': [4,7],
+	'2': [6,9],
+	'3': [4,6.5],
 	'4': [3,5.5],
 	'5': [2,4]
 }
@@ -58,7 +58,6 @@ func _ready():
 			eggTypes[key]["size"] *= .5
 
 func _process(delta):
-	
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
@@ -89,7 +88,7 @@ func _process(delta):
 	if botMode: #actually lay eggs when visible
 		if !botLayEgg[0]:
 			if botEggCount > 0: botLayEgg[1] += delta * botEggCount
-			if randi() % 150 < botLayEgg[1]:
+			if randi() % 1000 < botLayEgg[1]:
 				botLayEgg[2] = eggTimer * .5
 				botLayEgg[0] = true
 		else:
@@ -155,7 +154,7 @@ func releaseEggQueue(timer: Timer = null):
 	if timer != null:
 		timer.stop()
 		timer.queue_free()
-	if len(eggQueueList) < 1 || Global.playerDead || Global.gameOver:
+	if len(eggQueueList) < 1 || Global.playerDead || Global.gameOver || eggTarget == null:
 		eggQueueList = []
 		return
 	var eggInfo = eggQueueList.pop_front()

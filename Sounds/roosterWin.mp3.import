@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/roosterWin.mp3-d07bae82bd531d7a432dc9a42ebea77a.mp3str"
+
+[deps]
+
+source_file="res://Sounds/roosterWin.mp3"
+dest_files=[ "res://.import/roosterWin.mp3-d07bae82bd531d7a432dc9a42ebea77a.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
