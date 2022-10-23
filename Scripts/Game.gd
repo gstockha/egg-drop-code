@@ -39,6 +39,7 @@ onready var timerBar = $BottomHUD/TimerBar
 
 func _ready():
 	randomize()
+	$MuteButton.self_modulate.a = .6 if Global.muted else 1
 	#define ids
 	Global.eid = Global.id + 1 if Global.id + 1 < 12 else 0
 	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
@@ -351,3 +352,9 @@ func setPowerupIcon(id: int, type: String) -> void:
 	else:
 		powerIcons[offsetIds[id]].visible = true
 		powerIcons[offsetIds[id]].texture = powerups[type]
+
+func _on_MuteButton_button_down():
+	Global.muted = !Global.muted
+	var mstr = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_mute(mstr, Global.muted)
+	$MuteButton.self_modulate.a = .6 if Global.muted else 1

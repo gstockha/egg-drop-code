@@ -22,6 +22,7 @@ var playerName = 'You'
 var difficulty = 0
 var crack1 = preload("res://Sprites/Eggs/EggCrack1.png")
 var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
+var muted = false
 
 func _ready():
 	var rgb = [0,0,0]

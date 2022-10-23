@@ -21,6 +21,6 @@ func makePopup(name: String, pos: Vector2, kill: bool) -> void:
 	else:
 		pop.get_child(0).text = 'you shelled ' + name + '!'
 		pop.fade = .25
-		pos.x = clamp(pos.x, 70, 890)
+		pos.x = clamp(pos.x, 120, 890)
 	add_child(pop)
 	pop.global_position = pos

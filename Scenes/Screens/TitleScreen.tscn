@@ -509,6 +509,7 @@ expand_icon = true
 [connection signal="button_up" from="TitleOptions/MainButton" to="TitleOptions" method="_on_MainButton_button_up"]
 [connection signal="focus_entered" from="TitleOptions/SoundsLabel/SoundSlider" to="TitleOptions" method="_on_SoundSlider_focus_entered"]
 [connection signal="focus_exited" from="TitleOptions/SoundsLabel/SoundSlider" to="TitleOptions" method="_on_SoundSlider_focus_exited"]
+[connection signal="value_changed" from="TitleOptions/SoundsLabel/SoundSlider" to="TitleOptions" method="_on_SoundSlider_value_changed"]
 [connection signal="focus_entered" from="TitleOptions/MusicLabel/MusicSlider" to="TitleOptions" method="_on_MusicSlider_focus_entered"]
 [connection signal="focus_exited" from="TitleOptions/MusicLabel/MusicSlider" to="TitleOptions" method="_on_MusicSlider_focus_exited"]
 [connection signal="button_down" from="TitleOptions/ExitButton" to="TitleOptions" method="_on_ExitButton_button_down"]

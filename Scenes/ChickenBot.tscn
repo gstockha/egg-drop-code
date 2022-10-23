@@ -147,7 +147,7 @@ shape = SubResource( 8 )
 
 [node name="EggArea" type="Area2D" parent="."]
 position = Vector2( 0, -30 )
-scale = Vector2( 7, 9 )
+scale = Vector2( 6, 8 )
 collision_layer = 0
 collision_mask = 2
 monitorable = false

@@ -5,9 +5,13 @@ onready var musicSlider = $MusicLabel/MusicSlider
 var lastSfxValue = 0
 var lastMusicValue = 0
 var focused = false
+onready var muteBtn = get_node("../MuteButton")
+onready var mstr = AudioServer.get_bus_index("Master")
 
 func _ready():
 	focused = !title #strange little disablement so when we back out to main menu we don't press START immediately
+	muteBtn.self_modulate.a = .6 if Global.muted else 1
+	sfxSlider.value = AudioServer.get_bus_volume_db(mstr) * 5
 
 func _input(event):
 	if event.is_action_pressed("fullscreen"): OS.window_fullscreen = !OS.window_fullscreen
@@ -81,4 +85,12 @@ func _on_MusicSlider_focus_exited():
 	$MusicLabel.self_modulate = Color.white
 
 func _on_MuteButton_button_down():
-	pass # Replace with function body.
+	Global.muted = !Global.muted
+	AudioServer.set_bus_mute(mstr, Global.muted)
+	muteBtn.self_modulate.a = .6 if Global.muted else 1
+
+func _on_SoundSlider_value_changed(value):
+	if value <= -100:
+		AudioServer.set_bus_volume_db(mstr, -80)
+		return
+	AudioServer.set_bus_volume_db(mstr, value * .2)
