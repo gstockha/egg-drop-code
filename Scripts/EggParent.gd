@@ -17,8 +17,8 @@ var botReceive = false #"receiving" from a bot?
 var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
 	'0': [8,12],
-	'1': [7,10.5],
-	'2': [6,9],
+	'1': [6.5,10],
+	'2': [5,9],
 	'3': [4,6.5],
 	'4': [3,5.5],
 	'5': [2,4]
