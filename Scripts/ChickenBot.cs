@@ -202,6 +202,19 @@ public void CalculateMove(float knockBackMod = 1){
         }
         int total = (int)(directions[0] + directions[1] + directions[2] + directions[3]);
         for (i = 0; i < 4; i++) directions[i] = directions[i] / total;
+        float saver;
+        if (Position.x < 40 && directions[0] > directions[1]){
+            GD.Print("too left");
+            saver = directions[0];
+            directions[0] = directions[1];
+            directions[1] = saver;
+        }
+        else if (Position.x > 440 && directions[1] > directions[0]){
+            GD.Print("too right");
+            saver = directions[1];
+            directions[1] = directions[0];
+            directions[0] = saver;
+        }
         newMove = new Vector2(Mathf.Sign(-directions[0] + directions[1]), -directions[2] + directions[3]);
     }
     else{
@@ -222,19 +235,17 @@ public void CalculateMove(float knockBackMod = 1){
         for (i = 0; i < items.Count; i++){
             item = (Area2D)items[i];
             dist = Position.DistanceTo(item.Position);
-            if (health < 6 && item.IsInGroup("Health")){
+            if (health < 6 && item.IsInGroup("health")){
                 if (dist >= healthClosest) continue;
                 healthClosest = dist;
                 target = i;
             }
-            else if (healthClosest == 999 && dist < closest){
+            else if (healthClosest > 998 && dist < closest){
                 closest = dist;
                 target = i;
             }
         }
         if (target != -1){
-            // mod = (healthClosest == 999) ? (closest / 120) * .5F : (healthClosest / 120) * .5F;
-            // mod = Mathf.Clamp(mod, 0, 1);
             item = (Area2D)items[target];
             if (item.Position.x < Position.x){
                 directions[0] = 1;

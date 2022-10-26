@@ -16,11 +16,11 @@ var eggQueueTime = 0
 var botReceive = false #"receiving" from a bot?
 var botReceiveLoc = 0 #bots send player eggs in a pattern
 var eggRates = {
-	'0': [8,12],
-	'1': [6.5,10],
-	'2': [5,9],
-	'3': [4,6.5],
-	'4': [3,5.5],
+	'0': [7,9],
+	'1': [6,8],
+	'2': [5,7],
+	'3': [4,6],
+	'4': [3,5],
 	'5': [2,4]
 }
 var eggRateLevelStr = "0"
@@ -62,7 +62,7 @@ func _process(delta):
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 		if botMode && !Global.playerDead: #bot's eggparent stop producing neutral eggs so much if receiving from above
-			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 5 + Global.difficulty
+			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 3 + Global.difficulty
 			eggTimer += rateBuffer
 		elif !botReceive && botIsAbove:
 			if Global.sid == Global.eid: return
@@ -138,9 +138,9 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	egg.position = pos
 	if id != 99:
 		egg.sprite.modulate = Global.colorIdMap[id]
-		if (!botMode && Global.id == id) || (botMode && Global.eid == id): 
-			egg.speed *= 2
-		elif !botMode: game.confirmedEggs += 1
+		if (!botMode && Global.id == id) || (botMode && Global.eid == id): egg.speed *= 2
+		else: egg.speed *= 1.25
+		if !botMode: game.confirmedEggs += 1
 
 func randType(normalcy: int) -> String:
 	var roll = randi() % 100 + 1

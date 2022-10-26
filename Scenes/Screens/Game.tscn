@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=2]
+[gd_scene load_steps=62 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Sprites/Eggs/Egg.png" type="Texture" id=5]
 [ext_resource path="res://Fonts/baloo/Baloo-Regular.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://Scripts/SoundScripts/GameSFX.gd" type="Script" id=7]
+[ext_resource path="res://Scripts/SoundScripts/HitSFX.gd" type="Script" id=8]
 [ext_resource path="res://Scenes/Playspace.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scenes/UI/ExitButton.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/UI/StatusLabel.tscn" type="PackedScene" id=11]
@@ -3221,6 +3222,9 @@ expand_icon = true
 [node name="GameSFX" type="AudioStreamPlayer" parent="."]
 pause_mode = 2
 script = ExtResource( 7 )
+
+[node name="HitSFX" type="AudioStreamPlayer" parent="."]
+script = ExtResource( 8 )
 
 [connection signal="button_up" from="Menu/MainButton" to="Menu" method="_on_MainButton_button_up"]
 [connection signal="focus_entered" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_entered"]

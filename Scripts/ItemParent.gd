@@ -53,7 +53,7 @@ func _process(delta):
 	healthTimer += tick
 	itemTimer -= tick
 	if itemTimer < 1:
-		itemTimer = 30
+		itemTimer = 25
 		if itemCount == maxItems: return
 		var type = getItemType()
 		var item = items[type].instance()
@@ -113,7 +113,7 @@ func getPowerType() -> String:
 func getCornType() -> String:
 	var roll = randi() % 100 + 1
 	if roll <= 60:
-		if roll <= 45 - (Global.level * 5): return "normal"
+		if roll <= 40 - (Global.level * 10): return "normal"
 		return "three"
 	if roll <= 85: return "fast"
 	return "big"

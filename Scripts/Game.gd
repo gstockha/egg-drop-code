@@ -188,7 +188,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	playerStats[id]["health"] = health
 	for i in range(6): heartIcons[offsetIds[id]][i].visible = i < health
 	if id == Global.eid:
-		if prevhp > health: $GameSFX.playSound("hit", randi() % 3)
+		if prevhp > health: $HitSFX.playSound("hit", randi() % 3)
 		for i in range(6): targetHearts[i].visible = i < health
 	if health < 1:
 		Global.playerCount -= 1
