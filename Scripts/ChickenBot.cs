@@ -20,7 +20,7 @@ int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
 int moveRate = 12;
 int maxEggs = 25;
-int health = 6;
+int health = 5;
 int id = 99;
 int lastHitId = 99;
 Sprite shield, sprite;
@@ -204,13 +204,11 @@ public void CalculateMove(float knockBackMod = 1){
         for (i = 0; i < 4; i++) directions[i] = directions[i] / total;
         float saver;
         if (Position.x < 40 && directions[0] > directions[1]){
-            GD.Print("too left");
             saver = directions[0];
             directions[0] = directions[1];
             directions[1] = saver;
         }
         else if (Position.x > 440 && directions[1] > directions[0]){
-            GD.Print("too right");
             saver = directions[1];
             directions[1] = directions[0];
             directions[0] = saver;
@@ -235,7 +233,7 @@ public void CalculateMove(float knockBackMod = 1){
         for (i = 0; i < items.Count; i++){
             item = (Area2D)items[i];
             dist = Position.DistanceTo(item.Position);
-            if (health < 6 && item.IsInGroup("health")){
+            if (health < 5 && item.IsInGroup("health")){
                 if (dist >= healthClosest) continue;
                 healthClosest = dist;
                 target = i;
@@ -379,7 +377,7 @@ public void EatFood(string type){
         eggParent.Set("botEggCount", eggCount * .0001F);
     }
     sprite.Scale = baseSpriteScale;
-    Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
+    Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
@@ -407,7 +405,7 @@ public void MakeEgg(bool automatic){
         eggs[i+1] = null;
     }
     sprite.Scale = baseSpriteScale;
-    Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
+    Scale = new Vector2(baseScale.x + (.05F * eggCount), baseScale.y + (.05F * eggCount));
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
@@ -504,11 +502,11 @@ public void _on_Hitbox_area_entered(Node body){
             break;
         case "health":
             if (health < 1) return;
-            if (health < 6){
+            if (health < 5){
                 health ++;
                 // heartIcons[health-1].Visible = true;
                 itemParent.Set("playerHealth", health);
-                if (health == 6) lastHitId = 99;
+                if (health == 5) lastHitId = 99;
                 game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
             }
             else EatFood("normal");

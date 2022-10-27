@@ -558,17 +558,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="EnemyContainer/Viewport/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -610,16 +599,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="EnemyContainer/Viewport/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Hearts" type="Control" parent="."]
 anchor_left = 0.012
 anchor_top = 0.959
@@ -629,9 +608,6 @@ margin_left = -0.128
 margin_top = -33.9201
 margin_right = 399.872
 margin_bottom = 38.08
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HeartIconBGs" type="Control" parent="Hearts"]
 margin_right = 40.0
@@ -641,103 +617,94 @@ __meta__ = {
 }
 
 [node name="HeartIcon1BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+visible = false
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_top = 2.0
+margin_top = -4.0
 margin_right = 64.0
-margin_bottom = 66.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HeartIcon2BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+visible = false
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 56.0
-margin_top = 2.0
-margin_right = 120.0
-margin_bottom = 66.0
+margin_left = 67.0
+margin_top = -4.0
+margin_right = 131.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon3BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+visible = false
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 112.0
-margin_top = 2.0
-margin_right = 176.0
-margin_bottom = 66.0
+margin_left = 134.0
+margin_top = -4.0
+margin_right = 198.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon4BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+visible = false
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 168.0
-margin_top = 2.0
-margin_right = 232.0
-margin_bottom = 66.0
+margin_left = 201.0
+margin_top = -4.0
+margin_right = 265.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon5BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
+visible = false
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 224.0
-margin_top = 2.0
-margin_right = 288.0
-margin_bottom = 66.0
+margin_left = 268.0
+margin_top = -4.0
+margin_right = 332.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HeartIcon6BG" type="TextureRect" parent="Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HeartIcon1" type="TextureRect" parent="Hearts"]
-margin_top = 2.0
+margin_top = -4.0
 margin_right = 64.0
-margin_bottom = 66.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon2" type="TextureRect" parent="Hearts"]
-margin_left = 56.0
-margin_top = 2.0
-margin_right = 120.0
-margin_bottom = 66.0
+margin_left = 67.0
+margin_top = -4.0
+margin_right = 131.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon3" type="TextureRect" parent="Hearts"]
-margin_left = 112.0
-margin_top = 2.0
-margin_right = 176.0
-margin_bottom = 66.0
+margin_left = 134.0
+margin_top = -4.0
+margin_right = 198.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon4" type="TextureRect" parent="Hearts"]
-margin_left = 168.0
-margin_top = 2.0
-margin_right = 232.0
-margin_bottom = 66.0
+margin_left = 201.0
+margin_top = -4.0
+margin_right = 265.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 
 [node name="HeartIcon5" type="TextureRect" parent="Hearts"]
-margin_left = 224.0
-margin_top = 2.0
-margin_right = 288.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HeartIcon6" type="TextureRect" parent="Hearts"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
+margin_left = 268.0
+margin_top = -4.0
+margin_right = 332.0
+margin_bottom = 60.0
+rect_scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -848,9 +815,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -867,9 +834,6 @@ margin_top = 2.0
 margin_right = 64.0
 margin_bottom = 66.0
 texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HeartIcon2BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconBGs"]
 modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
@@ -900,17 +864,6 @@ modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
 margin_left = 224.0
 margin_top = 2.0
 margin_right = 288.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
 margin_bottom = 66.0
 texture = ExtResource( 12 )
 __meta__ = {
@@ -958,17 +911,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate1" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate1"]
 margin_left = 160.0
@@ -1004,9 +949,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -1062,17 +1007,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate2/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -1111,17 +1045,9 @@ margin_right = 288.0
 margin_bottom = 66.0
 texture = ExtResource( 12 )
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate2" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate2"]
 margin_left = 160.0
@@ -1157,9 +1083,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -1215,17 +1141,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate3/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -1267,17 +1182,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate3" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate3"]
 margin_left = 160.0
@@ -1313,9 +1220,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -1371,17 +1278,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate4/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -1423,17 +1319,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate4" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate4"]
 margin_left = 160.0
@@ -1469,9 +1357,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -1527,17 +1415,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate5/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -1579,17 +1456,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate5" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate5"]
 margin_left = 160.0
@@ -1625,9 +1494,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -1683,17 +1552,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresTop/NamePlate6/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -1735,17 +1593,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresTop/NamePlate6" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresTop/NamePlate6"]
 margin_left = 160.0
@@ -1790,9 +1640,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.1479
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -1845,17 +1695,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate1/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -1897,17 +1736,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate1" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate1"]
 margin_left = 160.0
@@ -1943,9 +1774,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -2001,17 +1832,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate2/Hearts"]
 margin_left = -847.118
 margin_right = -807.118
@@ -2055,14 +1875,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2/Hearts/HeartIconActives"]
-margin_left = 1127.12
-margin_top = 2.0
-margin_right = 1191.12
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate2" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate2"]
 margin_left = 160.0
@@ -2098,9 +1913,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -2156,17 +1971,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate3/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -2208,17 +2012,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate3" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate3"]
 margin_left = 160.0
@@ -2254,9 +2050,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -2312,17 +2108,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate4/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -2364,17 +2149,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate4" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate4"]
 margin_left = 160.0
@@ -2410,9 +2187,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -2468,17 +2245,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate5/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -2520,17 +2286,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate5" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate5"]
 margin_left = 160.0
@@ -2566,9 +2324,9 @@ anchor_left = 0.012
 anchor_top = 0.959
 anchor_right = 0.012
 anchor_bottom = 0.959
-margin_left = 332.24
+margin_left = 352.24
 margin_top = -26.852
-margin_right = 738.24
+margin_right = 758.24
 margin_bottom = 38.148
 rect_scale = Vector2( 0.399, 0.4 )
 
@@ -2624,17 +2382,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6BG" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconBGs"]
-modulate = Color( 0.266667, 0.282353, 0.513726, 0.392157 )
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="HeartIconActives" type="Control" parent="NamePlates/ScoresBottom/NamePlate6/Hearts"]
 margin_right = 40.0
 margin_bottom = 40.0
@@ -2676,17 +2423,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HeartIcon6" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6/Hearts/HeartIconActives"]
-margin_left = 280.0
-margin_top = 2.0
-margin_right = 344.0
-margin_bottom = 66.0
-texture = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="StatusLabel" parent="NamePlates/ScoresBottom/NamePlate6" instance=ExtResource( 11 )]
+margin_left = 295.92
+margin_right = 295.92
 
 [node name="Powerup" type="TextureRect" parent="NamePlates/ScoresBottom/NamePlate6"]
 margin_left = 160.0

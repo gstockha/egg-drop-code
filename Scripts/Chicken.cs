@@ -20,7 +20,7 @@ int eggBuffer, eatBuffer, eggCount = 0;
 string[] eggs;
 int maxEggs = 25;
 int id = 99;
-int health = 6;
+int health = 5;
 int lastHitId = 99;
 Sprite shield, sprite;
 Timer invTimer;
@@ -31,7 +31,8 @@ Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
 Node Global;
-TextureRect[] heartIcons = new TextureRect[6];
+TextureRect[] heartIcons = new TextureRect[5];
+TextureRect[] heartBGs = new TextureRect[5];
 Control eggBar, game;
 ProgressBar powerBar;
 Area2D hitbox;
@@ -66,7 +67,10 @@ public override void _Ready(){
         dirListy[i] = 0;
     }
     string pathStr = "../../../../Hearts/HeartIcon";
-    for (i = 0; i < 6; i++) heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
+    for (i = 0; i < health; i++){
+        heartIcons[i] = GetNode<TextureRect>(pathStr + (i+1).ToString());
+        heartBGs[i] = GetNode<TextureRect>(pathStr + "BGs/HeartIcon" + (i+1).ToString() + "BG");
+    }
     eggs = new string[maxEggs];
     #region raycasts
     rayCasts[0] = GetNode<RayCast2D>("RayCasts/RayCastB");
@@ -368,7 +372,10 @@ public void _on_Hitbox_area_entered(Node body){
             if (!shielded){
                 health -= (int)body.Get("damage");
                 if (health < 0) health = 0;
-                for (int i = 0; i < 6; i++) heartIcons[i].Visible = i < health;
+                for (int i = 0; i < 5; i++){
+                    heartIcons[i].Visible = i < health;
+                    heartBGs[i].Visible = i >= health;
+                }
                 game.Call("registerHealth", id, lastHitId, health);
                 itemParent.Set("playerHealth", health);
                 if (eggId != 99) lastHitId = eggId;
@@ -410,11 +417,12 @@ public void _on_Hitbox_area_entered(Node body){
             break;
         case "health":
             if (health < 1) return;
-            if (health < 6){
+            if (health < 5){
                 health ++;
                 heartIcons[health-1].Visible = true;
+                heartBGs[health-1].Visible = false;
                 itemParent.Set("playerHealth", health);
-                if (health == 6) lastHitId = 99;
+                if (health == 5) lastHitId = 99;
                 game.Call("registerHealth", id, lastHitId, health);
             }
             else EatFood("normal");

@@ -1,6 +1,6 @@
 extends Node
 
-var botMode = false
+var botMode = 0
 var itemTimer = 0
 var powerTimer = 0
 var healthTimer = 0
@@ -8,7 +8,7 @@ var powerCooldown = 120
 var maxItems = 6
 var itemCount = 0
 var player = null
-var playerHealth = 6
+var playerHealth = 5
 var spawnRange = null
 var ybounds = []
 var adj = 100
@@ -30,8 +30,8 @@ var pop = null
 
 func _ready():
 	itemTimer = 30
-	botMode = get_parent().name == "Enemyspace"
-	if !botMode:
+	botMode = 1 if get_parent().name == "Enemyspace" else 0
+	if botMode == 0:
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+4, Global.playerBounds.y-4)
 		ybounds.append(130)
@@ -68,7 +68,7 @@ func _process(delta):
 			item.sprite.texture = powerSprites[item.type]
 			item.scale *= 2
 			item.baseScale = item.scale
-		if botMode:
+		if botMode == 1:
 			item.scale *= .5
 			item.baseScale = item.scale
 	for item in get_children():
@@ -92,8 +92,8 @@ func getLocation() -> Vector2:
 	
 func getItemType() -> String: #food, health, or powerup
 	var roll = randi() % 100 + 1
-	if healthTimer > powerCooldown * .7:
-		if (playerHealth < 4 && roll <= (45 - (playerHealth * 12))) || (playerHealth < 6 && roll <= (15 - (playerHealth * 1))):
+	if healthTimer > powerCooldown * (.7 - (.2 * botMode)):
+		if (playerHealth < 3 && roll <= (45 - (playerHealth * 15))) || (playerHealth < 5 && roll <= (15 - (playerHealth * 1))):
 			healthTimer = 0
 			return "health" #health chance
 	if powerTimer > powerCooldown:
@@ -123,6 +123,6 @@ func spawnGun() -> void:
 	get_parent().add_child(gun)
 	gun.plr = player
 	gun.id = player.id
-	if botMode: gun.scl = .5
+	if botMode == 1: gun.scl = .5
 	else: gun.audio = true
 	player.gun = gun

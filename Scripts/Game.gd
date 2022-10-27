@@ -86,7 +86,7 @@ func _ready():
 	for i in range(12):
 		if i != Global.id: botCount += 1
 		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i],
-		"health": 6, "bot": i != Global.id})
+		"health": 5, "bot": i != Global.id})
 		barKeys.append(i)
 		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
@@ -100,7 +100,7 @@ func _ready():
 	statusLabels[offsetIds[Global.id]].text = '[YOU]'
 	statusLabels[offsetIds[Global.eid]].text = '[TARGET]'
 	statusLabels[offsetIds[Global.sid]].text = '[SEND]'
-	for i in range(6): targetHearts.append(get_node("EnemyContainer/Viewport/Hearts/HeartIconActives/HeartIcon" + str(i+1)))
+	for i in range(5): targetHearts.append(get_node("EnemyContainer/Viewport/Hearts/HeartIconActives/HeartIcon" + str(i+1)))
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -183,13 +183,13 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 
 func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if Global.playerCount == 1: return
-	health = clamp(health, 0, 6)
+	health = clamp(health, 0, 5)
 	var prevhp = playerStats[id]["health"]
 	playerStats[id]["health"] = health
-	for i in range(6): heartIcons[offsetIds[id]][i].visible = i < health
+	for i in range(5): heartIcons[offsetIds[id]][i].visible = i < health
 	if id == Global.eid:
 		if prevhp > health: $HitSFX.playSound("hit", randi() % 3)
-		for i in range(6): targetHearts[i].visible = i < health
+		for i in range(5): targetHearts[i].visible = i < health
 	if health < 1:
 		Global.playerCount -= 1
 		var me = Global.id == id
@@ -286,12 +286,12 @@ func makeBot() -> void:
 		else: eggRoll = round(rand_range(5,20))
 		chicken.eggCount = eggRoll
 		if eggRoll - 1 > 0: for i in range(eggRoll-1): chicken.eggs[i] = 'normal'
-		chicken.scale = Vector2(chicken.baseScale.x + (.07 * eggRoll), chicken.baseScale.y + (.07 * eggRoll))
+		chicken.scale = Vector2(chicken.baseScale.x + (.05 * eggRoll), chicken.baseScale.y + (.05 * eggRoll))
 		chicken.baseSpriteScale = chicken.sprite.scale
 		chicken.weight = chicken.baseWeight + (eggRoll * .0002)
 		chicken.health = playerStats[Global.eid]["health"]
 		targetHearts[0].get_parent().visible = true
-		for i in range(6): targetHearts[i].visible = i < chicken.health
+		for i in range(5): targetHearts[i].visible = i < chicken.health
 		#make fake velocity
 		var rnd = [-1,1]
 		for i in range(len(chicken.dirListx)):
