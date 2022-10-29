@@ -1,0 +1,138 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Scripts/ChickenDummy.cs" type="Script" id=1]
+[ext_resource path="res://Sprites/Chickens/Chicken.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/Items/Shield.png" type="Texture" id=3]
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 12.0
+
+[sub_resource type="RectangleShape2D" id=6]
+
+[node name="ChickenBot" type="KinematicBody2D"]
+position = Vector2( 240, 240 )
+collision_mask = 8
+script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( -1, 1.25 )
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 2 )
+
+[node name="Shield" type="Sprite" parent="Sprite"]
+visible = false
+position = Vector2( 1.66666, -4.08334 )
+texture = ExtResource( 3 )
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_mask = 6
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource( 7 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2( 0.9, 0.9 )
+shape = SubResource( 6 )
+one_way_collision_margin = 0.0
+
+[node name="Invincible" type="Timer" parent="."]
+process_mode = 0
+one_shot = true
+
+[node name="RayCasts" type="Node2D" parent="."]
+
+[node name="RayCastB" type="RayCast2D" parent="RayCasts"]
+enabled = true
+cast_to = Vector2( 0, 15 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastT" type="RayCast2D" parent="RayCasts"]
+enabled = true
+cast_to = Vector2( 0, -15 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastR" type="RayCast2D" parent="RayCasts"]
+enabled = true
+cast_to = Vector2( 15, 0 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastL" type="RayCast2D" parent="RayCasts"]
+enabled = true
+cast_to = Vector2( -15, 0 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastBL1" type="RayCast2D" parent="RayCasts"]
+rotation = 1.0472
+enabled = true
+cast_to = Vector2( 0, 15 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastBL2" type="RayCast2D" parent="RayCasts"]
+rotation = 0.523599
+enabled = true
+cast_to = Vector2( 0, 15 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastTR1" type="RayCast2D" parent="RayCasts"]
+rotation = 1.0472
+enabled = true
+cast_to = Vector2( 0, -15 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastTR2" type="RayCast2D" parent="RayCasts"]
+rotation = 0.523599
+enabled = true
+cast_to = Vector2( 0, -15 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastBR1" type="RayCast2D" parent="RayCasts"]
+rotation = 0.523599
+enabled = true
+cast_to = Vector2( 15, 0 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastBR2" type="RayCast2D" parent="RayCasts"]
+rotation = 1.0472
+enabled = true
+cast_to = Vector2( 15, 0 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastTL1" type="RayCast2D" parent="RayCasts"]
+rotation = 0.523599
+enabled = true
+cast_to = Vector2( -15, 0 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastTL2" type="RayCast2D" parent="RayCasts"]
+rotation = 1.0472
+enabled = true
+cast_to = Vector2( -15, 0 )
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_Hitbox_area_entered"]
+[connection signal="timeout" from="Invincible" to="." method="_on_Invincible_timeout"]

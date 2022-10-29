@@ -44,9 +44,9 @@ func _input(event):
 			else :$ExitButton.grab_focus()
 		else: $SoundsLabel/SoundSlider.grab_focus()
 
-
 func _on_MainButton_button_up(): #solo game / continue
 	if title:
+		Global.online = false
 		visible = false
 		get_node("../PlayerOptions").visible = true
 		get_node("../PlayerOptions/NameLabel/NameEdit").grab_focus()
@@ -94,3 +94,12 @@ func _on_SoundSlider_value_changed(value):
 		AudioServer.set_bus_volume_db(mstr, -80)
 		return
 	AudioServer.set_bus_volume_db(mstr, value * .2)
+
+func _on_OnlineButton_button_up():
+	Global.online = true
+	visible = false
+	get_node("../PlayerOptions").visible = true
+	get_node("../PlayerOptions/NameLabel/NameEdit").grab_focus()
+
+func _on_TitleOptions_visibility_changed():
+	if title && visible: focused = false

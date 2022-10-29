@@ -9,7 +9,7 @@ var sid = 0
 var colorIdMap = []
 var eggColorMap = [Color.red, Color.purple, Color.green, Color.orange, Color.chartreuse, Color.cornflower,
 Color.fuchsia, Color.slateblue, Color.orangered, Color.gold, Color.cyan, Color.hotpink]
-var botNameMap = []
+var nameMap = []
 var playerBounds = Vector2(0,960)
 var botBounds = Vector2(0,480)
 var playerCount = 12
@@ -23,9 +23,16 @@ var difficulty = 0
 var crack1 = preload("res://Sprites/Eggs/EggCrack1.png")
 var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
 var muted = false
+var botlist = []
+var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
+"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
+var prefID = 0
 
 func _ready():
 	var rgb = [0,0,0]
+	for i in range(12):
+		botlist.append(true)
+		nameMap.append(null)
 	colorIdMap.append(Color8(255,100,100))
 #	eggColorMap[0] = colorIdMap[0] * 1.5
 	for i in range(1,12):
@@ -61,9 +68,14 @@ func _ready():
 		colorIdMap.append(Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2))
 
 func arrangeNames() -> void:
-	botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
-	"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
-	botNameMap[id] = Global.playerName
+	for i in range(12):
+		if nameMap[i] == null:
+			botlist[i] = true
+			nameMap[i] = botNameMap[i]
+		else: botlist[i] = false
+	if !Global.online:
+		botlist[id] = false
+		nameMap[id] = Global.playerName
 
 func defaults() -> void:
 	online = false
@@ -77,3 +89,6 @@ func defaults() -> void:
 	win = null
 	menu = false
 	countdown = false
+	for i in range(12):
+		botlist[i] = true
+		nameMap[i] = null

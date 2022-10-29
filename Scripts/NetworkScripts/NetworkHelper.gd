@@ -8,11 +8,11 @@ var enemyEggParent = null
 var enemyItemParent = null
 var game = get_parent()
 var movecooldown = 0
-enum tags {MOVE, SHOOT, HEALTH, DEATH, STATUS}
+enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM}
 
 func _ready():
 	Network.helper = self
-	# set_process(Global.online)
+	set_process(false)
 
 func _process(delta):
 	if !Global.playerDead:
@@ -35,16 +35,3 @@ func sendDeath() -> void:
 
 func sendStatus(powerup: String, size: float) -> void:
 	Network.send({'tag': tags.STATUS, 'powerup': powerup, 'size': size})
-
-func onData(payload):
-	match payload.tag:
-		tags.MOVE:
-			pass
-		tags.SHOOT:
-			pass
-		tags.HEALTH:
-			pass
-		tags.STATUS:
-			pass
-		tags.DEATH:
-			pass

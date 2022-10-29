@@ -50,7 +50,6 @@ public override void _Ready(){
     eggArea = GetNode<Area2D>("EggArea");
     gameSpace = (Node2D)GetParent();
     game = (Control)GetParent().GetParent().GetParent().GetParent();
-    // eggBar = GetNode<Control>("../../EggBar");
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;

@@ -11,6 +11,8 @@ var powerIcons = []
 var botIsSpawned = true
 var enemySpace = preload("res://Scenes/Enemyspace.tscn")
 var deadChicken = preload("res://Sprites/Chickens/DeadChicken.png")
+var chickenBot = preload("res://Scenes/ChickenBot.tscn")
+var chickenDummy = preload("res://Scenes/ChickenDummy.tscn")
 var botCount = 0
 var botDamageBuffer = 0
 onready var eggParent = $PlayerContainer/Viewport/Playspace/EggParent
@@ -35,7 +37,7 @@ onready var playerBorder = get_node("PlayerContainer/Viewport/PlayerBGBorder")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
 onready var enemyBorder = get_node("EnemyContainer/Viewport/EnemyBGBorder")
 onready var player = $PlayerContainer/Viewport/Playspace/Chicken
-onready var enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+var enemy = null#$EnemyContainer/Viewport/Enemyspace/ChickenBot
 onready var enemyEggParent = $EnemyContainer/Viewport/Enemyspace/EggParent
 onready var enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 onready var timerBar = $BottomHUD/TimerBar
@@ -49,7 +51,6 @@ func _ready():
 	eggParent.myid = Global.id
 	enemyEggParent.myid = Global.eid
 	player.id = Global.id
-	enemy.id = Global.eid
 	Global.arrangeNames()
 	#define nodes
 	for i in range(1,13):
@@ -88,12 +89,12 @@ func _ready():
 	#nameplates
 	for i in range(12):
 		if i != Global.id: botCount += 1
-		playerStats.append({"id" : i, "name": Global.botNameMap[i], "color": Global.colorIdMap[i],
-		"health": 5, "bot": i != Global.id})
+		playerStats.append({"id" : i, "name": Global.nameMap[i], "color": Global.colorIdMap[i],
+		"health": 5, "bot": Global.botlist[i]})
 		barKeys.append(i)
 		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
-		namePlates[offsetIds[i]].text = Global.botNameMap[i]
+		namePlates[offsetIds[i]].text = Global.nameMap[i]
 	#paint the player and target back grounds
 	playerBG.modulate = Global.colorIdMap[Global.id]
 	playerBorder.modulate = Global.colorIdMap[Global.id]
@@ -106,14 +107,17 @@ func _ready():
 	for i in range(5): targetHearts.append(get_node("EnemyContainer/Viewport/Hearts/HeartIconActives/HeartIcon" + str(i+1)))
 	#online shit
 #	if !Global.online: return
-	Network.connectToServer()
+	# Network.connectToServer()
 	$NetworkHelper.itemParent = $PlayerContainer/Viewport/Playspace/ItemParent
 	$NetworkHelper.player = player
-	$NetworkHelper.enemy = enemy
 	$NetworkHelper.eggParent = eggParent
 	$NetworkHelper.enemyEggParent = enemyEggParent
 	$NetworkHelper.enemyItemParent = enemyItemParent
-	
+	var chick = chickenBot.instance() if playerStats[Global.eid]["bot"] else chickenDummy.instance()
+	$EnemyContainer/Viewport/Enemyspace.add_child(chick)
+	enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+	$NetworkHelper.enemy = enemy
+	enemy.id = Global.eid
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -128,7 +132,7 @@ func _input(event):
 		if prev != Global.eid: Global.sid = findNewTarget(Global.eid, false, false) #seek new sender
 
 func _process(delta):
-	if botCount > 0: #make fake health changes
+	if !Global.online: #make fake health changes
 		botDamageBuffer += delta * botCount * (.00005 + ((Global.level + 1) * .00005))
 		if randf() < botDamageBuffer:
 			botDamageBuffer = 0
@@ -295,6 +299,8 @@ func makeBot() -> void:
 	$NetworkHelper.enemyItemParent = enemyItemParent
 	eggParent.eggTarget = enemyEggParent
 	if playerStats[Global.eid]["bot"]:
+		var chick = chickenBot.instance()
+		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		$NetworkHelper.enemy = enemy
 		enemy.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
@@ -329,6 +335,11 @@ func makeBot() -> void:
 			while yroll < chickenY + 10 && yroll > chickenY - 10: yroll = round(rand_range(10,720))
 			enemyEggParent.makeEgg(99, enemyEggParent.randType(Global.normalcy),
 			Vector2(rand_range(Global.botBounds.x, Global.botBounds.y), yroll))
+	else:
+		var chick = chickenDummy.instance()
+		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
+		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+		$NetworkHelper.enemy = enemy
 
 func calculateGameTime() -> String:
 	var lev = Global.level

@@ -31,7 +31,7 @@ func _ready():
 
 func _process(_delta):
 	cooldown += 1
-	if cooldown > 9:
+	if cooldown > 14:
 		cooldown = 0
 		jiggle()
 

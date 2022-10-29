@@ -4,6 +4,7 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 
 var client = WebSocketClient.new()
 var helper = null
+enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM}
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
@@ -25,7 +26,7 @@ func _on_connection_closed(error: bool = false):
 	set_process(false)
 
 func _on_connected(proto: String = ''):
-	print('connected with protocol: ', proto)
+	print('connected to server!')
 
 func send(json) -> void:
 	print('sending ', json)
@@ -33,4 +34,26 @@ func send(json) -> void:
 
 func _on_data() -> void:
 	var payload = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
-	helper.onData(payload)
+	match int(payload.tag):
+		tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
+			send({'tag': tags['JOINED'], 'prefID': Global.prefID, 'name': Global.playerName})
+		tags.MOVE: #MOVE
+			pass
+		tags.SHOOT: #SHOOT
+			pass
+		tags.HEALTH: #HEALTH
+			pass
+		tags.STATUS: #STATUS
+			pass
+		tags.DEATH: #DEATH
+			pass
+		tags.NEWPLAYER: #NEWPLAYER
+			Global.nameMap[payload.id] = payload.name
+			print("New player joined: ", Global.nameMap[payload.id])
+		tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
+			Global.id = payload.id
+			Global.playerName = payload.name
+			Global.nameMap = payload.nameMap
+			print("Join confirmed!")
+			print("Your assigned ID: ", Global.id)
+			print("Playerlist: ", Global.nameMap)

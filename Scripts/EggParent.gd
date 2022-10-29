@@ -123,6 +123,7 @@ func _physics_process(_delta):
 #			else: #network
 		
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
+	return
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	add_child(egg)
