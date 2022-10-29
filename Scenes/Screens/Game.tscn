@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=2]
+[gd_scene load_steps=63 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
@@ -20,6 +20,7 @@
 [ext_resource path="res://Sprites/Chickens/DeadChicken.png" type="Texture" id=18]
 [ext_resource path="res://Scripts/Blurfix.gd" type="Script" id=19]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=20]
+[ext_resource path="res://Scripts/NetworkScripts/NetworkHelper.gd" type="Script" id=21]
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -272,6 +273,9 @@ anchor_bottom = 1.0
 margin_left = -0.768002
 margin_right = 0.767944
 script = ExtResource( 13 )
+
+[node name="NetworkHelper" type="Node2D" parent="."]
+script = ExtResource( 21 )
 
 [node name="BG" type="ColorRect" parent="."]
 margin_left = -40.0

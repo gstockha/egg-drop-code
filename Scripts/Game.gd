@@ -35,6 +35,9 @@ onready var playerBorder = get_node("PlayerContainer/Viewport/PlayerBGBorder")
 onready var enemyBG = get_node("EnemyContainer/Viewport/EnemyBG")
 onready var enemyBorder = get_node("EnemyContainer/Viewport/EnemyBGBorder")
 onready var player = $PlayerContainer/Viewport/Playspace/Chicken
+onready var enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+onready var enemyEggParent = $EnemyContainer/Viewport/Enemyspace/EggParent
+onready var enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 onready var timerBar = $BottomHUD/TimerBar
 
 func _ready():
@@ -44,9 +47,9 @@ func _ready():
 	Global.eid = Global.id + 1 if Global.id + 1 < 12 else 0
 	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	eggParent.myid = Global.id
-	$EnemyContainer/Viewport/Enemyspace/EggParent.myid = Global.eid
+	enemyEggParent.myid = Global.eid
 	player.id = Global.id
-	$EnemyContainer/Viewport/Enemyspace/ChickenBot.id = Global.eid
+	enemy.id = Global.eid
 	Global.arrangeNames()
 	#define nodes
 	for i in range(1,13):
@@ -101,6 +104,16 @@ func _ready():
 	statusLabels[offsetIds[Global.eid]].text = '[TARGET]'
 	statusLabels[offsetIds[Global.sid]].text = '[SEND]'
 	for i in range(5): targetHearts.append(get_node("EnemyContainer/Viewport/Hearts/HeartIconActives/HeartIcon" + str(i+1)))
+	#online shit
+#	if !Global.online: return
+	Network.connectToServer()
+	$NetworkHelper.itemParent = $PlayerContainer/Viewport/Playspace/ItemParent
+	$NetworkHelper.player = player
+	$NetworkHelper.enemy = enemy
+	$NetworkHelper.eggParent = eggParent
+	$NetworkHelper.enemyEggParent = enemyEggParent
+	$NetworkHelper.enemyItemParent = enemyItemParent
+	
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -160,7 +173,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 		if id == Global.eid && !Global.playerDead:
 			$GameSFX.playSound("killconfirm")
 			confirmedShells += 1
-			var hisX = ($EnemyContainer/Viewport/Enemyspace/ChickenBot.global_position.x * 2) + 16
+			var hisX = (enemy.global_position.x * 2) + 16
 			$PopupParent.makePopup(playerStats[id]["name"], Vector2(hisX, 780), true)
 		if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0: #win game
 			$GameSFX.playSound("win")
@@ -179,7 +192,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
 	if Global.eid == Global.sid:
 		eggParent.botReceive = false
-		$EnemyContainer/Viewport/Enemyspace/EggParent.eggTarget = eggParent
+		enemyEggParent.eggTarget = eggParent
 
 func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if Global.playerCount == 1: return
@@ -193,7 +206,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if health < 1:
 		Global.playerCount -= 1
 		var me = Global.id == id
-		var eParent = $EnemyContainer/Viewport/Enemyspace/EggParent if !me else eggParent
+		var eParent = enemyEggParent if !me else eggParent
 		if (me || id == Global.eid) && eParent.slowMo != .5:
 			var deathTimer = Timer.new()
 			add_child(deathTimer)
@@ -203,12 +216,12 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			eParent.slowMo = .5
 			eParent.player = null
 			eParent.set_process(false)
-			var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot if !me else player
+			var chicken = enemy if !me else player
 			chicken.idle = true
 			chicken.speed *= .5
 			chicken.get_child(0).texture = deadChicken
 			if !me:
-				$EnemyContainer/Viewport/Enemyspace/ItemParent.player = null
+				enemyItemParent.player = null
 				if !Global.playerDead:
 					eggParent.eggQueue = true
 					eggParent.eggQueueTime = gameTime
@@ -261,8 +274,8 @@ func endGame(win: bool, winner: int):
 	else: #spectate
 		recordedTime = hud["timer"].text
 		Global.playerDead = true
-		$EnemyContainer/Viewport/Enemyspace/EggParent.botIsAbove = true
-		$EnemyContainer/Viewport/Enemyspace/EggParent.rateBuffer *= .1
+		enemyEggParent.botIsAbove = true
+		enemyEggParent.rateBuffer *= .1
 		var lastHit = player.lastHitId
 		var textChoices = ["YOU'VE BEEN PLUCKED", "YOU WERE SHELLED", "YOU WERE SCRAMBLED", "YOU GOT CLUCKED",
 		"YOU'VE BEEN FRIED", "YOU GOT TURNED INTO TENDIES", "YOU GOT COCK-A-DOODLE-DOO'D", "YOU BECAME A FAMILY MEAL"]
@@ -276,41 +289,46 @@ func makeBot() -> void:
 	$EnemyContainer/Viewport.add_child(enemySpace.instance())
 	enemyBG.modulate = playerStats[Global.eid]["color"]
 	enemyBorder.modulate = playerStats[Global.eid]["color"]
-	eggParent.eggTarget = $EnemyContainer/Viewport/Enemyspace/EggParent
+	enemyEggParent = $EnemyContainer/Viewport/Enemyspace/EggParent
+	$NetworkHelper.enemyEggParent = enemyEggParent
+	enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
+	$NetworkHelper.enemyItemParent = enemyItemParent
+	eggParent.eggTarget = enemyEggParent
 	if playerStats[Global.eid]["bot"]:
-		var chicken = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		chicken.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
-		chicken.position.y + rand_range(-20,20))
+		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+		$NetworkHelper.enemy = enemy
+		enemy.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
+		enemy.position.y + rand_range(-20,20))
 		var eggRoll = randi() % 100 + 1
 		if eggRoll < 75: eggRoll = round(rand_range(0,5))
 		else: eggRoll = round(rand_range(5,20))
-		chicken.eggCount = eggRoll
-		if eggRoll - 1 > 0: for i in range(eggRoll-1): chicken.eggs[i] = 'normal'
-		chicken.scale = Vector2(chicken.baseScale.x + (.05 * eggRoll), chicken.baseScale.y + (.05 * eggRoll))
-		chicken.baseSpriteScale = chicken.sprite.scale
-		chicken.weight = chicken.baseWeight + (eggRoll * .0002)
-		chicken.health = playerStats[Global.eid]["health"]
+		enemy.eggCount = eggRoll
+		if eggRoll - 1 > 0: for i in range(eggRoll-1): enemy.eggs[i] = 'normal'
+		enemy.scale = Vector2(enemy.baseScale.x + (.05 * eggRoll), enemy.baseScale.y + (.05 * eggRoll))
+		enemy.baseSpriteScale = enemy.sprite.scale
+		enemy.weight = enemy.baseWeight + (eggRoll * .0002)
+		enemy.health = playerStats[Global.eid]["health"]
 		targetHearts[0].get_parent().visible = true
-		for i in range(5): targetHearts[i].visible = i < chicken.health
+		for i in range(5): targetHearts[i].visible = i < enemy.health
 		#make fake velocity
 		var rnd = [-1,1]
-		for i in range(len(chicken.dirListx)):
-			chicken.dirListx[i] = rnd[randi() % 2]
-			chicken.dirListy[i] = rnd[randi() % 2]
+		for i in range(len(enemy.dirListx)):
+			enemy.dirListx[i] = rnd[randi() % 2]
+			enemy.dirListy[i] = rnd[randi() % 2]
 		#make fake eggs
-		var eggP = $EnemyContainer/Viewport/Enemyspace/EggParent
-		eggP.botEggCount = eggRoll
+		enemyEggParent.botEggCount = eggRoll
 		var myEnemy = findNewTarget(Global.eid, false, false)
-		eggP.botIsAbove = myEnemy != Global.id
+		enemyEggParent.botIsAbove = myEnemy != Global.id
 		if Global.sid == Global.eid:
-			eggP.eggTarget = eggParent
+			enemyEggParent.eggTarget = eggParent
 			eggParent.botReceive = false
-		var chickenY = chicken.position.y
+		var chickenY = enemy.position.y
 		var yroll
 		for _i in range(rand_range(2 + (1 * Global.level), 8 + (3 * Global.level))):
 			yroll = round(rand_range(10,720))
 			while yroll < chickenY + 10 && yroll > chickenY - 10: yroll = round(rand_range(10,720))
-			eggP.makeEgg(99, eggP.randType(Global.normalcy), Vector2(rand_range(Global.botBounds.x, Global.botBounds.y), yroll))
+			enemyEggParent.makeEgg(99, enemyEggParent.randType(Global.normalcy),
+			Vector2(rand_range(Global.botBounds.x, Global.botBounds.y), yroll))
 
 func calculateGameTime() -> String:
 	var lev = Global.level
@@ -319,7 +337,7 @@ func calculateGameTime() -> String:
 	timerBar.value = (((gameTime - (timeBase * Global.level)) / timeBase) * 100) + 1
 	if lev != Global.level:
 		$PlayerContainer/Viewport/Playspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
-		$EnemyContainer/Viewport/Enemyspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
+		enemyItemParent.powerCooldown = 120 - (Global.level * 7)
 		eggParent.eggRateLevelStr = str(Global.level)
 		hud["level"].text = str(Global.level+1)
 		var clr = Color.deeppink
@@ -339,7 +357,7 @@ func calculateGameTime() -> String:
 		hud["level"].modulate = clr
 		hud["levelegg"].modulate = eggClr
 		timerBar.modulate = clr
-		$EnemyContainer/Viewport/Enemyspace/EggParent.eggRateLevelStr = str(Global.level)
+		enemyEggParent.eggRateLevelStr = str(Global.level)
 	var mins = int(gameTime) / 60
 	var secs = int(gameTime - (mins * 60))
 	mins = "0" + str(mins) if mins < 10 else str(mins)

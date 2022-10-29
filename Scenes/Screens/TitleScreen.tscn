@@ -487,7 +487,6 @@ action_mode = 0
 enabled_focus_mode = 0
 icon = SubResource( 12 )
 flat = true
-icon_align = 1
 expand_icon = true
 
 [node name="FullscreenButton" type="Button" parent="."]

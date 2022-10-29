@@ -21,12 +21,13 @@ _global_script_class_icons={
 [application]
 
 config/name="EGG DROP"
-run/main_scene="res://Scenes/Screens/TitleScreen.tscn"
+run/main_scene="res://Scenes/Screens/Game.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Global="*res://Scripts/Global.gd"
+Network="*res://Scripts/NetworkScripts/Network.gd"
 
 [display]
 
