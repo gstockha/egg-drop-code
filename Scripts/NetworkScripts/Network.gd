@@ -23,6 +23,7 @@ func _process(_delta):
 
 func _on_connection_closed(error: bool = false):
 	print("closed, error: ", error)
+	Global.lobby = false
 	set_process(false)
 
 func _on_connected(proto: String = ''):
@@ -51,9 +52,11 @@ func _on_data() -> void:
 			Global.nameMap[payload.id] = payload.name
 			print("New player joined: ", Global.nameMap[payload.id])
 		tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
-			Global.id = payload.id
+			Global.id = int(payload.id)
 			Global.playerName = payload.name
 			Global.nameMap = payload.nameMap
+			Global.joined = true
+			Global.lobby = true
 			print("Join confirmed!")
 			print("Your assigned ID: ", Global.id)
 			print("Playerlist: ", Global.nameMap)

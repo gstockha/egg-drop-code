@@ -15,6 +15,10 @@ func _ready():
 		if child is VScrollBar: nameEdit.remove_child(child)
 		elif child is HScrollBar: nameEdit.remove_child(child)
 
+func _process(_delta):
+	if Global.joined: 
+		transition.transition("fade_to_black")
+		transition.screen = 'title'
 
 func _on_NameEdit_focus_entered():
 	$NameLabel.self_modulate = Color('faff3e')
@@ -47,7 +51,7 @@ func _on_DifficultyButton_focus_exited():
 func _on_NameEdit_focus_exited():
 	$NameLabel.self_modulate = Color.white
 	if nameEdit.text == '':
-		nameEdit.text = 'You'
+		if !Global.online: nameEdit.text = 'You'
 		default = true
 
 func _on_PlayerOptions_visibility_changed():

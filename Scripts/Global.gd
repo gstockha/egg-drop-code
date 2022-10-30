@@ -26,7 +26,9 @@ var muted = false
 var botlist = []
 var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
-var prefID = 0
+var prefID = 5
+var lobby = false
+var joined = false
 
 func _ready():
 	var rgb = [0,0,0]
@@ -87,8 +89,11 @@ func defaults() -> void:
 	playerDead = false
 	gameOver = false
 	win = null
+	prefID = 5
 	menu = false
 	countdown = false
+	lobby = false
+	joined = false
 	for i in range(12):
 		botlist[i] = true
 		nameMap[i] = null

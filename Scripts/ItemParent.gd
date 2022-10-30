@@ -29,6 +29,7 @@ var powerSprites = {
 var pop = null
 
 func _ready():
+	set_process(!Global.lobby)
 	itemTimer = 30
 	botMode = 1 if get_parent().name == "Enemyspace" else 0
 	if botMode == 0:
@@ -39,7 +40,6 @@ func _ready():
 		ybounds.append(755)
 		pop = get_node("../PopSFX")
 	else:
-		player = get_parent().get_node('ChickenBot')
 		spawnRange = Vector2(Global.botBounds.x+2, Global.botBounds.y-2)
 		ybounds.append(65)
 		ybounds.append(225)

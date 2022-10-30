@@ -6,8 +6,10 @@ onready var bg = get_node("../CountdownBG")
 onready var sfx = get_node("../GameSFX")
 
 func _ready():
-	get_tree().paused = true
 	$StartTimer.visible = false
+	set_physics_process(!Global.lobby)
+	if Global.lobby: return
+	get_tree().paused = true
 	Global.countdown = true
 	bg.visible = true
 

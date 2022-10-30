@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=2]
+[gd_scene load_steps=65 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
@@ -21,6 +21,7 @@
 [ext_resource path="res://Scripts/Blurfix.gd" type="Script" id=19]
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=20]
 [ext_resource path="res://Scripts/NetworkScripts/NetworkHelper.gd" type="Script" id=21]
+[ext_resource path="res://Scripts/UI/OnlineLabel.gd" type="Script" id=22]
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -265,6 +266,13 @@ bg_color = Color( 0.6, 0.6, 0.6, 0 )
 [sub_resource type="StreamTexture" id=35]
 flags = 4
 load_path = "res://.import/Speaker.png-f7b9aca197d30e5b7be70866d52484dc.stex"
+
+[sub_resource type="DynamicFont" id=53]
+size = 32
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+extra_spacing_bottom = -4
+font_data = ExtResource( 6 )
 
 [node name="Game" type="Control"]
 anchor_left = 0.026
@@ -2969,6 +2977,22 @@ script = ExtResource( 7 )
 [node name="HitSFX" type="AudioStreamPlayer" parent="."]
 script = ExtResource( 8 )
 
+[node name="OnlineLabel" type="Label" parent="."]
+pause_mode = 2
+anchor_left = 0.333
+anchor_top = 0.091
+anchor_right = 0.333
+anchor_bottom = 0.091
+margin_left = -239.504
+margin_top = -24.262
+margin_right = 240.496
+margin_bottom = 23.738
+custom_fonts/font = SubResource( 53 )
+text = "Waiting for new game..."
+align = 1
+valign = 1
+script = ExtResource( 22 )
+
 [connection signal="button_up" from="Menu/MainButton" to="Menu" method="_on_MainButton_button_up"]
 [connection signal="focus_entered" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_entered"]
 [connection signal="focus_exited" from="Menu/SoundsLabel/SoundSlider" to="Menu" method="_on_SoundSlider_focus_exited"]
@@ -2978,4 +3002,5 @@ script = ExtResource( 8 )
 [connection signal="button_down" from="Menu/ExitButton" to="Menu" method="_on_ExitButton_button_down"]
 [connection signal="button_down" from="MenuButton" to="Menu" method="_on_MenuButton_button_down"]
 [connection signal="button_up" from="FullscreenButton" to="Menu" method="_on_FullscreenButton_button_up"]
-[connection signal="button_down" from="MuteButton" to="." method="_on_MuteButton_button_down"]
+[connection signal="button_down" from="MuteButton" to="Menu" method="_on_MuteButton_button_down"]
+[connection signal="visibility_changed" from="OnlineLabel" to="OnlineLabel" method="_on_OnlineLabel_visibility_changed"]

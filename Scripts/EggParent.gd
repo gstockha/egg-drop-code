@@ -36,6 +36,8 @@ var slowMo = 1
 var game = null
 
 func _ready():
+	set_process(!Global.lobby)
+	set_physics_process(!Global.lobby)
 	eggRateLevelStr = str(Global.level)
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
@@ -50,7 +52,6 @@ func _ready():
 		game = get_parent().get_parent().get_parent().get_parent()
 	else:
 		myid = Global.eid
-		player = get_parent().get_node('ChickenBot')
 		lowerBounds = 425
 		spawnRange = Vector2(Global.botBounds.x+3,Global.botBounds.y-3)
 		for key in eggTypes:
@@ -123,7 +124,6 @@ func _physics_process(_delta):
 #			else: #network
 		
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
-	return
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	add_child(egg)

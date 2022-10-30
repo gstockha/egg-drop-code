@@ -106,18 +106,21 @@ func _ready():
 	statusLabels[offsetIds[Global.sid]].text = '[SEND]'
 	for i in range(5): targetHearts.append(get_node("EnemyContainer/Viewport/Hearts/HeartIconActives/HeartIcon" + str(i+1)))
 	#online shit
-#	if !Global.online: return
-	# Network.connectToServer()
-	$NetworkHelper.itemParent = $PlayerContainer/Viewport/Playspace/ItemParent
-	$NetworkHelper.player = player
-	$NetworkHelper.eggParent = eggParent
-	$NetworkHelper.enemyEggParent = enemyEggParent
-	$NetworkHelper.enemyItemParent = enemyItemParent
-	var chick = chickenBot.instance() if playerStats[Global.eid]["bot"] else chickenDummy.instance()
-	$EnemyContainer/Viewport/Enemyspace.add_child(chick)
-	enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-	$NetworkHelper.enemy = enemy
-	enemy.id = Global.eid
+	if Global.online:
+		$NetworkHelper.itemParent = $PlayerContainer/Viewport/Playspace/ItemParent
+		$NetworkHelper.player = player
+		$NetworkHelper.eggParent = eggParent
+		$NetworkHelper.enemyEggParent = enemyEggParent
+		$NetworkHelper.enemyItemParent = enemyItemParent
+	#define enemy
+	if !Global.lobby:
+		var chick = chickenBot.instance() if playerStats[Global.eid]["bot"] else chickenDummy.instance()
+		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
+		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+		enemyItemParent.player = enemy
+		enemyEggParent.player = enemy
+		$NetworkHelper.enemy = enemy
+		enemy.id = Global.eid
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -302,6 +305,8 @@ func makeBot() -> void:
 		var chick = chickenBot.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
+		enemyItemParent.player = enemy
+		enemyEggParent.player = enemy
 		$NetworkHelper.enemy = enemy
 		enemy.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
 		enemy.position.y + rand_range(-20,20))
@@ -381,9 +386,3 @@ func setPowerupIcon(id: int, type: String) -> void:
 	else:
 		powerIcons[offsetIds[id]].visible = true
 		powerIcons[offsetIds[id]].texture = powerups[type]
-
-func _on_MuteButton_button_down():
-	Global.muted = !Global.muted
-	var mstr = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_mute(mstr, Global.muted)
-	$MuteButton.self_modulate.a = .6 if Global.muted else 1

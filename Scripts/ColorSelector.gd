@@ -14,4 +14,5 @@ func _ready():
 
 func _on_ColorSwatch_pressed(cid: int) -> void:
 	Global.id = cid
+	Global.prefID = cid
 	get_parent().self_modulate = Global.colorIdMap[cid]
