@@ -2,6 +2,7 @@ extends Label
 var up = false
 
 func _ready():
+	visible = Global.lobby
 	set_process(visible)
 
 func _process(_delta):

@@ -35,6 +35,7 @@ Control game;
 ProgressBar powerBar;
 Area2D hitbox;
 CollisionShape2D collisionBox;
+Label nameLabel;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -45,6 +46,7 @@ public override void _Ready(){
     collisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
+    nameLabel = GetNode<Label>("NameLabel");
     gameSpace = (Node2D)GetParent();
     popupParent = GetNode<Node2D>("../../../../PopupParent");
     game = (Control)GetParent().GetParent().GetParent().GetParent();

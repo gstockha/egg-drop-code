@@ -4,7 +4,7 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 
 var client = WebSocketClient.new()
 var helper = null
-enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM}
+enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT}
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
@@ -34,8 +34,8 @@ func send(json) -> void:
 	client.get_peer(1).put_packet(JSON.print(json).to_utf8())
 
 func _on_data() -> void:
-	var payload = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
-	match int(payload.tag):
+	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
+	match int(data.tag):
 		tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
 			send({'tag': tags['JOINED'], 'prefID': Global.prefID, 'name': Global.playerName})
 		tags.MOVE: #MOVE
@@ -49,14 +49,23 @@ func _on_data() -> void:
 		tags.DEATH: #DEATH
 			pass
 		tags.NEWPLAYER: #NEWPLAYER
-			Global.nameMap[payload.id] = payload.name
-			print("New player joined: ", Global.nameMap[payload.id])
+			Global.nameMap[data.id] = data.name
+			print("New player joined: ", Global.nameMap[data.id])
+			Global.playerCount -= 1
+			if Global.lobby: helper.addLobbyPlayer(data.id)
 		tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
-			Global.id = int(payload.id)
-			Global.playerName = payload.name
-			Global.nameMap = payload.nameMap
+			Global.id = int(data.id)
+			Global.playerName = data.name
+			Global.nameMap = data.nameMap
 			Global.joined = true
-			Global.lobby = true
+			Global.lobby = data.lobby
 			print("Join confirmed!")
 			print("Your assigned ID: ", Global.id)
 			print("Playerlist: ", Global.nameMap)
+			Global.playerCount = 0
+			for i in range(len(Global.nameMap)): if Global.nameMap[i] != null: Global.playerCount += 1
+		tags.PLAYERLEFT:
+			Global.playerCount = int(data.playerCount)
+			print(Global.nameMap[data.id] + ' left the game')
+			Global.nameMap[data.id] = null
+			if Global.lobby: helper.removeLobbyPlayer(data.id)

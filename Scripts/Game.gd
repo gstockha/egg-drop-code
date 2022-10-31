@@ -95,6 +95,7 @@ func _ready():
 		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		namePlates[offsetIds[i]].text = Global.nameMap[i]
+		if Global.online && Global.botlist[i]: namePlates[offsetIds[i]].text += '[bot]'
 	#paint the player and target back grounds
 	playerBG.modulate = Global.colorIdMap[Global.id]
 	playerBorder.modulate = Global.colorIdMap[Global.id]
@@ -112,6 +113,8 @@ func _ready():
 		$NetworkHelper.eggParent = eggParent
 		$NetworkHelper.enemyEggParent = enemyEggParent
 		$NetworkHelper.enemyItemParent = enemyItemParent
+		$NetworkHelper.chickenDummy = chickenDummy
+		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
 	#define enemy
 	if !Global.lobby:
 		var chick = chickenBot.instance() if playerStats[Global.eid]["bot"] else chickenDummy.instance()
@@ -121,6 +124,9 @@ func _ready():
 		enemyEggParent.player = enemy
 		$NetworkHelper.enemy = enemy
 		enemy.id = Global.eid
+	else:
+		set_process(false)
+		for i in range(12): if !Global.botlist[i] && i != Global.id: $NetworkHelper.addLobbyPlayer(i)
 
 func _input(event):
 	if event.is_action_pressed("restart"):

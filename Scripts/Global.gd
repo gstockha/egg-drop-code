@@ -12,7 +12,7 @@ Color.fuchsia, Color.slateblue, Color.orangered, Color.gold, Color.cyan, Color.h
 var nameMap = []
 var playerBounds = Vector2(0,960)
 var botBounds = Vector2(0,480)
-var playerCount = 12
+var playerCount = 1
 var playerDead = false
 var gameOver = false
 var win = null
@@ -24,7 +24,7 @@ var crack1 = preload("res://Sprites/Eggs/EggCrack1.png")
 var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
 var muted = false
 var botlist = []
-var botNameMap = ["XiaoKillerCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
+var botNameMap = ["XiaoCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
 var prefID = 5
 var lobby = false

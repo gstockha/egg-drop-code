@@ -4,13 +4,17 @@ var eggParent = null
 var itemParent = null
 var player = null
 var enemy = null
+var lobbyChickens = []
 var enemyEggParent = null
 var enemyItemParent = null
 var game = get_parent()
 var movecooldown = 0
 enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM}
+var playerSpace = null
+var chickenDummy = null
 
 func _ready():
+	for i in range(12): lobbyChickens.append(null)
 	Network.helper = self
 	set_process(false)
 
@@ -35,3 +39,17 @@ func sendDeath() -> void:
 
 func sendStatus(powerup: String, size: float) -> void:
 	Network.send({'tag': tags.STATUS, 'powerup': powerup, 'size': size})
+
+func removeLobbyPlayer(id: int) -> void:
+	if lobbyChickens[id] == null: return
+	lobbyChickens[id].queue_free()
+	lobbyChickens[id] = null
+
+func addLobbyPlayer(id: int) -> void:
+	var chick = chickenDummy.instance()
+	playerSpace.add_child(chick)
+	chick.nameLabel.self_modulate = Global.colorIdMap[id]
+	chick.nameLabel.text = Global.nameMap[id]
+	chick.nameLabel.visible = true
+	chick.position = Vector2(480,480)
+	lobbyChickens[id] = chick
