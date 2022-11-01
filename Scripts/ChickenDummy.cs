@@ -6,14 +6,14 @@ using MyMath;
 public class ChickenDummy : KinematicBody2D
 {
 Vector2 baseSpriteScale, baseScale, velocity, shoveVel = Vector2.Zero;
-float speed = 200;
+float speed = 400;
 float momentum, screenShake, shakeTimer, gravity = 0;
 float eggSpdBoost = 1;
 float baseWeight, weight = .007F;
 float[] shoveCounter = new float[] {0,0};
-// float[] dir = new float[] {0,0};
-// float[] dirListx = new float[12];
-// float[] dirListy = new float[12];
+float[] dir = new float[] {0,0};
+float[] dirListx = new float[12];
+float[] dirListy = new float[12];
 float[] powerupDir = new float[] {0,0};
 bool idle, invincible, powerup, shielded, onFloor = false;
 int eggCount = 0;
@@ -95,31 +95,31 @@ public void Move(){
         MoveAndSlide(new Vector2(velocity.x, velocity.y) * speed);
 		// dir[0] = Input.GetActionStrength("right") - Input.GetActionStrength("left");
 		// dir[1] = Input.GetActionStrength("down") - Input.GetActionStrength("up");
-		// if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
-		// else dir[1] = Mathf.Round(dir[1]);
+		if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
+		else dir[1] = Mathf.Round(dir[1]);
 	}
 	else{
         invincible = true;
-		// dir[0] = 0;
-		// dir[1] = 0;
+		dir[0] = 0;
+		dir[1] = 0;
 	}
     onFloor = IsOnWall() && Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
-    if (onFloor) gravity = 0;
-    else{
-        gravity += weight;
-        if (gravity > weight * 200) gravity = weight * 200;
-    }
-    // int current = dirListx.Length - 1;
-	// int i;
-	// for (i = 0; i < current; i++){
-	// 	dirListx[i] = dirListx[i+1];
-	// 	dirListy[i] = dirListy[i+1];
-	// }
-	// dirListx[current] = dir[0];
-	// dirListy[current] = dir[1] + gravity;
-	// dirListx[current] = myMath.arrayMean(dirListx);
-	// dirListy[current] = myMath.arrayMean(dirListy);
-    // momentum = GetMomentum();
+    // if (onFloor) gravity = 0;
+    // else{
+    //     gravity += weight;
+    //     if (gravity > weight * 200) gravity = weight * 200;
+    // }
+    int current = dirListx.Length - 1;
+	int i;
+	for (i = 0; i < current; i++){
+		dirListx[i] = dirListx[i+1];
+		dirListy[i] = dirListy[i+1];
+	}
+	dirListx[current] = dir[0];
+	dirListy[current] = dir[1];// + gravity;
+	dirListx[current] = myMath.arrayMean(dirListx);
+	dirListy[current] = myMath.arrayMean(dirListy);
+    momentum = GetMomentum();
     if (shoveCounter[0] > 0){
         shoveCounter[0] -= 10;
         MoveAndSlide(shoveVel * (shoveCounter[1] * (shoveCounter[0] / shoveCounter[1])));
@@ -129,16 +129,16 @@ public void Move(){
     }
 }
 
-// public float GetMomentum(string XorY = ""){
-//     float mom;
-//     velocity = new Vector2(myMath.arrayMean(dirListx), myMath.arrayMean(dirListy));
-//     float absx = Mathf.Abs(velocity.x);
-//     float absy = Mathf.Abs(velocity.y);
-//     if (XorY == "") mom = (absx >= absy) ? absx : absy;
-//     else mom = ("XorY" == "x") ? absx : absy;
-//     if (mom > 1) mom = 1;
-//     return mom;
-// }
+public float GetMomentum(string XorY = ""){
+    float mom;
+    velocity = new Vector2(myMath.arrayMean(dirListx), myMath.arrayMean(dirListy));
+    float absx = Mathf.Abs(velocity.x);
+    float absy = Mathf.Abs(velocity.y);
+    if (XorY == "") mom = (absx >= absy) ? absx : absy;
+    else mom = ("XorY" == "x") ? absx : absy;
+    if (mom > 1) mom = 1;
+    return mom;
+}
 
 public void WallCheck(){
     if (GetSlideCount() < 1) return;
@@ -186,19 +186,21 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     if (bounce < lowerBound) bounce = lowerBound;
     if (bounce > 1) bounce = 1;
     shoveVel = new Vector2(-dirChange, -Mathf.Sign(velocity.y));
-    float targetVel = 0;
+    float[] targetList = new float[0];
     float squishAmount = 0;
     if (direction == "x"){
-        targetVel = velocity.x;
+        targetList = dirListx;
         shoveVel.y = 0;
         bounce *= -1;
     }
     else if (direction == "y"){
-        targetVel = velocity.y;
+        targetList = dirListy;
         shoveVel.x = 0;
-        if (Mathf.Sign(targetVel) == dirChange) shoveVel.y *= -1;
+        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1;
     }
-    targetVel = dirChange * bounce;
+    for (int i = 0; i < dirListx.Length; i++){
+        targetList[i] = dirChange * bounce;
+    }
     float squishPower = power;
     if (invTime != 0 && !shielded){
         invincible = true;
@@ -207,7 +209,7 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
         screenShake = 15 + (power * .025F);
         shakeTimer = 25 + screenShake * 1.3F;
     }
-    squishAmount = (targetVel * .5F * baseSpriteScale.x) * (squishPower / 200);
+    squishAmount = (myMath.arrayMax(targetList) * .5F * baseSpriteScale.x) * (squishPower / 200);
     if (squishAmount > .75F) squishAmount = .75F;
     if (direction == "y") squishAmount *= -1;
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));

@@ -116,7 +116,7 @@ func _ready():
 		$NetworkHelper.chickenDummy = chickenDummy
 		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
 	#define enemy
-	if !Global.lobby:
+	if !Network.lobby:
 		var chick = chickenBot.instance() if playerStats[Global.eid]["bot"] else chickenDummy.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot

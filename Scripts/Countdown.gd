@@ -7,8 +7,8 @@ onready var sfx = get_node("../GameSFX")
 
 func _ready():
 	$StartTimer.visible = false
-	set_physics_process(!Global.lobby)
-	if Global.lobby: return
+	set_physics_process(!Network.lobby)
+	if Network.lobby: return
 	get_tree().paused = true
 	Global.countdown = true
 	bg.visible = true

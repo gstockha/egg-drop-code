@@ -5,6 +5,7 @@ onready var title = get_node("../TitleOptions")
 onready var transition = get_node("../Transition")
 var default = true
 var lastText = ''
+var attempting = true
 
 func _ready():
 	$DifficultyButton.selected = Global.difficulty
@@ -16,9 +17,16 @@ func _ready():
 		elif child is HScrollBar: nameEdit.remove_child(child)
 
 func _process(_delta):
-	if Global.joined: 
+	if attempting && !Network.attemptingConnection && !Network.joined:
+		attempting = false
+		$BeginButton.text = "CAN'T FIND SERVER!"
+		$BeginButton.disabled = false
+	if Network.joined: 
 		transition.transition("fade_to_black")
 		transition.screen = 'title'
+		Network.attemptingConnection = false
+	if Input.is_action_pressed("ui_select"): $BeginButton.grab_focus()
+	elif Input.is_action_just_pressed("ui_cancel"): _on_BackButton_button_up()
 
 func _on_NameEdit_focus_entered():
 	$NameLabel.self_modulate = Color('faff3e')
@@ -27,6 +35,7 @@ func _on_NameEdit_focus_entered():
 	nameEdit.text = ''
 
 func _on_BackButton_button_up():
+	if Network.attemptingConnection: return
 	visible = false
 	title.visible = true
 
@@ -36,11 +45,13 @@ func _on_BeginButton_button_up():
 		Global.difficulty = $DifficultyButton.selected
 		transition.transition("fade_to_black")
 		transition.screen = 'title'
-	elif nameEdit.text.length() > 3:
+	elif nameEdit.text.length() > 3 && !Network.joined:
 		Global.playerName = nameEdit.text
 		$BeginButton.text = "SEARCHING..."
 		$BeginButton.disabled = true
 		Network.connectToServer()
+		Network.attemptingConnection = true
+		attempting = true
 
 func _on_DifficultyButton_focus_entered():
 	$DifficultyLabel.self_modulate = Color('faff3e')

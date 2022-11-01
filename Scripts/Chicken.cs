@@ -504,4 +504,13 @@ public void _on_Invincible_timeout(){
     invincible = false;
 }
 
+public String dirString(){
+    String dirStr = "";
+    for (int i = 0; i < dirListy.Length; i++){
+        dirStr += Mathf.Round(dirListx[i] * 10).ToString() + "|";
+        dirStr += Mathf.Round(dirListy[i] * 10).ToString() + "|";
+    }
+    return dirStr;
+}
+
 }

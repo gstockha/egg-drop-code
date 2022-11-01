@@ -36,8 +36,8 @@ var slowMo = 1
 var game = null
 
 func _ready():
-	set_process(!Global.lobby)
-	set_physics_process(!Global.lobby)
+	set_process(!Network.lobby)
+	set_physics_process(!Network.lobby)
 	eggRateLevelStr = str(Global.level)
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
