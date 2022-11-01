@@ -38,53 +38,37 @@ func send(json) -> void:
 
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
-	if helper:
-		match int(data.tag):
-			tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
-				send({'tag': tags['JOINED'], 'prefID': Global.prefID, 'name': Global.playerName})
-			tags.MOVE: #MOVE
-				helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.dir, data.id)
-			tags.SHOOT: #SHOOT
-				pass
-			tags.HEALTH: #HEALTH
-				pass
-			tags.STATUS: #STATUS
-				pass
-			tags.DEATH: #DEATH
-				pass
-			tags.NEWPLAYER: #NEWPLAYER
-				Global.nameMap[data.id] = data.name
-				print("New player joined: ", Global.nameMap[data.id])
-				Global.playerCount -= 1
-				if Network.lobby: helper.addLobbyPlayer(data.id)
-			tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
-				Global.id = int(data.id)
-				Global.playerName = data.name
-				Global.nameMap = data.nameMap
-				joined = true
-				lobby = data.lobby
-				print("Join confirmed!")
-				print("Your assigned ID: ", Global.id)
-				print("Playerlist: ", Global.nameMap)
-				Global.playerCount = 0
-				for i in range(len(Global.nameMap)): if Global.nameMap[i] != null: Global.playerCount += 1
-			tags.PLAYERLEFT:
-				Global.playerCount = int(data.playerCount)
-				print(Global.nameMap[data.id] + ' left the game')
-				Global.nameMap[data.id] = null
-				if Network.lobby: helper.removeLobbyPlayer(data.id)
-	else:
-		match int(data.tag):
-			tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
-				send({'tag': tags['JOINED'], 'prefID': Global.prefID, 'name': Global.playerName})
-			tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
-				Global.id = int(data.id)
-				Global.playerName = data.name
-				Global.nameMap = data.nameMap
-				joined = true
-				lobby = data.lobby
-				print("Join confirmed!")
-				print("Your assigned ID: ", Global.id)
-				print("Playerlist: ", Global.nameMap)
-				Global.playerCount = 0
-				for i in range(len(Global.nameMap)): if Global.nameMap[i] != null: Global.playerCount += 1
+	match int(data.tag):
+		tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
+			send({'tag': tags['JOINED'], 'prefID': Global.prefID, 'name': Global.playerName})
+		tags.MOVE: #MOVE
+			if helper: helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.dir, data.id)
+		tags.SHOOT: #SHOOT
+			pass
+		tags.HEALTH: #HEALTH
+			pass
+		tags.STATUS: #STATUS
+			pass
+		tags.DEATH: #DEATH
+			pass
+		tags.NEWPLAYER: #NEWPLAYER
+			Global.nameMap[data.id] = data.name
+			print("New player joined: ", Global.nameMap[data.id])
+			Global.playerCount += 1
+			if helper && Network.lobby: helper.addLobbyPlayer(data.id)
+		tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
+			Global.id = int(data.id)
+			Global.playerName = data.name
+			Global.nameMap = data.nameMap
+			joined = true
+			lobby = data.lobby
+			print("Join confirmed!")
+			print("Your assigned ID: ", Global.id)
+			print("Playerlist: ", Global.nameMap)
+			Global.playerCount = 0
+			for i in range(len(Global.nameMap)): if Global.nameMap[i] != null: Global.playerCount += 1
+		tags.PLAYERLEFT:
+			Global.playerCount = int(data.playerCount)
+			print(Global.nameMap[data.id] + ' left the game')
+			Global.nameMap[data.id] = null
+			if helper && Network.lobby: helper.removeLobbyPlayer(data.id)
