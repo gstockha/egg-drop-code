@@ -90,7 +90,7 @@ func _ready():
 	for i in range(12):
 		if i != Global.id: botCount += 1
 		playerStats.append({"id" : i, "name": Global.nameMap[i], "color": Global.colorIdMap[i],
-		"health": 5, "bot": Global.botlist[i]})
+		"health": 5})
 		barKeys.append(i)
 		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
@@ -115,9 +115,10 @@ func _ready():
 		$NetworkHelper.enemyItemParent = enemyItemParent
 		$NetworkHelper.chickenDummy = chickenDummy
 		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
+	else: Global.botlist[Global.id] = false
 	#define enemy
 	if !Network.lobby:
-		var chick = chickenBot.instance() if playerStats[Global.eid]["bot"] else chickenDummy.instance()
+		var chick = chickenBot.instance() if Global.botlist[Global.eid] else chickenDummy.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		enemyItemParent.player = enemy
@@ -147,7 +148,7 @@ func _process(delta):
 			botDamageBuffer = 0
 			var randId = round(rand_range(0,11))
 			var tries = 0
-			while !playerStats[randId]["bot"] || randId == Global.eid || playerStats[randId]["health"] < 1:
+			while !Global.botlist[randId] || randId == Global.eid || playerStats[randId]["health"] < 1:
 				randId = randId + 1 if randId + 1 < 12 else 0
 				tries += 1
 				if tries > 12: break
@@ -156,7 +157,7 @@ func _process(delta):
 				registerHealth(randId, 99, playerStats[randId]["health"] + choice)
 	if !botIsSpawned:
 		if $EnemyContainer/Viewport.get_child_count() > 3: return
-		if playerStats[Global.eid]["bot"]: makeBot()
+		if Global.botlist[Global.eid]: makeBot()
 		botIsSpawned = true
 		if !Global.playerDead:
 			eggParent.releaseEggQueue()
@@ -307,7 +308,7 @@ func makeBot() -> void:
 	enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 	$NetworkHelper.enemyItemParent = enemyItemParent
 	eggParent.eggTarget = enemyEggParent
-	if playerStats[Global.eid]["bot"]:
+	if Global.botlist[Global.eid]:
 		var chick = chickenBot.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot

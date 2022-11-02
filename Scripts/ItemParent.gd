@@ -29,7 +29,7 @@ var powerSprites = {
 var pop = null
 
 func _ready():
-	set_process(!Network.lobby)
+#	set_process(!Network.lobby)
 	itemTimer = 30
 	botMode = 1 if get_parent().name == "Enemyspace" else 0
 	if botMode == 0:

@@ -34,10 +34,13 @@ var spawnRange = Vector2.ZERO
 var myid = 0
 var slowMo = 1
 var game = null
+var online = false
+var helper = null
+var onlineQueue = []
 
 func _ready():
 	set_process(!Network.lobby)
-	set_physics_process(!Network.lobby)
+#	set_physics_process(!Network.lobby)
 	eggRateLevelStr = str(Global.level)
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
@@ -45,11 +48,13 @@ func _ready():
 		myid = Global.id
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+6,Global.playerBounds.y-6)
+		eggTarget = get_node('../../../../EnemyContainer/Viewport/Enemyspace/EggParent')
 		if !Global.online:
-			eggTarget = get_node('../../../../EnemyContainer/Viewport/Enemyspace/EggParent')
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 			botIsAbove = true
 		game = get_parent().get_parent().get_parent().get_parent()
+		online = Global.online
+		helper = Network.helper
 	else:
 		myid = Global.eid
 		lowerBounds = 425
@@ -110,7 +115,7 @@ func _physics_process(_delta):
 		if egg.position.y > lowerBounds:
 			egg.queue_free()
 			if eggTarget == null || (egg.id != myid && egg.id != 99): return
-			if !Global.online:
+			if !online || Global.botlist[Global.eid]:
 				if !botMode:
 					if !eggQueue:
 						eggTarget.makeEgg(egg.id, egg.type,
@@ -121,7 +126,10 @@ func _physics_process(_delta):
 						egg.spdBoost, game.gameTime - eggQueueTime])
 						eggQueueTime = game.gameTime
 				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0), egg.spdBoost)
-#			else: #network
+			else: #network
+				helper.sendEgg(egg.id, egg.type, Vector2(round(egg.position.x), 0),
+				egg.spdBoost, Global.eid)
+				onlineQueue.append([egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0), egg.spdBoost])
 		
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	var egg = eggScene.instance()
@@ -159,11 +167,20 @@ func releaseEggQueue(timer: Timer = null):
 		eggQueueList = []
 		return
 	var eggInfo = eggQueueList.pop_front()
-	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
+	if Global.botlist[Global.eid]: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
+	else:
+		helper.sendEgg(eggInfo[0], eggInfo[1], eggInfo[2], Global.eid)
+		onlineQueue.append([eggInfo[0], eggInfo[1], Vector2(Global.botBounds.y*((eggInfo[2].x-11)/960),0), eggInfo[3]])
 	var queueTimer = Timer.new()
 	game.add_child(queueTimer)
 	queueTimer.connect("timeout", self, "releaseEggQueue", [queueTimer])
 	queueTimer.start(eggInfo[4])
+
+func onlineEggQueue() -> void: #to sync with the player behind us' screen (delayed drop)
+	if len(onlineQueue) < 1: return
+	var eggInfo = onlineQueue.pop_front()
+	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
+	print(eggTarget)
 
 func activateWildcard() -> void:
 	var egg

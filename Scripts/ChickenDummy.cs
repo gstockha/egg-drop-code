@@ -104,7 +104,7 @@ public void Move(){
 		dir[1] = 0;
 	}
     onFloor = IsOnWall() && Mathf.Round(GetSlideCollision(0).Normal.y) == -1;
-    // if (onFloor) gravity = 0;
+    // if (onFloor || velocity.y < 0) gravity = 0;
     // else{
     //     gravity += weight;
     //     if (gravity > weight * 200) gravity = weight * 200;
@@ -116,7 +116,7 @@ public void Move(){
 		dirListy[i] = dirListy[i+1];
 	}
 	dirListx[current] = dir[0];
-	dirListy[current] = dir[1];// + gravity;
+	dirListy[current] = dir[1] + gravity;
 	dirListx[current] = myMath.arrayMean(dirListx);
 	dirListy[current] = myMath.arrayMean(dirListy);
     momentum = GetMomentum();

@@ -4,7 +4,7 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 
 var client = WebSocketClient.new()
 var helper = null
-enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT}
+enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM}
 var attemptingConnection = false
 var lobby = false
 var joined = false
@@ -40,11 +40,12 @@ func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
 	match int(data.tag):
 		tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
-			send({'tag': tags['JOINED'], 'prefID': Global.prefID, 'name': Global.playerName})
+			send({'tag': tags.JOINED, 'prefID': Global.prefID, 'name': Global.playerName})
 		tags.MOVE: #MOVE
-			if helper: helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.dir, data.id)
-		tags.SHOOT: #SHOOT
-			pass
+			if helper != null: helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.grav, data.id)
+		tags.EGG: #EGG
+			if helper != null: helper.eggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y), data.bltSpd)
+			send({'tag': tags.EGGCONFIRM, 'target': data.sender})
 		tags.HEALTH: #HEALTH
 			pass
 		tags.STATUS: #STATUS
@@ -53,9 +54,10 @@ func _on_data() -> void:
 			pass
 		tags.NEWPLAYER: #NEWPLAYER
 			Global.nameMap[data.id] = data.name
+			Global.botlist[data.id] = false
 			print("New player joined: ", Global.nameMap[data.id])
 			Global.playerCount += 1
-			if helper && Network.lobby: helper.addLobbyPlayer(data.id)
+			if helper != null && Network.lobby: helper.addLobbyPlayer(data.id)
 		tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
 			Global.id = int(data.id)
 			Global.playerName = data.name
@@ -66,9 +68,15 @@ func _on_data() -> void:
 			print("Your assigned ID: ", Global.id)
 			print("Playerlist: ", Global.nameMap)
 			Global.playerCount = 0
-			for i in range(len(Global.nameMap)): if Global.nameMap[i] != null: Global.playerCount += 1
+			for i in range(len(Global.nameMap)):
+				if Global.nameMap[i] != null:
+					Global.playerCount += 1
+					Global.botlist[i] = false
 		tags.PLAYERLEFT:
+			Global.botlist[data.id] = true
 			Global.playerCount = int(data.playerCount)
 			print(Global.nameMap[data.id] + ' left the game')
 			Global.nameMap[data.id] = null
-			if helper && Network.lobby: helper.removeLobbyPlayer(data.id)
+			if helper != null && Network.lobby: helper.removeLobbyPlayer(data.id)
+		tags.EGGCONFIRM:
+			helper.eggParent.onlineEggQueue()

@@ -9,28 +9,28 @@ var enemyEggParent = null
 var enemyItemParent = null
 var game = get_parent()
 var movecooldown = 0
-enum tags {JOINED, MOVE, SHOOT, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM}
+enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, EGGCONFIRM}
 var playerSpace = null
 var chickenDummy = null
 
 func _ready():
 	for i in range(12): lobbyChickens.append(null)
 	Network.helper = self
-	set_process(Global.online)
+	set_physics_process(Global.online)
 
-func _process(delta):
+func _physics_process(_delta):
 	if !Global.playerDead:
-		movecooldown += 10 * delta
-		if movecooldown >= 3:
-			sendMove(player.position, Vector2(player.dir[0], player.dir[1]), player.dirString(), Global.sid)
+		movecooldown += 1
+		if movecooldown > 3:
+			sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid)
 			movecooldown = 0
 
-func sendEgg(id: int, type: String, coords: Vector2, bltSpd: float, onPlayer: bool, target: int) -> void:
-	Network.send({'tag': tags.SHOOT, 'id': id, 'type': type, 'x': coords.x, 'y': coords.y, 'bltSpd': bltSpd,
-	'onPlayer': onPlayer, 'target': target})
+func sendEgg(id: int, type: String, coords: Vector2, bltSpd: float, target: int) -> void:
+	Network.send({'tag': tags.EGG, 'id': id, 'type': type, 'x': coords.x, 'y': coords.y, 'bltSpd': bltSpd, 'target': target})
 
-func sendMove(coords: Vector2, vel: Vector2, dir: String, target: int) -> void:
-	Network.send({'tag': tags.MOVE, 'velx': vel.x, 'vely': vel.y, 'x': coords.x, 'y': coords.y, 'dir': dir, 'target': target})
+func sendMove(coords: Vector2, vel: Vector2, grav: String, target: int) -> void:
+	Network.send({'tag': tags.MOVE, 'x': round(coords.x), 'y': round(coords.y),
+	'velx': vel.x, 'vely': vel.y, 'grav': grav, 'target': target})
 
 func sendHealth(health: int) -> void:
 	Network.send({'tag': tags.HEALTH, 'health': health})
@@ -55,15 +55,12 @@ func addLobbyPlayer(id: int) -> void:
 	chick.position = Vector2(480,480)
 	lobbyChickens[id] = chick
 
-func movePlayer(pos: Vector2, vel: Vector2, dir: String, id: int):
+func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int):
 	if Network.lobby:
 		if !lobbyChickens[id]: return
-		lobbyChickens[id].position = pos
+		var cPos = lobbyChickens[id].position
+		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: lobbyChickens[id].position.x = pos.x
+		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: lobbyChickens[id].position.y = pos.y
 		lobbyChickens[id].dir[0] = vel.x
 		lobbyChickens[id].dir[1] = vel.y
-		var dirList = dir.split('|', true, 0)
-		var pointer = 0
-		for i in range(12):
-			lobbyChickens[id].dirListx[i] = int(dirList[pointer]) * .1
-			lobbyChickens[id].dirListy[i] = int(dirList[pointer + 1]) * .1
-			pointer += 2
+		lobbyChickens[id].gravity = float(grav)
