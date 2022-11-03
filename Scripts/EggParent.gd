@@ -127,7 +127,7 @@ func _physics_process(_delta):
 						eggQueueTime = game.gameTime
 				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x*2,0), egg.spdBoost)
 			else: #network
-				helper.sendEgg(egg.id, egg.type, Vector2(round(egg.position.x), 0),
+				Network.sendEgg(egg.id, egg.type, Vector2(round(egg.position.x), 0),
 				egg.spdBoost, Global.eid)
 				onlineQueue.append([egg.id, egg.type, Vector2(Global.botBounds.y*((egg.position.x-11)/960),0), egg.spdBoost])
 		
@@ -169,7 +169,7 @@ func releaseEggQueue(timer: Timer = null):
 	var eggInfo = eggQueueList.pop_front()
 	if Global.botlist[Global.eid]: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
 	else:
-		helper.sendEgg(eggInfo[0], eggInfo[1], eggInfo[2], Global.eid)
+		Network.sendEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3], Global.eid)
 		onlineQueue.append([eggInfo[0], eggInfo[1], Vector2(Global.botBounds.y*((eggInfo[2].x-11)/960),0), eggInfo[3]])
 	var queueTimer = Timer.new()
 	game.add_child(queueTimer)

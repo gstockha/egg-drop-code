@@ -4,7 +4,7 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 
 var client = WebSocketClient.new()
 var helper = null
-enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM}
+enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP}
 var attemptingConnection = false
 var lobby = false
 var joined = false
@@ -36,16 +36,38 @@ func _on_connected(_proto):
 func send(json) -> void:
 	client.get_peer(1).put_packet(JSON.print(json).to_utf8())
 
+func sendEgg(id: int, type: String, coords: Vector2, bltSpd: float, target: int) -> void:
+	send({'tag': tags.EGG, 'id': id, 'type': type, 'x': coords.x, 'y': coords.y, 'bltSpd': bltSpd, 'target': target})
+
+func sendMove(coords: Vector2, vel: Vector2, grav: String, target: int, shoveCounter: String = '0', shoveVel = null) -> void:
+	send({'tag': tags.MOVE, 'x': round(coords.x), 'y': round(coords.y), 'velx': vel.x, 'vely': vel.y,
+	'grav': grav, 'shoveCounter': shoveCounter, 'shoveVel': shoveVel, 'target': target})
+
+func sendHealth(health: int) -> void:
+	send({'tag': tags.HEALTH, 'health': health})
+
+func sendDeath() -> void:
+	send({'tag': tags.DEATH})
+
+func sendStatus(powerup: String, size: float) -> void:
+	send({'tag': tags.STATUS, 'powerup': powerup, 'size': size})
+
+func sendBump(direction: String, dirChange: int, target: int):
+	send({'tag': tags.BUMP, 'direction': direction, 'dirChange': dirChange, 'target': target})
+
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
 	match int(data.tag):
 		tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
 			send({'tag': tags.JOINED, 'prefID': Global.prefID, 'name': Global.playerName})
 		tags.MOVE: #MOVE
-			if helper != null: helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.grav, data.id)
+			if helper != null:
+				helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.grav, data.id,
+				data.shoveCounter, data.shoveVel)
 		tags.EGG: #EGG
-			if helper != null: helper.eggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y), data.bltSpd)
-			send({'tag': tags.EGGCONFIRM, 'target': data.sender})
+			if helper != null:
+				helper.eggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y), data.bltSpd)
+				send({'tag': tags.EGGCONFIRM, 'target': data.sender})
 		tags.HEALTH: #HEALTH
 			pass
 		tags.STATUS: #STATUS
@@ -78,5 +100,5 @@ func _on_data() -> void:
 			print(Global.nameMap[data.id] + ' left the game')
 			Global.nameMap[data.id] = null
 			if helper != null && Network.lobby: helper.removeLobbyPlayer(data.id)
-		tags.EGGCONFIRM:
-			helper.eggParent.onlineEggQueue()
+		tags.EGGCONFIRM: helper.eggParent.onlineEggQueue()
+		tags.BUMP: helper.bumpPlayer(data.direction, data.dirChange)

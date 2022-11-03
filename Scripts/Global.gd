@@ -30,7 +30,7 @@ var prefID = 5
 
 func _ready():
 	var rgb = [0,0,0]
-	for i in range(12):
+	for _i in range(12):
 		botlist.append(true)
 		nameMap.append(null)
 	colorIdMap.append(Color8(255,100,100))

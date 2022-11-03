@@ -30,7 +30,7 @@ RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
-Node Global;
+Node Global, Network;
 Control game;
 ProgressBar powerBar;
 Area2D hitbox;
@@ -40,6 +40,7 @@ Label nameLabel;
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     Global = GetNode<Node>("/root/Global");
+    Network = GetNode<Node>("/root/Network");
     sprite = GetNode<Sprite>("Sprite");
     shield = GetNode<Sprite>("Sprite/Shield");
     hitbox = GetNode<Area2D>("Hitbox");
@@ -53,7 +54,6 @@ public override void _Ready(){
     baseScale = Scale;
     baseSpriteScale = sprite.Scale;
     baseWeight = weight;
-    id = (int)Global.Get("eid");
     // int i;
     // for (i = 0; i < dirListx.Length; i++){
     //     dirListx[i] = 0;
@@ -180,23 +180,23 @@ public void ScreenShake(){
     shakeTimer -= 10;
 }
 
-public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime){
+public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime, bool send = false){
     if (direction != "x" && direction != "y") return;
     float bounce = momentum;
     if (bounce < lowerBound) bounce = lowerBound;
     if (bounce > 1) bounce = 1;
-    shoveVel = new Vector2(-dirChange, -Mathf.Sign(velocity.y));
+    // shoveVel = new Vector2(-dirChange, -Mathf.Sign(velocity.y));
     float[] targetList = new float[0];
     float squishAmount = 0;
     if (direction == "x"){
         targetList = dirListx;
-        shoveVel.y = 0;
+        // shoveVel.y = 0;
         bounce *= -1;
     }
     else if (direction == "y"){
         targetList = dirListy;
-        shoveVel.x = 0;
-        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1;
+        // shoveVel.x = 0;
+        // if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1;
     }
     for (int i = 0; i < dirListx.Length; i++){
         targetList[i] = dirChange * bounce;
@@ -213,8 +213,9 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     if (squishAmount > .75F) squishAmount = .75F;
     if (direction == "y") squishAmount *= -1;
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
-    shoveCounter[0] = power;
-    shoveCounter[1] = shoveCounter[0];
+    // shoveCounter[0] = power;
+    // shoveCounter[1] = shoveCounter[0];
+    if (send) Network.Call("sendBump", direction, id);
 }
 
 public void EatFood(string type){
@@ -238,7 +239,7 @@ public void MakeEgg(String type){
     Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
 }
 
-public void DetectCollision(float power, float lowerBound, float invTime){
+public void DetectCollision(float power, float lowerBound, float invTime, bool send = false){
     int i;
     for (i = 0; i < rayCasts.Length; i++){
         if (rayCasts[i].IsColliding()) break;
@@ -249,40 +250,40 @@ public void DetectCollision(float power, float lowerBound, float invTime){
     }
     switch(rays[i]){
         case "bottom":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            KnockBack("y", -1, power, lowerBound, invTime, send);
             break;
         case "top":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            KnockBack("y", 1, power, lowerBound, invTime, send);
             break;
         case "right":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            KnockBack("x", 1, power, lowerBound, invTime, send);
             break;
         case "left":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            KnockBack("x", -1, power, lowerBound, invTime, send);
             break;
         case "br1":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            KnockBack("x", 1, power, lowerBound, invTime, send);
             break;
         case "tr1":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            KnockBack("x", 1, power, lowerBound, invTime, send);
             break;
         case "bl1":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            KnockBack("x", -1, power, lowerBound, invTime, send);
             break;
         case "tl1":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            KnockBack("x", -1, power, lowerBound, invTime, send);
             break;
         case "br2":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            KnockBack("y", -1, power, lowerBound, invTime, send);
             break;
         case "tr2":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            KnockBack("y", 1, power, lowerBound, invTime, send);
             break;
         case "bl2":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            KnockBack("y", -1, power, lowerBound, invTime, send);
             break;
         case "tl2":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            KnockBack("y", 1, power, lowerBound, invTime, send);
             break;
     }
 }
@@ -291,6 +292,7 @@ public void _on_Hitbox_area_entered(Node body){
     Godot.Collections.Array group = body.GetGroups();
     float knockb = 0;
     string type;
+    // if (group.Count < 1) return;
     switch (group[0]){
         case "eggs":
             int eggId = (int)body.Get("id");
@@ -305,6 +307,9 @@ public void _on_Hitbox_area_entered(Node body){
             // }
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             body.QueueFree();
+            break;
+        case "chicken":
+            DetectCollision(50, 50, 0, true);
             break;
         case "food":
             // if (eatBuffer > 0) return;

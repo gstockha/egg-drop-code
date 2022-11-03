@@ -25,9 +25,8 @@ visible = false
 position = Vector2( 1.66666, -4.08334 )
 texture = ExtResource( 3 )
 
-[node name="Hitbox" type="Area2D" parent="."]
-collision_mask = 6
-monitorable = false
+[node name="Hitbox" type="Area2D" parent="." groups=["chickens"]]
+collision_mask = 7
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource( 7 )
@@ -46,28 +45,28 @@ one_shot = true
 [node name="RayCastB" type="RayCast2D" parent="RayCasts"]
 enabled = true
 cast_to = Vector2( 0, 15 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
 [node name="RayCastT" type="RayCast2D" parent="RayCasts"]
 enabled = true
 cast_to = Vector2( 0, -15 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
 [node name="RayCastR" type="RayCast2D" parent="RayCasts"]
 enabled = true
 cast_to = Vector2( 15, 0 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
 [node name="RayCastL" type="RayCast2D" parent="RayCasts"]
 enabled = true
 cast_to = Vector2( -15, 0 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -75,7 +74,7 @@ collide_with_bodies = false
 rotation = 1.0472
 enabled = true
 cast_to = Vector2( 0, 15 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -83,7 +82,7 @@ collide_with_bodies = false
 rotation = 0.523599
 enabled = true
 cast_to = Vector2( 0, 15 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -91,7 +90,7 @@ collide_with_bodies = false
 rotation = 1.0472
 enabled = true
 cast_to = Vector2( 0, -15 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -99,7 +98,7 @@ collide_with_bodies = false
 rotation = 0.523599
 enabled = true
 cast_to = Vector2( 0, -15 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -107,7 +106,7 @@ collide_with_bodies = false
 rotation = 0.523599
 enabled = true
 cast_to = Vector2( 15, 0 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -115,7 +114,7 @@ collide_with_bodies = false
 rotation = 1.0472
 enabled = true
 cast_to = Vector2( 15, 0 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -123,7 +122,7 @@ collide_with_bodies = false
 rotation = 0.523599
 enabled = true
 cast_to = Vector2( -15, 0 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -131,7 +130,7 @@ collide_with_bodies = false
 rotation = 1.0472
 enabled = true
 cast_to = Vector2( -15, 0 )
-collision_mask = 2
+collision_mask = 3
 collide_with_areas = true
 collide_with_bodies = false
 

@@ -30,7 +30,7 @@ RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
-Node Global;
+Node Global, Network;
 TextureRect[] heartIcons = new TextureRect[5];
 TextureRect[] heartBGs = new TextureRect[5];
 Control eggBar, game;
@@ -42,6 +42,7 @@ AudioStreamPlayer sfx, subfx, bocksfx, eatsfx;
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     Global = GetNode<Node>("/root/Global");
+    Network = GetNode<Node>("/root/Network");
     sprite = GetNode<Sprite>("Sprite");
     shield = GetNode<Sprite>("Sprite/Shield");
     hitbox = GetNode<Area2D>("Hitbox");
@@ -252,6 +253,10 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
     shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
+    if ((bool)Global.Get("online")){
+        Network.Call("sendMove", Position, new Vector2(dir[0], dir[1]), gravity.ToString(),
+        shoveCounter[0].ToString(), shoveVel, (int)Global.Get("sid"));
+    }
 }
 
 public void EatFood(string type){
@@ -390,6 +395,9 @@ public void _on_Hitbox_area_entered(Node body){
                 subfx.Call("playSound", "splat");
                 sfx.Call("playSound", "hurt");
             }
+            break;
+        case "chickens":
+            DetectCollision(50, 50, 0);
             break;
         case "food":
             if (eatBuffer > 0) return;

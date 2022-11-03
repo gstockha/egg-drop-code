@@ -9,7 +9,7 @@ var enemyEggParent = null
 var enemyItemParent = null
 var game = get_parent()
 var movecooldown = 0
-enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, EGGCONFIRM}
+enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, EGGCONFIRM, BUMP}
 var playerSpace = null
 var chickenDummy = null
 
@@ -22,24 +22,9 @@ func _physics_process(_delta):
 	if !Global.playerDead:
 		movecooldown += 1
 		if movecooldown > 3:
-			sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid)
+			Network.sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid,
+			str(player.shoveCounter[0]), player.shoveVel)
 			movecooldown = 0
-
-func sendEgg(id: int, type: String, coords: Vector2, bltSpd: float, target: int) -> void:
-	Network.send({'tag': tags.EGG, 'id': id, 'type': type, 'x': coords.x, 'y': coords.y, 'bltSpd': bltSpd, 'target': target})
-
-func sendMove(coords: Vector2, vel: Vector2, grav: String, target: int) -> void:
-	Network.send({'tag': tags.MOVE, 'x': round(coords.x), 'y': round(coords.y),
-	'velx': vel.x, 'vely': vel.y, 'grav': grav, 'target': target})
-
-func sendHealth(health: int) -> void:
-	Network.send({'tag': tags.HEALTH, 'health': health})
-
-func sendDeath() -> void:
-	Network.send({'tag': tags.DEATH})
-
-func sendStatus(powerup: String, size: float) -> void:
-	Network.send({'tag': tags.STATUS, 'powerup': powerup, 'size': size})
 
 func removeLobbyPlayer(id: int) -> void:
 	if lobbyChickens[id] == null: return
@@ -53,14 +38,25 @@ func addLobbyPlayer(id: int) -> void:
 	chick.nameLabel.text = Global.nameMap[id]
 	chick.nameLabel.visible = true
 	chick.position = Vector2(480,480)
+	chick.id = id
 	lobbyChickens[id] = chick
 
-func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int):
+func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null):
+	var chicken
 	if Network.lobby:
 		if !lobbyChickens[id]: return
-		var cPos = lobbyChickens[id].position
-		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: lobbyChickens[id].position.x = pos.x
-		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: lobbyChickens[id].position.y = pos.y
-		lobbyChickens[id].dir[0] = vel.x
-		lobbyChickens[id].dir[1] = vel.y
-		lobbyChickens[id].gravity = float(grav)
+		chicken = lobbyChickens[id]
+	else: chicken = enemy
+	var cPos = chicken.position
+	if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
+	if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
+	chicken.dir[0] = vel.x
+	chicken.dir[1] = vel.y
+	chicken.gravity = float(grav)
+	if shoveCounter != null:
+		chicken.shoveCounter[0] = float(shoveCounter)
+		chicken.shoveCounter[1] = float(shoveCounter)
+		chicken.shoveVel = shoveVel
+
+func bumpPlayer(direction: String, dirChange: int):
+	player.KnockBack(direction, dirChange, 50, 50, 0)
