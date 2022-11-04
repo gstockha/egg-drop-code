@@ -92,6 +92,7 @@ func defaults() -> void:
 	countdown = false
 	Network.lobby = false
 	Network.joined = false
+	Network.helper = FakeHelper
 	for i in range(12):
 		botlist[i] = true
 		nameMap[i] = null

@@ -27,6 +27,9 @@ var powerSprites = {
 	"wildcard": preload("res://Sprites/Items/Wildcard.png")
 }
 var pop = null
+var onlineEnemy = false
+var onlineItems = []
+var onlineCount = 0
 
 func _ready():
 #	set_process(!Network.lobby)
@@ -40,6 +43,8 @@ func _ready():
 		ybounds.append(755)
 		pop = get_node("../PopSFX")
 	else:
+		onlineEnemy = Global.botlist[Global.eid] && Global.online
+		player = get_parent().get_node('ChickenBot') if onlineEnemy else get_parent().get_node('ChickenDummy')
 		spawnRange = Vector2(Global.botBounds.x+2, Global.botBounds.y-2)
 		ybounds.append(65)
 		ybounds.append(225)
@@ -51,7 +56,7 @@ func _process(delta):
 	var tick = 10 * delta
 	powerTimer += tick
 	healthTimer += tick
-	itemTimer -= tick
+	if !onlineEnemy: itemTimer -= tick
 	if itemTimer < 1:
 		itemTimer = 25
 		if itemCount == maxItems: return
@@ -71,12 +76,18 @@ func _process(delta):
 		if botMode == 1:
 			item.scale *= .5
 			item.baseScale = item.scale
+#			if onlineEnemy:
+#				onlineItems.append(item)
+#				item.id = onlineCount
+#				onlineCount += 1
+		elif Global.online: Network.sendItem()
 	for item in get_children():
 		item.duration += tick
 		if item.duration > 180:
 			item.queue_free()
 			itemCount -= 1
 			if pop: pop.play()
+			elif onlineEnemy && onlineItems[item.id] != null: onlineItems[item.id] = null
 		elif item.duration > 160:
 			item.scale = item.baseScale * (.25 + (((30 - (item.duration - 160)) / 30) * .75))
 
@@ -126,3 +137,20 @@ func spawnGun() -> void:
 	if botMode == 1: gun.scl = .5
 	else: gun.audio = true
 	player.gun = gun
+
+func addOnlineItem(category: String, type: String, position: Vector2) -> void:
+	var item = items[category].instance()
+	if category != "health":
+		item.type = type
+		item.sprite.texture = foodSprites[type] if category == "food" else powerSprites[type]
+	item.position = position
+	onlineItems.append(item)
+	item.id = onlineCount
+	onlineCount += 1
+	add_child(item)
+
+func deleteOnlineItem(itemId: int, eat: bool):
+	if onlineItems[itemId] == null: return
+	onlineItems[itemId].queue_free()
+	onlineItems[itemId] = null
+	if eat: player.Squish(Vector2(player.baseSpriteScale.x * .85, player.baseSpriteScale.y * 1.15))

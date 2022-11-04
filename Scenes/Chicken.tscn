@@ -27,6 +27,7 @@ texture = ExtResource( 3 )
 
 [node name="Hitbox" type="Area2D" parent="." groups=["chickens"]]
 collision_mask = 7
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource( 7 )

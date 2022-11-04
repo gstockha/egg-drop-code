@@ -421,44 +421,59 @@ public void DetectCollision(float power, float lowerBound, float invTime){
         KnockBack("y", 1, power, lowerBound, invTime);
         return;
     }
+    String dir = "";
+    int dirChange = 0;
     switch(rays[i]){
         case "bottom":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = -1;
             break;
         case "top":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = 1;
             break;
         case "right":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = 1;
             break;
         case "left":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = -1;
             break;
         case "br1":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = 1;
             break;
         case "tr1":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = 1;
             break;
         case "bl1":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = -1;
             break;
         case "tl1":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = -1;
             break;
         case "br2":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = -1;
             break;
         case "tr2":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = 1;
             break;
         case "bl2":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = -1;
             break;
         case "tl2":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = 1;
             break;
     }
+    KnockBack(dir, dirChange, power, lowerBound, invTime);
 }
 
 public void _on_Hitbox_area_entered(Node body){

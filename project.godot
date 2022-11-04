@@ -28,6 +28,7 @@ config/icon="res://icon.png"
 
 Global="*res://Scripts/Global.gd"
 Network="*res://Scripts/NetworkScripts/Network.gd"
+FakeHelper="*res://Scripts/NetworkScripts/FakeHelper.gd"
 
 [display]
 

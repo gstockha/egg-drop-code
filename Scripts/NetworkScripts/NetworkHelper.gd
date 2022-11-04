@@ -21,9 +21,8 @@ func _ready():
 func _physics_process(_delta):
 	if !Global.playerDead:
 		movecooldown += 1
-		if movecooldown > 3:
-			Network.sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid,
-			str(player.shoveCounter[0]), player.shoveVel)
+		if movecooldown > 3: #send basic move
+			Network.sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid)
 			movecooldown = 0
 
 func removeLobbyPlayer(id: int) -> void:
@@ -41,7 +40,7 @@ func addLobbyPlayer(id: int) -> void:
 	chick.id = id
 	lobbyChickens[id] = chick
 
-func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null):
+func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
 	var chicken
 	if Network.lobby:
 		if !lobbyChickens[id]: return
@@ -53,10 +52,21 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 	chicken.dir[0] = vel.x
 	chicken.dir[1] = vel.y
 	chicken.gravity = float(grav)
-	if shoveCounter != null:
+	if shoveVel != null:
 		chicken.shoveCounter[0] = float(shoveCounter)
 		chicken.shoveCounter[1] = float(shoveCounter)
 		chicken.shoveVel = shoveVel
+		var dirList = dir.split('|')
+		var pointer = 0
+		for i in range(12):
+			chicken.dirListx[i] = float(dirList[pointer]) * .1
+			chicken.dirListy[i] = float(dirList[pointer + 1]) * .1
+			pointer += 2
 
-func bumpPlayer(direction: String, dirChange: int):
-	player.KnockBack(direction, dirChange, 50, 50, 0)
+func bumpPlayer(direction: String, dirChange: int, id: int):
+	if id == Global.id: player.KnockBack(direction, dirChange, 50, 50, 0, true)
+	elif lobbyChickens[id]: lobbyChickens[id].KnockBack(direction, dirChange, 50, 50, 0, false)
+
+func itemSent(create: bool, category: String, itemId: int, eat: bool, type: String, position: Vector2):
+	if create: enemyItemParent.addOnlineItem(category, type, position)
+	else: enemyItemParent.deleteOnlineItem(itemId, eat)

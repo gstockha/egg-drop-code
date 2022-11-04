@@ -218,7 +218,7 @@ public void ScreenShake(){
     shakeTimer -= 10;
 }
 
-public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime){
+public void KnockBack(string direction, int dirChange, float power, float lowerBound, float invTime, bool send = false){
     if (direction != "x" && direction != "y") return;
     float bounce = momentum;
     if (bounce < lowerBound) bounce = lowerBound;
@@ -253,9 +253,9 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
     shoveCounter[0] = power;
     shoveCounter[1] = shoveCounter[0];
-    if ((bool)Global.Get("online")){
-        Network.Call("sendMove", Position, new Vector2(dir[0], dir[1]), gravity.ToString(),
-        shoveCounter[0].ToString(), shoveVel, (int)Global.Get("sid"));
+    if (send && (bool)Global.Get("online")){
+        Network.Call("sendMove", Position, new Vector2(dir[0], dir[1]), gravity.ToString(), (int)Global.Get("sid"),
+        shoveCounter[0].ToString(), shoveVel, dirString());
     }
 }
 
@@ -316,53 +316,68 @@ public override void _Input(InputEvent @event){
     }
 }
 
-public void DetectCollision(float power, float lowerBound, float invTime){
+public void DetectCollision(float power, float lowerBound, float invTime, bool send = false){
     int i;
     for (i = 0; i < rayCasts.Length; i++){
         if (rayCasts[i].IsColliding()) break;
     }
     if (i == rayCasts.Length){ //default if not detected
-        KnockBack("y", 1, power, lowerBound, invTime);
+        KnockBack("y", 1, power, lowerBound, invTime, send);
         return;
     }
+    String dir = "";
+    int dirChange = 0;
     switch(rays[i]){
         case "bottom":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = -1;
             break;
         case "top":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = 1;
             break;
         case "right":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = 1;
             break;
         case "left":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = -1;
             break;
         case "br1":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = 1;
             break;
         case "tr1":
-            KnockBack("x", 1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = 1;
             break;
         case "bl1":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = -1;
             break;
         case "tl1":
-            KnockBack("x", -1, power, lowerBound, invTime);
+            dir = "x";
+            dirChange = -1;
             break;
         case "br2":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = -1;
             break;
         case "tr2":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = 1;
             break;
         case "bl2":
-            KnockBack("y", -1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = -1;
             break;
         case "tl2":
-            KnockBack("y", 1, power, lowerBound, invTime);
+            dir = "y";
+            dirChange = 1;
             break;
     }
+    KnockBack(dir, dirChange, power, lowerBound, invTime, send);
 }
 
 public void _on_Hitbox_area_entered(Node body){
@@ -397,7 +412,10 @@ public void _on_Hitbox_area_entered(Node body){
             }
             break;
         case "chickens":
-            DetectCollision(50, 50, 0);
+            Node chick = body.Owner;
+            if ((float)chick.Get("momentum") > momentum) return;
+            DetectCollision(50, 50, 0, true);
+            body.Owner.Call("DetectCollision", 50, 50, 0, true);
             break;
         case "food":
             if (eatBuffer > 0) return;

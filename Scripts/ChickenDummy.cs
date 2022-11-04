@@ -185,18 +185,18 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     float bounce = momentum;
     if (bounce < lowerBound) bounce = lowerBound;
     if (bounce > 1) bounce = 1;
-    // shoveVel = new Vector2(-dirChange, -Mathf.Sign(velocity.y));
+    shoveVel = new Vector2(-dirChange, -Mathf.Sign(velocity.y));
     float[] targetList = new float[0];
     float squishAmount = 0;
     if (direction == "x"){
         targetList = dirListx;
-        // shoveVel.y = 0;
+        shoveVel.y = 0;
         bounce *= -1;
     }
     else if (direction == "y"){
         targetList = dirListy;
-        // shoveVel.x = 0;
-        // if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1;
+        shoveVel.x = 0;
+        if (Mathf.Sign(myMath.arrayMean(targetList)) == dirChange) shoveVel.y *= -1;
     }
     for (int i = 0; i < dirListx.Length; i++){
         targetList[i] = dirChange * bounce;
@@ -213,9 +213,9 @@ public void KnockBack(string direction, int dirChange, float power, float lowerB
     if (squishAmount > .75F) squishAmount = .75F;
     if (direction == "y") squishAmount *= -1;
     Squish(new Vector2(baseSpriteScale.x - squishAmount, baseSpriteScale.x + squishAmount));
-    // shoveCounter[0] = power;
-    // shoveCounter[1] = shoveCounter[0];
-    if (send) Network.Call("sendBump", direction, id);
+    shoveCounter[0] = power;
+    shoveCounter[1] = shoveCounter[0];
+    if (send) Network.Call("sendBump", direction, dirChange, id);
 }
 
 public void EatFood(string type){
@@ -245,47 +245,62 @@ public void DetectCollision(float power, float lowerBound, float invTime, bool s
         if (rayCasts[i].IsColliding()) break;
     }
     if (i == rayCasts.Length){ //default if not detected
-        KnockBack("y", 1, power, lowerBound, invTime);
+        KnockBack("y", 1, power, lowerBound, invTime, send);
         return;
     }
+    String dir = "";
+    int dirChange = 0;
     switch(rays[i]){
         case "bottom":
-            KnockBack("y", -1, power, lowerBound, invTime, send);
+            dir = "y";
+            dirChange = -1;
             break;
         case "top":
-            KnockBack("y", 1, power, lowerBound, invTime, send);
+            dir = "y";
+            dirChange = 1;
             break;
         case "right":
-            KnockBack("x", 1, power, lowerBound, invTime, send);
+            dir = "x";
+            dirChange = 1;
             break;
         case "left":
-            KnockBack("x", -1, power, lowerBound, invTime, send);
+            dir = "x";
+            dirChange = -1;
             break;
         case "br1":
-            KnockBack("x", 1, power, lowerBound, invTime, send);
+            dir = "x";
+            dirChange = 1;
             break;
         case "tr1":
-            KnockBack("x", 1, power, lowerBound, invTime, send);
+            dir = "x";
+            dirChange = 1;
             break;
         case "bl1":
-            KnockBack("x", -1, power, lowerBound, invTime, send);
+            dir = "x";
+            dirChange = -1;
             break;
         case "tl1":
-            KnockBack("x", -1, power, lowerBound, invTime, send);
+            dir = "x";
+            dirChange = -1;
             break;
         case "br2":
-            KnockBack("y", -1, power, lowerBound, invTime, send);
+            dir = "y";
+            dirChange = -1;
             break;
         case "tr2":
-            KnockBack("y", 1, power, lowerBound, invTime, send);
+            dir = "y";
+            dirChange = 1;
             break;
         case "bl2":
-            KnockBack("y", -1, power, lowerBound, invTime, send);
+            dir = "y";
+            dirChange = -1;
             break;
         case "tl2":
-            KnockBack("y", 1, power, lowerBound, invTime, send);
+            dir = "y";
+            dirChange = 1;
             break;
     }
+    KnockBack(dir, dirChange, power, lowerBound, invTime, send);
 }
 
 public void _on_Hitbox_area_entered(Node body){
@@ -308,9 +323,9 @@ public void _on_Hitbox_area_entered(Node body){
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             body.QueueFree();
             break;
-        case "chicken":
-            DetectCollision(50, 50, 0, true);
-            break;
+        // case "chickens":
+        //     DetectCollision(50, 50, 0, true);
+        //     break;
         case "food":
             // if (eatBuffer > 0) return;
             type = (string)body.Get("type");
