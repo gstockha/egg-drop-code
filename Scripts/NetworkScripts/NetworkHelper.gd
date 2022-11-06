@@ -44,10 +44,9 @@ func addLobbyPlayer(id: int) -> void:
 	chick.speed = 400
 
 func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
-	var chicken
+	var chicken = null
 	var cPos
 	if Network.lobby:
-		if !lobbyChickens[id]: return
 		chicken = lobbyChickens[id]
 		cPos = chicken.position
 		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
@@ -58,6 +57,7 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 		cPos = chicken.position
 		if cPos.x > pos.x - 10 || cPos.x < pos.x + 10: chicken.position.x = pos.x
 		if cPos.y > pos.y - 10 || cPos.y < pos.y + 10: chicken.position.y = pos.y
+	if chicken == null: return
 	chicken.dir[0] = vel.x
 	chicken.dir[1] = vel.y
 	chicken.gravity = float(grav)
@@ -74,7 +74,7 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 
 func bumpPlayer(direction: String, dirChange: int, id: int):
 	if id == Global.id: player.KnockBack(direction, dirChange, 50, 50, 0, true)
-	elif lobbyChickens[id]: lobbyChickens[id].KnockBack(direction, dirChange, 50, 50, 0, false)
+	elif lobbyChickens[id] != null: lobbyChickens[id].KnockBack(direction, dirChange, 50, 50, 0, false)
 
 func addOnlineItem(itemId: String, category: String, type: String, position: Vector2, duration: int) -> void:
 	enemyItemParent.addOnlineItem(itemId, category, type, position, duration)
@@ -84,21 +84,25 @@ func destroyOnlineItem(itemId: String, eat: bool) -> void:
 
 func setStatus(id: int, powerup: String, scale: String) -> void:
 	var chicken = null
-	if Network.lobby:
-		if !lobbyChickens[id]: return
-		chicken = lobbyChickens[id]
+	if Network.lobby: chicken = lobbyChickens[id]
 	elif id == Global.eid && !Global.botList[id]: chicken = enemy
+	if chicken == null: return
 	chicken.baseSpriteScale = Vector2(float(scale), float(scale))
 	if powerup != "none":
 		game.setPowerupIcon(id, powerup)
 		if chicken != null: chicken.setPowerup(powerup)
 
 func setHealth(id: int, lastHit: int, health: int, eggId: String) -> void:
-	game.registerHealth(id, health, lastHit)
-	if id == Global.eid && !Network.lobby: enemyEggParent.onlineHit(eggId)
+	game.registerHealth(id, lastHit, health)
+	if id == Global.eid && !Network.lobby:
+		enemyEggParent.onlineHit(eggId)
+		warpPlayer(id, true)
 
-func warpPlayer(id: int) -> void:
-	if Network.lobby:
-		if !lobbyChickens[id]: return
-		lobbyChickens[id].Squish(Vector2(lobbyChickens[id].baseSpriteScale.x * 1.3, lobbyChickens[id].baseSpriteScale.y * .7))
-	elif enemy: enemy.Squish(Vector2(enemy.baseSpriteScale.x * 1.3, enemy.baseSpriteScale.y * .7))
+func warpPlayer(id: int, hurt: bool = false) -> void:
+	var chicken = null
+	if Network.lobby: chicken = lobbyChickens[id]
+	elif enemy != null: chicken = enemy
+	if chicken == null: return
+	var xsc = 1.3 if !hurt else .7
+	var ysc = .7 if !hurt else 1.3
+	chicken.Squish(Vector2(enemy.baseSpriteScale.x * xsc, enemy.baseSpriteScale.y * ysc))

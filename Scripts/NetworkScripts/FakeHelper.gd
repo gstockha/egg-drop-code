@@ -20,3 +20,12 @@ func addOnlineItem(_itemId, _category, _type, _position):
 
 func destroyOnlineItem(_itemId, _eat):
 	pass
+
+func setStatus(_id, _powerup, _scale):
+	pass
+
+func setHealth(_id, _lastHit, _health, _eggId):
+	pass
+
+func warpPlayer(_id):
+	pass

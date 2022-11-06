@@ -126,7 +126,7 @@ func _physics_process(_delta):
 		if egg.position.y > lowerBounds:
 			egg.queue_free()
 			if onlinePlayer:
-				var eggId = str(egg.position.x)
+				var eggId = str(round(egg.position.x*2))
 				if eggId in onlineEggs: onlineEggs.erase(eggId)
 			if eggTarget == null || (egg.id != myid && egg.id != 99): return
 			if !Global.online || botMode:
@@ -158,7 +158,7 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	egg.hp = typeKey["hp"]
 	egg.id = id
 	egg.position = pos
-	if onlinePlayer && id != myid: onlineEggs[str(pos.x)] = egg
+	if onlinePlayer && id != myid: onlineEggs[str(round(pos.x*2))] = egg
 	if id != 99:
 		egg.sprite.modulate = Global.colorIdMap[id]
 		if !botMode && Global.id == id:
@@ -209,8 +209,9 @@ func activateWildcard() -> void:
 		egg.speed *= 1.5
 
 func onlineHit(eggId: String) -> void:
-	print(eggId)
-	print(onlineEggs)
 	if eggId in onlineEggs:
+		if player.shielded == false:
+			player.screenShake = 15 + (onlineEggs[eggId].knockback * .04)
+			player.shakeTimer = 25 + (player.screenShake * 1.3)
 		onlineEggs[eggId].queue_free()
 		onlineEggs.erase(eggId)

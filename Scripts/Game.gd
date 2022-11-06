@@ -22,6 +22,7 @@ var confirmedLaid = 0
 var confirmedEggs = 0
 var gameTime = 0
 var recordedTime = null
+var aliveCount = 12
 var hudRefresh = 0
 var targetHearts = []
 var offsetIds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -193,14 +194,14 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 			confirmedShells += 1
 			var hisX = (enemy.global_position.x * 2) + 16
 			$PopupParent.makePopup(playerStats[id]["name"], Vector2(hisX, 780), true)
-		if Global.playerCount == 1 && playerStats[Global.id]["health"] > 0: #win game
+		if aliveCount == 1 && playerStats[Global.id]["health"] > 0: #win game
 			$GameSFX.playSound("win")
 			endGame(true, Global.id)
 			return
 		elif id == Global.id:
 			endGame(false, id)
 			return
-		elif Global.playerCount == 1:
+		elif aliveCount == 1:
 			for i in range(12):
 				if playerStats[i]["health"] > 0:
 					endGame(false, i)
@@ -214,7 +215,8 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 		enemyEggParent.eggTarget = eggParent
 
 func registerHealth(id: int, lastHitId: int, health: int) -> void:
-	if Global.playerCount == 1: return
+	if aliveCount == 1: return
+	print(health)
 	health = clamp(health, 0, 5)
 	var prevhp = playerStats[id]["health"]
 	playerStats[id]["health"] = health
@@ -223,7 +225,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 		if prevhp > health: $HitSFX.playSound("hit", randi() % 3)
 		for i in range(5): targetHearts[i].visible = i < health
 	if health < 1:
-		Global.playerCount -= 1
+		aliveCount -= 1
 		var me = Global.id == id
 		var eParent = enemyEggParent if !me else eggParent
 		if (me || id == Global.eid) && eParent.slowMo != .5:
@@ -233,10 +235,11 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			deathTimer.start(3)
 			eParent.eggTarget = null
 			eParent.slowMo = .5
-			eParent.player = null
 			eParent.set_process(false)
 			var chicken = enemy if !me else player
-			chicken.idle = true
+			if !me && Global.botList[Global.eid]:
+				chicken.idle = true
+				eParent.player = null
 			chicken.speed *= .5
 			chicken.get_child(0).texture = deadChicken
 			if !me:
@@ -282,7 +285,7 @@ func findNewTarget(id: int, below: bool, eid: bool) -> int:
 func endGame(win: bool, winner: int):
 	Global.win = win
 	gameOverLabels["BG"].visible = true
-	if win || (!win && Global.playerCount < 2):
+	if win || (!win && aliveCount < 2):
 		Global.gameOver = true
 		gameOverLabels["label"].text = "You won!" if win else playerStats[winner]["name"] + " wins!"
 		gameOverLabels["sublabel"].text = "LAID: " + str(confirmedLaid)

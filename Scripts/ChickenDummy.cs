@@ -90,8 +90,8 @@ public override void _PhysicsProcess(float delta){
 }
 
 public void Move(){
+    MoveAndSlide(new Vector2(velocity.x, velocity.y) * speed);
 	if (!idle){ //update direction
-        MoveAndSlide(new Vector2(velocity.x, velocity.y) * speed);
 		// dir[0] = Input.GetActionStrength("right") - Input.GetActionStrength("left");
 		// dir[1] = Input.GetActionStrength("down") - Input.GetActionStrength("up");
 		if (Mathf.Abs(dir[0]) > Mathf.Abs(dir[1])) dir[0] = Mathf.Round(dir[0]);
