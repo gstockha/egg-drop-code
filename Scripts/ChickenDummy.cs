@@ -6,7 +6,7 @@ using MyMath;
 public class ChickenDummy : KinematicBody2D
 {
 Vector2 baseSpriteScale, baseScale, velocity, shoveVel = Vector2.Zero;
-float speed = 400;
+float speed = 200;
 float momentum, screenShake, shakeTimer, gravity = 0;
 float eggSpdBoost = 1;
 float baseWeight, weight = .007F;
@@ -82,12 +82,11 @@ public override void _PhysicsProcess(float delta){
     WallCheck();
     Squish(baseSpriteScale);
     ScreenShake();
-    if (powerup){
-        powerupDir[0] -= delta;
-        powerBar.Value = (powerupDir[0] / powerupDir[1]) * 100;
-        powerup = powerupDir[0] > 0;
-        if (!powerup) ResetPowerups();
-    }
+    // if (powerup){
+    //     powerupDir[0] -= delta;
+    //     powerup = powerupDir[0] > 0;
+    //     if (!powerup) ResetPowerups();
+    // }
 }
 
 public void Move(){
@@ -303,107 +302,36 @@ public void DetectCollision(float power, float lowerBound, float invTime, bool s
     KnockBack(dir, dirChange, power, lowerBound, invTime, send);
 }
 
-public void _on_Hitbox_area_entered(Node body){
-    Godot.Collections.Array group = body.GetGroups();
-    float knockb = 0;
-    string type;
-    // if (group.Count < 1) return;
-    switch (group[0]){
-        case "eggs":
-            int eggId = (int)body.Get("id");
-            if (invincible || eggId == id) return;
-            knockb = (float)body.Get("knockback");
-            // if (!shielded){
-                // health -= (int)body.Get("damage");
-                // if (health < 0) health = 0;
-                // game.Call("registerHealth", id, lastHitId, health);
-                // itemParent.Set("playerHealth", health);
-                // if (eggId != 99) lastHitId = eggId;
-            // }
-            DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
-            body.QueueFree();
-            break;
-        // case "chickens":
-        //     DetectCollision(50, 50, 0, true);
-        //     break;
-        case "food":
-            // if (eatBuffer > 0) return;
-            type = (string)body.Get("type");
-            int c = 1;
-            if (type == "three"){
-                c = 3;
-                type = "normal";
-            }
-            for (int i = 0; i < c; i++){
-                // if (c > 1 && eggCount == maxEggs){
-                //     eatBuffer = c - i;
-                //     if (eggCooldown < 1) eggCooldown = 1;
-                //     break;
-                // }
-                EatFood(type);
-            }
-            body.QueueFree();
-            // itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
-            break;
-        case "health":
-            // if (health < 1) return;
-            // if (health < 5){
-            //     health ++;
-            //     itemParent.Set("playerHealth", health);
-            //     if (health == 5) lastHitId = 99;
-            //     game.Call("registerHealth", id, lastHitId, health);
-            // }
-            // else EatFood("normal");
-            body.QueueFree();
-            // itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
-            Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-            break;
-        case "powerups":
-            // type = (string)body.Get("type");
-            Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-            // powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
-            // if (powerup) ResetPowerups();
-            // if (type == "butter"){
-            //     eggSpdBoost = 1.5F;
-            //     powerupDir[0] = 5;
-            //     sprite.Modulate = Godot.Colors.Yellow;
-            //     powerBar.Modulate = Godot.Colors.Yellow;
-            // }
-            // else if (type == "shield"){
-            //     powerupDir[0] = 10;
-            //     shielded = true;
-            //     shield.Visible = true;
-            //     powerBar.Modulate = Godot.Colors.Magenta;
-            // }
-            // else if (type == "shrink"){
-            //     powerupDir[0] = 15;
-            //     baseSpriteScale = new Vector2(.3F, .3F);
-            //     powerBar.Modulate = Godot.Colors.Cyan;
-            //     collisionBox.Scale *= .5F;
-            //     hitbox.Scale *= .5F;
-            // }
-            // else if (type == "gun"){
-            //     powerupDir[0] = 12;
-            //     powerBar.Modulate = Godot.Colors.Chartreuse;
-            //     itemParent.Call("spawnGun");
-            // }
-            // else if (type == "wildcard") eggParent.Call("activateWildcard");
-            // if (powerup){
-            //     powerBar.Visible = true;
-            //     powerupDir[1] = powerupDir[0];
-            //     game.Call("setPowerupIcon", id, type);
-            // }
-            body.QueueFree();
-            break;
+public void setPowerup(String type){
+    if (type == ""){
+        ResetPowerups();
+        return;
     }
+    Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
+    powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
+    if (powerup && powerupDir[0] != 0) ResetPowerups();
+    if (type == "butter"){
+        eggSpdBoost = 1.5F;
+        sprite.Modulate = Godot.Colors.Yellow;
+    }
+    else if (type == "shield"){
+        shielded = true;
+        shield.Visible = true;
+    }
+    else if (type == "shrink"){
+        baseSpriteScale = new Vector2(.3F, .3F);
+        collisionBox.Scale *= .5F;
+        hitbox.Scale *= .5F;
+    }
+    else if (type == "gun"){
+        itemParent.Call("spawnGun");
+    }
+    else if (type == "wildcard") eggParent.Call("activateWildcard");
+    powerupDir[0] = 1;
 }
 
 public void ResetPowerups(){
-    game.Call("setPowerupIcon", id, "");
     powerupDir[0] = 0;
-    powerupDir[1] = 0;
-    powerBar.Visible = false;
-    powerBar.Value = 0;
     if (eggSpdBoost != 1){
         eggSpdBoost = 1;
         sprite.Modulate = Godot.Colors.White;

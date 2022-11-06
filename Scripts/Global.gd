@@ -23,7 +23,7 @@ var difficulty = 0
 var crack1 = preload("res://Sprites/Eggs/EggCrack1.png")
 var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
 var muted = false
-var botlist = []
+var botList = []
 var botNameMap = ["XiaoCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
 var prefID = 5
@@ -31,7 +31,7 @@ var prefID = 5
 func _ready():
 	var rgb = [0,0,0]
 	for _i in range(12):
-		botlist.append(true)
+		botList.append(true)
 		nameMap.append(null)
 	colorIdMap.append(Color8(255,100,100))
 #	eggColorMap[0] = colorIdMap[0] * 1.5
@@ -70,11 +70,11 @@ func _ready():
 func arrangeNames() -> void:
 	for i in range(12):
 		if nameMap[i] == null:
-			botlist[i] = true
+			botList[i] = true
 			nameMap[i] = botNameMap[i]
-		else: botlist[i] = false
+		else: botList[i] = false
 	if !Global.online:
-		botlist[id] = false
+		botList[id] = false
 		nameMap[id] = Global.playerName
 
 func defaults() -> void:
@@ -94,5 +94,5 @@ func defaults() -> void:
 	Network.joined = false
 	Network.helper = FakeHelper
 	for i in range(12):
-		botlist[i] = true
+		botList[i] = true
 		nameMap[i] = null

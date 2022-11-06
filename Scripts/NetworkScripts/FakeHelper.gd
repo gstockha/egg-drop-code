@@ -1,16 +1,22 @@
 extends Node2D
 
-func removeLobbyPlayer(id: int) -> void:
+func removeLobbyPlayer(_id):
 	pass
 
-func addLobbyPlayer(id: int) -> void:
+func addLobbyPlayer(_id):
 	pass
 
-func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
+func movePlayer(_pos, _vel, _grav, _id, _shoveCounter, _shoveVel, _dir):
 	pass
 
-func bumpPlayer(direction: String, dirChange: int, id: int):
+func bumpPlayer(_direction, _dirChange, _id):
 	pass
 
-func itemSent(create: bool, itemId: int, eat: bool, type):
+func itemSent(_create, _itemId, _eat, _type):
+	pass
+
+func addOnlineItem(_itemId, _category, _type, _position):
+	pass
+
+func destroyOnlineItem(_itemId, _eat):
 	pass

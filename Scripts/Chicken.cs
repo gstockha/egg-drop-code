@@ -400,7 +400,7 @@ public void _on_Hitbox_area_entered(Node body){
                 itemParent.Set("playerHealth", health);
                 if (eggId != 99) lastHitId = eggId;
             }
-            DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
+            DetectCollision(knockb, .3F + (knockb * .0005F), .25F, true);
             body.QueueFree();
             if (health > 0){
                 if (!shielded) subfx.Call("playSound", "splat");
@@ -410,6 +410,8 @@ public void _on_Hitbox_area_entered(Node body){
                 subfx.Call("playSound", "splat");
                 sfx.Call("playSound", "hurt");
             }
+            Node2D egg = (Node2D)body;
+            Network.Call("sendHealth", lastHitId, health, egg.Position.x);
             break;
         case "chickens":
             Node chick = body.Owner;
@@ -440,6 +442,8 @@ public void _on_Hitbox_area_entered(Node body){
             if (type == "big") soundId = 0;
             else if (type == "fast") soundId = 2;
             eatsfx.Call("playSound", "eat", soundId);
+            if ((bool)Global.Get("online")) Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+            if ((bool)Global.Get("online")) Network.Call("sendStatus", "none", baseSpriteScale.x.ToString(), (int)Global.Get("sid"));
             break;
         case "health":
             if (health < 1) return;
@@ -457,13 +461,14 @@ public void _on_Hitbox_area_entered(Node body){
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             popupParent.Call("makePopup", "health", GlobalPosition, false);
             subfx.Call("playSound", "healing");
+            if ((bool)Global.Get("online")) Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
             break;
         case "powerups":
             type = (string)body.Get("type");
             popupParent.Call("makePopup", type, GlobalPosition, false);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
-            if (powerup) ResetPowerups();
+            if (powerup && powerupDir[0] != 0) ResetPowerups();
             if (type == "butter"){
                 eggSpdBoost = 1.5F;
                 powerupDir[0] = 5;
@@ -496,6 +501,10 @@ public void _on_Hitbox_area_entered(Node body){
             }
             body.QueueFree();
             subfx.Call("playSound", "power");
+            if ((bool)Global.Get("online")){
+                Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+                Network.Call("sendStatus", type, baseSpriteScale.x.ToString(), (int)Global.Get("sid"));
+            }
             break;
     }
 }
@@ -524,6 +533,7 @@ public void ResetPowerups(){
         gun.QueueFree();
         gun = null;
     }
+    if ((bool)Global.Get("online")) Network.Call("sendStatus", "", baseSpriteScale.x.ToString(), (int)Global.Get("sid"));
 }
 
 public void _on_Invincible_timeout(){

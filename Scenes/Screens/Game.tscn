@@ -2794,6 +2794,7 @@ script = ExtResource( 16 )
 
 [node name="Countdown" type="Node2D" parent="."]
 pause_mode = 2
+visible = false
 position = Vector2( 744, 441 )
 script = ExtResource( 15 )
 
