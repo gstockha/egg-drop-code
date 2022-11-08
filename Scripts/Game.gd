@@ -51,6 +51,7 @@ func _ready():
 	Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 	eggParent.myid = Global.id
 	enemyEggParent.myid = Global.eid
+#	enemyEggParent.set_process(Global.eid != 1) #DELETE WHEN NOT TESTING!
 	player.id = Global.id
 	Global.arrangeNames()
 	#define nodes
@@ -121,15 +122,16 @@ func _ready():
 	#define enemy
 	if !Network.lobby:
 		var chick
-		chick = chickenDummy.instance()
-#		if Global.botList[Global.eid]: chick = chickenBot.instance()
-#		else: chick = chickenDummy.instance()
+#		chick = chickenDummy.instance() #DELETE WHEN NOT TESTING!
+		if Global.botList[Global.eid]: chick = chickenBot.instance()
+		else: chick = chickenDummy.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		enemyItemParent.player = enemy
 		enemyEggParent.player = enemy
 		$NetworkHelper.enemy = enemy
 		enemy.id = Global.eid
+		enemyEggParent.set_process(Global.botList[Global.eid])
 	else:
 		set_process(false)
 		for i in range(12): if !Global.botList[i] && i != Global.id: $NetworkHelper.addLobbyPlayer(i)
@@ -237,9 +239,8 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			eParent.slowMo = .5
 			eParent.set_process(false)
 			var chicken = enemy if !me else player
-			if !me && Global.botList[Global.eid]:
-				chicken.idle = true
-				eParent.player = null
+			chicken.idle = true
+			if !me && Global.botList[Global.eid]: eParent.player = null
 			chicken.speed *= .5
 			chicken.get_child(0).texture = deadChicken
 			if !me:
@@ -316,6 +317,7 @@ func makeBot() -> void:
 	enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 	$NetworkHelper.enemyItemParent = enemyItemParent
 	eggParent.eggTarget = enemyEggParent
+	eggParent.botIsBelow = Global.botList[Global.eid]
 	if Global.botList[Global.eid]:
 		var chick = chickenBot.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
@@ -360,6 +362,7 @@ func makeBot() -> void:
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		$NetworkHelper.enemy = enemy
+	enemy.id = Global.eid
 
 func calculateGameTime() -> String:
 	var lev = Global.level

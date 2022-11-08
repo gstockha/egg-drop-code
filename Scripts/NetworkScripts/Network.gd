@@ -4,8 +4,8 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
-enum tags {JOINED, MOVE, EGG, HEALTH, DEATH, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY}
+enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
+ITEMDESTROY, FULL}
 var attemptingConnection = false
 var lobby = false
 var joined = false
@@ -49,8 +49,8 @@ shoveCounter: String = '0', shoveVel = null, dir = null) -> void:
 func sendHealth(lastHit: int, health: int, eggId: float) -> void:
 	send({'tag': tags.HEALTH, 'lastHit': lastHit, 'health': health, 'eggId': str(round(eggId))})
 
-func sendDeath() -> void:
-	send({'tag': tags.DEATH})
+func sendReady() -> void:
+	send({'tag': tags.READY})
 
 func sendStatus(powerup: String, scale: String, target: int) -> void:
 	send({'tag': tags.STATUS, 'powerup': powerup, 'scale': scale, 'target': target})
@@ -84,8 +84,7 @@ func _on_data() -> void:
 			helper.setHealth(data.id, data.lastHit, data.health, data.eggId)
 		tags.STATUS: #STATUS
 			helper.setStatus(data.id, data.powerup, data.scale)
-		tags.DEATH: #DEATH
-			pass
+		tags.READY: sendReady() #READY
 		tags.NEWPLAYER: #NEWPLAYER
 			Global.nameMap[data.id] = data.name
 			Global.botList[data.id] = false
@@ -116,3 +115,4 @@ func _on_data() -> void:
 		tags.BUMP: helper.bumpPlayer(data.direction, data.dirChange, data.target)
 		tags.ITEMSEND: helper.addOnlineItem(data.itemId, data.category, data.type, Vector2(data.x, data.y), data.duration)
 		tags.ITEMDESTROY: helper.destroyOnlineItem(data.itemId, data.eat)
+		tags.FULL: print('Game full!')

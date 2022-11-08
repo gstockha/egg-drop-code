@@ -411,13 +411,14 @@ public void _on_Hitbox_area_entered(Node body){
                 sfx.Call("playSound", "hurt");
             }
             Node2D egg = (Node2D)body;
-            Network.Call("sendHealth", lastHitId, health, egg.Position.x);
+            if ((bool)Global.Get("online")) Network.Call("sendHealth", lastHitId, health, egg.Position.x);
             break;
         case "chickens":
             Node chick = body.Owner;
             if ((float)chick.Get("momentum") > momentum) return;
             DetectCollision(50, 50, 0, true);
             body.Owner.Call("DetectCollision", 50, 50, 0, true);
+            sfx.Call("playSound", "boingsmall");
             break;
         case "food":
             if (eatBuffer > 0) return;

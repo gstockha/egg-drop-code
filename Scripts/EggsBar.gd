@@ -49,13 +49,13 @@ func jiggle() -> void:
 	oddUp = !oddUp
 	if oddUp:
 		eggs[0].rect_position.y = eggActiveCoords[0]
-		for i in range(1,30):
+		for i in range(1,25):
 			if eggs[i].texture == null: break
 			eggs[i].rect_position.y = eggBarCoords[0] if i % 2 == 0 else eggBarCoords[1]
 		for i in range(5): hearts[i].rect_position.y = heartCoords[0] if i % 2 == 0 else heartCoords[1]
 	else:
 		eggs[0].rect_position.y = eggActiveCoords[1]
-		for i in range(1,30):
+		for i in range(1,25):
 			if eggs[i].texture == null: break
 			eggs[i].rect_position.y = eggBarCoords[1] if i % 2 == 0 else eggBarCoords[0]
 		for i in range(5): hearts[i].rect_position.y = heartCoords[1] if i % 2 == 0 else heartCoords[0]

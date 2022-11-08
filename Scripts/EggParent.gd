@@ -39,6 +39,7 @@ var helper = null
 var onlineQueue = []
 var onlineEggs = {}
 var onlinePlayer = false #botmode && not a bot (online)
+var botIsBelow = false
 
 func _ready():
 	set_physics_process(!Network.lobby)
@@ -54,9 +55,11 @@ func _ready():
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 			botIsAbove = true
 		else: botIsAbove = Global.botList[Global.sid]
-		botIsAbove = Global.id == 0 #DELETE WHEN NOT TESTING!
+#		botIsAbove = Global.id == 0 #DELETE WHEN NOT TESTING!
 		game = get_parent().get_parent().get_parent().get_parent()
 		helper = Network.helper
+		botIsBelow = Global.botList[Global.eid]
+#		botIsBelow = false #DELETE WHEN NOT TESTING!
 	else:
 		myid = Global.eid
 		lowerBounds = 425
@@ -65,10 +68,10 @@ func _ready():
 			eggTypes[key]["speed"] *= .5
 			eggTypes[key]["size"] *= .5
 		onlinePlayer = !Global.botList[myid]
-		onlinePlayer = true #DELETE WHEN NOT TESTING!
-		set_process(Global.botList[Global.sid])
-		set_process(false) #DELETE WHEN NOT TESTING!
-#	set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
+#		onlinePlayer = myid != 1 #DELETE WHEN NOT TESTING!
+		set_process(Global.botList[myid])
+#		set_process(myid != 1) #DELETE WHEN NOT TESTING!
+	set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
 
 func _process(delta):
 	eggTimer -= 10 * delta
@@ -129,17 +132,15 @@ func _physics_process(_delta):
 				var eggId = str(round(egg.position.x*2))
 				if eggId in onlineEggs: onlineEggs.erase(eggId)
 			if eggTarget == null || (egg.id != myid && egg.id != 99): return
-			if !Global.online || botMode:
-				if !botMode:
-					if !eggQueue:
-						eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
-					elif egg.id == myid:
-						eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),
-						egg.spdBoost, game.gameTime - eggQueueTime])
-						eggQueueTime = game.gameTime
-				#bot sends to player in a 1v1
-				else: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * 2, 0), egg.spdBoost)
-			else: #player network
+			if !botMode && (!Global.online || botIsBelow):
+				if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
+				elif egg.id == myid:
+					eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),
+					egg.spdBoost, game.gameTime - eggQueueTime])
+					eggQueueTime = game.gameTime
+			#bot sends to player in a 1v1
+			elif botMode: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * 2, 0), egg.spdBoost)
+			else: #player network send to player
 				Network.sendEgg(egg.id, egg.type, Vector2(egg.position.x, 0),
 				egg.spdBoost, Global.eid)
 				onlineQueue.append([egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost])
