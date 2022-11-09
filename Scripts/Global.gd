@@ -25,7 +25,7 @@ var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
 var muted = false
 var botList = []
 var botNameMap = ["XiaoCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
-"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInXaSsAsSiNx", "DAD"]
+"yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInNiNjAx", "DAD"]
 var prefID = 5
 
 func _ready():
@@ -69,10 +69,7 @@ func _ready():
 
 func arrangeNames() -> void:
 	for i in range(12):
-		if nameMap[i] == null:
-			botList[i] = true
-			nameMap[i] = botNameMap[i]
-		else: botList[i] = false
+		if botList[i]: nameMap[i] = botNameMap[i]
 	if !Global.online:
 		botList[id] = false
 		nameMap[id] = Global.playerName
@@ -93,6 +90,7 @@ func defaults() -> void:
 	Network.lobby = false
 	Network.joined = false
 	Network.helper = FakeHelper
+	Network.onlineLabelSet = [null, null]
 	for i in range(12):
 		botList[i] = true
 		nameMap[i] = null

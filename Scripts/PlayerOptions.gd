@@ -46,7 +46,7 @@ func _on_BeginButton_button_up():
 		transition.transition("fade_to_black")
 		transition.screen = 'title'
 	elif nameEdit.text.length() > 3 && !Network.joined:
-		Global.playerName = nameEdit.text
+		Global.playerName = nameEdit.text.replace('[bot]', '[man]')
 		$BeginButton.text = "SEARCHING..."
 		$BeginButton.disabled = true
 		Network.connectToServer()

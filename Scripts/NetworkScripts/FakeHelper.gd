@@ -29,3 +29,10 @@ func setHealth(_id, _lastHit, _health, _eggId):
 
 func warpPlayer(_id):
 	pass
+
+func setOnlineLabel(set, timer):
+	Network.onlineLabelSet[0] = set
+	Network.onlineLabelSet[1] = timer
+
+func setTargetStatus(_scale, _x, _y):
+	pass

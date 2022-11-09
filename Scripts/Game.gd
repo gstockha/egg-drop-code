@@ -42,6 +42,8 @@ var enemy = null#$EnemyContainer/Viewport/Enemyspace/ChickenBot
 onready var enemyEggParent = $EnemyContainer/Viewport/Enemyspace/EggParent
 onready var enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 onready var timerBar = $BottomHUD/TimerBar
+var targetPlayerLoaded = false #for getting a new online target
+var targetPlayerLoad = {"x": '0', "y": '0', "scale": '0'}
 
 func _ready():
 	randomize()
@@ -118,6 +120,7 @@ func _ready():
 		$NetworkHelper.chickenDummy = chickenDummy
 		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
 		$NetworkHelper.game = self
+		Global.difficulty = 1
 	else: Global.botList[Global.id] = false
 	#define enemy
 	if !Network.lobby:
@@ -164,8 +167,9 @@ func _process(delta):
 				registerHealth(randId, 99, playerStats[randId]["health"] + choice)
 	if !botIsSpawned:
 		if $EnemyContainer/Viewport.get_child_count() > 3: return
-		if Global.botList[Global.eid]: makeBot()
-		botIsSpawned = true
+		if Global.online && !Global.botList[Global.eid] && !targetPlayerLoaded: return
+		targetPlayerLoaded = false
+		makeBot()
 		if !Global.playerDead:
 			eggParent.releaseEggQueue()
 			eggParent.eggQueue = false
@@ -209,7 +213,9 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 					endGame(false, i)
 					break
 			return
-	if id == Global.eid: Global.eid = findNewTarget(id, true, true) #seek new target
+	if id == Global.eid:
+		Global.eid = findNewTarget(id, true, true) #seek new target
+		if Global.online && !Global.botList[Global.eid]: Network.sendStatusRequest(Global.eid)
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
 	if Global.online: eggParent.botIsAbove = Global.botList[Global.sid]
 	if Global.eid == Global.sid:
@@ -218,7 +224,6 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 
 func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if aliveCount == 1: return
-	print(health)
 	health = clamp(health, 0, 5)
 	var prevhp = playerStats[id]["health"]
 	playerStats[id]["health"] = health
@@ -324,7 +329,6 @@ func makeBot() -> void:
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		enemyItemParent.player = enemy
 		enemyEggParent.player = enemy
-		$NetworkHelper.enemy = enemy
 		enemy.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
 		enemy.position.y + rand_range(-20,20))
 		var eggRoll = randi() % 100 + 1
@@ -361,7 +365,9 @@ func makeBot() -> void:
 		var chick = chickenDummy.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		$NetworkHelper.enemy = enemy
+		chick.scale = float(targetPlayerLoad["scale"])
+		chick.position = Vector2(float(targetPlayerLoad["x"]), float(targetPlayerLoad["y"])) * .5
+	$NetworkHelper.enemy = enemy
 	enemy.id = Global.eid
 
 func calculateGameTime() -> String:
@@ -404,3 +410,6 @@ func setPowerupIcon(id: int, type: String) -> void:
 	elif type in powerups:
 		powerIcons[offsetIds[id]].visible = true
 		powerIcons[offsetIds[id]].texture = powerups[type]
+
+func setNameplateName(id: int) -> void:
+	namePlates[offsetIds[id]].text = Global.nameMap[id]

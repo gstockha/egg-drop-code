@@ -387,7 +387,7 @@ public void _on_Hitbox_area_entered(Node body){
     switch (group[0]){
         case "eggs":
             int eggId = (int)body.Get("id");
-            if (invincible || eggId == id) return;
+            if (invincible || eggId == id || id == 5) return;
             knockb = (float)body.Get("knockback");
             if (!shielded){
                 health -= (int)body.Get("damage");
@@ -462,7 +462,10 @@ public void _on_Hitbox_area_entered(Node body){
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
             popupParent.Call("makePopup", "health", GlobalPosition, false);
             subfx.Call("playSound", "healing");
-            if ((bool)Global.Get("online")) Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+            if ((bool)Global.Get("online")){
+                Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+                Network.Call("sendHealth", lastHitId, health, 0);
+            }
             break;
         case "powerups":
             type = (string)body.Get("type");

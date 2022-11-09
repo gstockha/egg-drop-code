@@ -13,6 +13,7 @@ var movecooldown = 0
 #ITEMDESTROY}
 var playerSpace = null
 var chickenDummy = null
+onready var onlineLabel = get_node("../OnlineLabel")
 
 func _ready():
 	for i in range(12): lobbyChickens.append(null)
@@ -22,7 +23,7 @@ func _ready():
 func _physics_process(_delta):
 	if !Global.playerDead:
 		movecooldown += 1
-		if movecooldown > 3: #send basic move
+		if movecooldown > 4: #send basic move
 			Network.sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid)
 			movecooldown = 0
 
@@ -34,7 +35,7 @@ func removeLobbyPlayer(id: int) -> void:
 func addLobbyPlayer(id: int) -> void:
 	var chick = chickenDummy.instance()
 	playerSpace.add_child(chick)
-	chick.nameLabel.self_modulate = Global.colorIdMap[id]
+	chick.nameLabel.modulate = Global.colorIdMap[id]
 	chick.nameLabel.text = Global.nameMap[id]
 	chick.nameLabel.visible = true
 	chick.position = Vector2(480,480)
@@ -42,6 +43,7 @@ func addLobbyPlayer(id: int) -> void:
 	lobbyChickens[id] = chick
 	chick.scale *= 2
 	chick.speed = 400
+	game.setNameplateName(id)
 
 func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
 	var chicken = null
@@ -86,15 +88,14 @@ func setStatus(id: int, powerup: String, scale: String) -> void:
 	var chicken = null
 	if Network.lobby: chicken = lobbyChickens[id]
 	elif id == Global.eid && !Global.botList[id]: chicken = enemy
-	if chicken == null: return
-	chicken.baseSpriteScale = Vector2(float(scale), float(scale))
+	if chicken != null: chicken.baseSpriteScale = Vector2(float(scale), float(scale))
 	if powerup != "none":
 		game.setPowerupIcon(id, powerup)
 		if chicken != null: chicken.setPowerup(powerup)
 
 func setHealth(id: int, lastHit: int, health: int, eggId: String) -> void:
 	game.registerHealth(id, lastHit, health)
-	if id == Global.eid && !Network.lobby:
+	if id == Global.eid && eggId != "0" && !Network.lobby:
 		enemyEggParent.onlineHit(eggId)
 		warpPlayer(id, true)
 
@@ -106,3 +107,15 @@ func warpPlayer(id: int, hurt: bool = false) -> void:
 	var xsc = 1.3 if !hurt else .7
 	var ysc = .7 if !hurt else 1.3
 	chicken.Squish(Vector2(enemy.baseSpriteScale.x * xsc, enemy.baseSpriteScale.y * ysc))
+
+func setOnlineLabel(set: String, timer: int = 0) -> void:
+	onlineLabel.text = set
+	if timer != 0:
+		onlineLabel.timerOn = true
+		onlineLabel.timer = timer
+
+func setTargetStatus(scale: String, x: String, y: String) -> void:
+	game.targetPlayerLoad["scale"] = scale
+	game.targetPlayerLoad["x"] = x
+	game.targetPlayerLoad["y"] = y
+	game.targetPlayerLoaded = true

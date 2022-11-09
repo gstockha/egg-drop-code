@@ -5,10 +5,11 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
 enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY, FULL}
+ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS}
 var attemptingConnection = false
 var lobby = false
 var joined = false
+var onlineLabelSet = [null, null]
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
@@ -65,6 +66,9 @@ func sendItemCreate(itemId: String, category: String, type: String, position: Ve
 func sendItemDestroy(itemId: String, eat: bool, target: int) -> void:
 	send({'tag': tags.ITEMDESTROY, 'itemId': itemId, 'eat': eat, 'target': target})
 
+func sendStatusRequest(target: int) -> void:
+	send({'tag': tags.TARGETSTATUS, 'target': target})
+
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
 	match int(data.tag):
@@ -84,7 +88,8 @@ func _on_data() -> void:
 			helper.setHealth(data.id, data.lastHit, data.health, data.eggId)
 		tags.STATUS: #STATUS
 			helper.setStatus(data.id, data.powerup, data.scale)
-		tags.READY: sendReady() #READY
+		tags.READY:
+			sendReady() #READY
 		tags.NEWPLAYER: #NEWPLAYER
 			Global.nameMap[data.id] = data.name
 			Global.botList[data.id] = false
@@ -111,8 +116,19 @@ func _on_data() -> void:
 			print(Global.nameMap[data.id] + ' left the game')
 			Global.nameMap[data.id] = null
 			if Network.lobby: helper.removeLobbyPlayer(data.id)
-		tags.EGGCONFIRM: helper.eggParent.onlineEggQueue()
-		tags.BUMP: helper.bumpPlayer(data.direction, data.dirChange, data.target)
-		tags.ITEMSEND: helper.addOnlineItem(data.itemId, data.category, data.type, Vector2(data.x, data.y), data.duration)
-		tags.ITEMDESTROY: helper.destroyOnlineItem(data.itemId, data.eat)
+		tags.EGGCONFIRM:
+			helper.eggParent.onlineEggQueue()
+		tags.BUMP:
+			helper.bumpPlayer(data.direction, data.dirChange, data.target)
+		tags.ITEMSEND:
+			helper.addOnlineItem(data.itemId, data.category, data.type, Vector2(data.x, data.y), data.duration)
+		tags.ITEMDESTROY:
+			helper.destroyOnlineItem(data.itemId, data.eat)
 		tags.FULL: print('Game full!')
+		tags.LABEL:
+			helper.setOnlineLabel(data.label, data.timer)
+		tags.BEGIN:
+			Network.lobby = false
+			get_tree().reload_current_scene()
+		tags.TARGETSTATUS:
+			helper.setTargetStatus(data.scale, data.x, data.y)
