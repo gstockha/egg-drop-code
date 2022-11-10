@@ -387,15 +387,15 @@ public void _on_Hitbox_area_entered(Node body){
     switch (group[0]){
         case "eggs":
             int eggId = (int)body.Get("id");
-            if (invincible || eggId == id || id == 5) return;
+            if (invincible || eggId == id) return;
             knockb = (float)body.Get("knockback");
             if (!shielded){
                 health -= (int)body.Get("damage");
                 if (health < 0) health = 0;
-                for (int i = 0; i < 5; i++){
-                    heartIcons[i].Visible = i < health;
-                    heartBGs[i].Visible = i >= health;
-                }
+                // for (int i = 0; i < 5; i++){
+                //     heartIcons[i].Visible = i < health;
+                //     heartBGs[i].Visible = i >= health;
+                // }
                 game.Call("registerHealth", id, lastHitId, health);
                 itemParent.Set("playerHealth", health);
                 if (eggId != 99) lastHitId = eggId;
@@ -444,8 +444,9 @@ public void _on_Hitbox_area_entered(Node body){
             else if (type == "fast") soundId = 2;
             eatsfx.Call("playSound", "eat", soundId);
             if ((bool)Global.Get("online")){
-                if ((bool)Global.Call("getBot", (int)Global.Get("sid"))) Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
-                if ((bool)Network.Get("spectated")) Network.Call("sendItemDestroy", body.Get("id"), true, 99);
+                if (((bool)Global.Call("getBot", (int)Global.Get("sid"))) || ((bool)Network.Get("spectated"))){
+                    Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+                }
                 Network.Call("sendStatus", id, "none", baseSpriteScale.x.ToString());
             }
             break;
@@ -453,8 +454,8 @@ public void _on_Hitbox_area_entered(Node body){
             if (health < 1) return;
             if (health < 5){
                 health ++;
-                heartIcons[health-1].Visible = true;
-                heartBGs[health-1].Visible = false;
+                // heartIcons[health-1].Visible = true;
+                // heartBGs[health-1].Visible = false;
                 itemParent.Set("playerHealth", health);
                 if (health == 5) lastHitId = 99;
                 game.Call("registerHealth", id, lastHitId, health);
@@ -466,8 +467,9 @@ public void _on_Hitbox_area_entered(Node body){
             popupParent.Call("makePopup", "health", GlobalPosition, false);
             subfx.Call("playSound", "healing");
             if ((bool)Global.Get("online")){
-                if ((bool)Global.Call("getBot", (int)Global.Get("sid"))) Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
-                if ((bool)Network.Get("spectated")) Network.Call("sendItemDestroy", body.Get("id"), true, 99);
+                if (((bool)Global.Call("getBot", (int)Global.Get("sid"))) || ((bool)Network.Get("spectated"))){
+                    Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+                }
                 Network.Call("sendHealth", id, lastHitId, health, 0);
             }
             break;
@@ -510,8 +512,9 @@ public void _on_Hitbox_area_entered(Node body){
             body.QueueFree();
             subfx.Call("playSound", "power");
             if ((bool)Global.Get("online")){
-                if ((bool)Global.Call("getBot", (int)Global.Get("sid"))) Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
-                if ((bool)Network.Get("spectated")) Network.Call("sendItemDestroy", body.Get("id"), true, 99);
+                if (((bool)Global.Call("getBot", (int)Global.Get("sid"))) || ((bool)Network.Get("spectated"))){
+                    Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
+                }
                 Network.Call("sendStatus", id, type, baseSpriteScale.x.ToString());
             }
             break;

@@ -92,8 +92,7 @@ func _process(delta):
 		var type = randType(Global.normalcy)
 		makeEgg(99, type, vec)
 		if !botMode:
-			if !botIsAbove: Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
-			if Network.spectated: Network.sendEgg(99, type, vec, 1, 99, false) #to enemy's enemy screen
+			if !botIsAbove || Network.spectated: Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
 	elif botReceive: #receive artificial eggs from above
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
@@ -169,8 +168,8 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 		egg.sprite.modulate = Global.colorIdMap[id]
 		if !botMode && Global.id == id:
 			egg.speed *= 2
-			if !botIsAbove: Network.sendEgg(id, type, pos, eggSpdBoost, Global.sid, false) #to enemy's enemy screen
-			if Network.spectated: Network.sendEgg(id, type, pos, eggSpdBoost, 99, false) #to enemy's enemy screen
+			#to enemy's enemy screen
+			if !botIsAbove || Network.spectated: Network.sendEgg(id, type, pos, eggSpdBoost, Global.sid, false)
 		elif botMode && Global.eid == id: egg.speed *= 2
 		else: egg.speed *= 1.25
 		if !botMode: game.confirmedEggs += 1

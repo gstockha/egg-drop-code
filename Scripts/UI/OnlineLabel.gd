@@ -6,7 +6,7 @@ var timer = 0
 func _ready():
 	visible = Network.lobby
 	set_process(visible)
-	if visible:
+	if visible && Network.onlineLabelSet[0]:
 		text = Network.onlineLabelSet[0]
 		timer = Network.onlineLabelSet[1]
 		Network.onlineLabelSet[0] = null

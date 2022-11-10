@@ -36,7 +36,6 @@ Node Global, Network;
 Control game;
 Area2D hitbox, itemArea, eggArea;
 CollisionShape2D collisionBox;
-
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     Global = GetNode<Node>("/root/Global");

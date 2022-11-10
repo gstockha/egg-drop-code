@@ -46,6 +46,9 @@ var targetPlayerLoaded = false #for getting a new online target
 var targetPlayerLoad = {"x": '0', "y": '0', "scale": '0'}
 
 func _ready():
+	if Network.exitedToLobby:
+		Network.exitedToLobby = false
+		Network.lobby = true
 	randomize()
 	$MuteButton.self_modulate.a = .6 if Global.muted else 1
 	#define ids
@@ -121,13 +124,17 @@ func _ready():
 		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
 		$NetworkHelper.game = self
 		Global.difficulty = 1
-	else: Global.botList[Global.id] = false
+	else:
+		Global.botList[Global.id] = false
+		for i in range(12): Global.activeList[i] = true
 	#define enemy
 	if !Network.lobby:
 		var chick
 #		chick = chickenDummy.instance() #DELETE WHEN NOT TESTING!
 		if Global.botList[Global.eid]: chick = chickenBot.instance()
-		else: chick = chickenDummy.instance()
+		else:
+			chick = chickenDummy.instance()
+			chick.onlineIdle = Global.idleList[Global.eid]
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		enemyItemParent.player = enemy
@@ -137,7 +144,8 @@ func _ready():
 		enemyEggParent.set_process(Global.botList[Global.eid])
 	else:
 		set_process(false)
-		for i in range(12): if !Global.botList[i] && i != Global.id: $NetworkHelper.addLobbyPlayer(i)
+		for i in range(12):
+			if i != Global.id && !Global.botList[i] && !Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -150,6 +158,11 @@ func _input(event):
 		var prev = Global.eid
 		Global.eid = findNewTarget(Global.eid, event.is_action("ui_down"), true) #seek new target
 		if prev != Global.eid: Global.sid = findNewTarget(Global.eid, false, false) #seek new sender
+	elif event.is_action_pressed("ui_accept"):
+		if !Global.online: return
+		Network.sendLobbyReturn()
+		Network.exitedToLobby = true
+		get_tree().reload_current_scene()
 
 func _process(delta):
 	if !Global.online: #make fake health changes
@@ -205,8 +218,14 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 			$GameSFX.playSound("win")
 			endGame(true, Global.id)
 			return
-		elif id == Global.id:
+		elif id == Global.id: #you dead
 			endGame(false, id)
+			if Global.online && Global.botList[Global.eid]:
+				var lasteid = Global.eid
+				Global.eid = findNewTarget(lasteid, true, true) #seek player to spectate
+				if lasteid != Global.eid:
+					Network.sendStatusRequest(Global.eid)
+					Network.sendSpectateStatus(Global.eid, true)
 			return
 		elif aliveCount == 1:
 			for i in range(12):
@@ -234,6 +253,10 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if id == Global.eid:
 		if prevhp > health: $HitSFX.playSound("hit", randi() % 3)
 		for i in range(5): targetHearts[i].visible = i < health
+	elif id == Global.id:
+		for i in range(5):
+			player.heartIcons[i].visible = i < health
+			player.heartBGs[i].visible = i >= health
 	if health < 1:
 		aliveCount -= 1
 		var me = Global.id == id
@@ -268,12 +291,13 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 func findNewTarget(id: int, below: bool, eid: bool) -> int:
 	var tries = 0
 	var newId = null
-	while(newId == null && tries < 13):
+	while(newId == null && tries < 16):
 		if below: id = id + 1 if id + 1 < 12 else 0
 		else: id = id - 1 if id - 1 >= 0 else 11
-		if id == Global.id || playerStats[id]["health"] < 1: continue
-		newId = id
 		tries += 1
+		if id == Global.id || playerStats[id]["health"] < 1: continue
+		if Global.online && Global.playerDead && Global.botList[id]: continue
+		newId = id
 	if newId == null:
 		print('target search returned null, eid: ' + str(eid) + ', id: ' + str(id))
 		return id
@@ -374,6 +398,7 @@ func makeBot() -> void:
 		var scl = float(targetPlayerLoad["scale"]) * 2
 		chick.scale = Vector2(scl, scl)
 		chick.position = Vector2(float(targetPlayerLoad["x"]), float(targetPlayerLoad["y"])) * .5
+		chick.onlineIdle = Global.idleList[Global.eid]
 	enemy.health = playerStats[Global.eid]["health"]
 	targetHearts[0].get_parent().visible = true
 	for i in range(5): targetHearts[i].visible = i < enemy.health

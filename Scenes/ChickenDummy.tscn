@@ -34,7 +34,7 @@ position = Vector2( 1.66666, -4.08334 )
 texture = ExtResource( 3 )
 
 [node name="Hitbox" type="Area2D" parent="." groups=["chickens"]]
-monitoring = false
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource( 7 )
@@ -161,4 +161,5 @@ position = Vector2( 80, 32.5 )
 scale = Vector2( 0.2, 0.2 )
 texture = ExtResource( 5 )
 
+[connection signal="area_entered" from="Hitbox" to="." method="_on_Hitbox_area_entered"]
 [connection signal="timeout" from="Invincible" to="." method="_on_Invincible_timeout"]

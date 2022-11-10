@@ -20,6 +20,9 @@ func _ready():
 	Network.helper = self
 	set_physics_process(Global.online)
 	Network.spectated = false
+	Global.playerDead = false
+	Global.gameOver = false
+	Global.win = null
 
 func _physics_process(_delta):
 	if !Global.playerDead:
@@ -59,7 +62,7 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 		cPos = chicken.position
 		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
 		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
-	else:
+	elif enemy != null:
 		chicken = enemy
 		if chicken.id != id: return
 		pos *= .5
@@ -128,3 +131,7 @@ func setTargetStatus(scale: String, x: String, y: String) -> void:
 	game.targetPlayerLoad["x"] = x
 	game.targetPlayerLoad["y"] = y
 	game.targetPlayerLoaded = true
+
+func setPlayerIdle(id: int, idle: bool) -> void:
+	Global.idleList[id] = idle
+	if id == Global.eid && !Global.botList[id] && enemy != null && enemy.onlineIdle != null: enemy.onlineIdle = idle

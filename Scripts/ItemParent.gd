@@ -79,8 +79,8 @@ func _process(delta):
 		elif Global.online: #if not bot and online, send id, category, type, pos, duration, and target id
 			item.id = str(onlineCount)
 			onlineCount += 1
-			if !Global.botList[Global.sid]: Network.sendItemCreate(item.id, type, item.type, item.position, 0, Global.sid)
-			if Network.spectated: Network.sendItemCreate(item.id, type, item.type, item.position, 0, 99)
+			if !Global.botList[Global.sid] || Network.spectated:
+				Network.sendItemCreate(item.id, type, item.type, item.position, 0, Global.sid)
 	for item in get_children():
 		item.duration += tick
 		if item.duration > 180:
@@ -157,3 +157,8 @@ func deleteOnlineItem(itemId: String, eat: bool):
 	onlineItems[itemId].queue_free()
 	onlineItems.erase(itemId)
 	if player != null && eat: player.Squish(Vector2(player.baseSpriteScale.x * .85, player.baseSpriteScale.y * 1.15))
+
+#func deactivate() -> void:
+#	set_process(false)
+#	for item in get_children():
+#		item.queue_free()

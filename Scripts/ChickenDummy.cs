@@ -36,6 +36,7 @@ ProgressBar powerBar;
 Area2D hitbox;
 CollisionShape2D collisionBox;
 Label nameLabel;
+bool onlineIdle = false;
 
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
@@ -328,6 +329,27 @@ public void setPowerup(String type){
     }
     else if (type == "wildcard") eggParent.Call("activateWildcard");
     powerupDir[0] = 1;
+}
+
+public void _on_Hitbox_area_entered(Node body){
+    if (onlineIdle == false) return;
+    Godot.Collections.Array group = body.GetGroups();
+    float knockb = 0;
+    switch (group[0]){
+        case "eggs":
+            int eggId = (int)body.Get("id");
+            if (invincible || eggId == id || id == 5) return;
+            knockb = (float)body.Get("knockback");
+            health -= (int)body.Get("damage");
+            if (health < 0) health = 0;
+            game.Call("registerHealth", id, lastHitId, health);
+            if (eggId != 99) lastHitId = eggId;
+            DetectCollision(knockb, .3F + (knockb * .0005F), .25F, true);
+            body.QueueFree();
+            Node2D egg = (Node2D)body;
+            if ((bool)Global.Get("online")) Network.Call("sendHealth", id, lastHitId, health, egg.Position.x);
+            break;
+    }
 }
 
 public void ResetPowerups(){

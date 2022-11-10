@@ -36,3 +36,6 @@ func setOnlineLabel(set, timer):
 
 func setTargetStatus(_scale, _x, _y):
 	pass
+
+func setPlayerIdle(id: int, idle: bool) -> void:
+	Global.idleList[id] = idle

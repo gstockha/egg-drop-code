@@ -5,12 +5,15 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
 enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE}
+ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER}
 var attemptingConnection = false
 var lobby = false
+var waitingForGame = false
 var joined = false
 var onlineLabelSet = [null, null]
 var spectated = false
+var lastWinner = 99
+var exitedToLobby = false
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
@@ -73,10 +76,17 @@ func sendStatusRequest(target: int) -> void:
 func sendSpectateStatus(target: int, spectating: bool) -> void:
 	send({'tag': tags.SPECTATE, 'target': target, 'spectating': spectating})
 
+func sendLobbyReturn() -> void:
+	send({'tag': tags.LOBBYPLAYER, 'id': Global.id})
+
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
 	match int(data.tag):
 		tags.JOINED: #JOINED a confirm by the server we've joined, send back our pref. name and id
+			if Global.version != data.version:
+				print('outdated version!')
+				client.disconnect_from_host(1000, "version")
+				return
 			send({'tag': tags.JOINED, 'prefID': Global.prefID, 'name': Global.playerName})
 		tags.MOVE: #MOVE
 			helper.movePlayer(Vector2(data.x, data.y), Vector2(data.velx, data.vely), data.grav, data.id,
@@ -97,6 +107,8 @@ func _on_data() -> void:
 		tags.NEWPLAYER: #NEWPLAYER
 			Global.nameMap[data.id] = data.name
 			Global.botList[data.id] = false
+			Global.activeList[data.id] = false
+			Global.idleList[data.id] = false
 			print("New player joined: ", Global.nameMap[data.id])
 			Global.playerCount += 1
 			if Network.lobby: helper.addLobbyPlayer(data.id)
@@ -104,8 +116,10 @@ func _on_data() -> void:
 			Global.id = int(data.id)
 			Global.playerName = data.name
 			Global.nameMap = data.nameMap
+			Global.activeList = data.activeList
 			joined = true
-			lobby = data.lobby
+			waitingForGame = data.lobby
+			lobby = true
 			print("Join confirmed!")
 			print("Your assigned ID: ", Global.id)
 			print("Playerlist: ", Global.nameMap)
@@ -119,6 +133,7 @@ func _on_data() -> void:
 			Global.playerCount = int(data.playerCount)
 			print(Global.nameMap[data.id] + ' left the game')
 			Global.nameMap[data.id] = null
+			Global.activeList[data.id] = false
 			helper.removePlayer(data.id)
 		tags.EGGCONFIRM:
 			helper.eggParent.onlineEggQueue()
@@ -132,9 +147,21 @@ func _on_data() -> void:
 		tags.LABEL:
 			helper.setOnlineLabel(data.label, data.timer)
 		tags.BEGIN:
-			Network.lobby = false
+			lobby = false
+			for i in range(12): if !Global.botList[i]: Global.activeList[i] = true
 			var _nuScene = get_tree().reload_current_scene()
 		tags.TARGETSTATUS:
 			helper.setTargetStatus(data.scale, data.x, data.y)
 		tags.SPECTATE:
 			spectated = data.spectated
+		tags.IDLE:
+			helper.setPlayerIdle(data.id, data.idle)
+			if data.idle: print(Global.nameMap[data.id] + ' idle!')
+		tags.ENDGAME:
+			lobby = true
+			lastWinner = data.winner
+			for i in range(12): Global.activeList[i] = false
+			var _nuScene = get_tree().reload_current_scene()
+		tags.LOBBYPLAYER:
+			Global.activeList[data.id] = false
+			if Network.lobby: helper.addLobbyPlayer(data.id)
