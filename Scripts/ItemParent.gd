@@ -79,7 +79,8 @@ func _process(delta):
 		elif Global.online: #if not bot and online, send id, category, type, pos, duration, and target id
 			item.id = str(onlineCount)
 			onlineCount += 1
-			Network.sendItemCreate(item.id, type, item.type, item.position, 0, Global.sid)
+			if !Global.botList[Global.sid]: Network.sendItemCreate(item.id, type, item.type, item.position, 0, Global.sid)
+			if Network.spectated: Network.sendItemCreate(item.id, type, item.type, item.position, 0, 99)
 	for item in get_children():
 		item.duration += tick
 		if item.duration > 180:

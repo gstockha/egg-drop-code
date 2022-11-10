@@ -5,11 +5,12 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
 enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS}
+ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE}
 var attemptingConnection = false
 var lobby = false
 var joined = false
 var onlineLabelSet = [null, null]
+var spectated = false
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
@@ -47,14 +48,14 @@ shoveCounter: String = '0', shoveVel = null, dir = null) -> void:
 	send({'tag': tags.MOVE, 'x': round(coords.x), 'y': round(coords.y), 'velx': vel.x, 'vely': vel.y,
 	'grav': grav, 'shoveCounter': shoveCounter, 'shoveVel': shoveVel, 'dir': dir, 'target': target})
 
-func sendHealth(lastHit: int, health: int, eggId: float) -> void:
-	send({'tag': tags.HEALTH, 'lastHit': lastHit, 'health': health, 'eggId': str(round(eggId))})
+func sendHealth(id: int, lastHit: int, health: int, eggId: float) -> void:
+	send({'tag': tags.HEALTH, 'id': id, 'lastHit': lastHit, 'health': health, 'eggId': str(round(eggId))})
 
 func sendReady() -> void:
 	send({'tag': tags.READY})
 
-func sendStatus(powerup: String, scale: String, target: int) -> void:
-	send({'tag': tags.STATUS, 'powerup': powerup, 'scale': scale, 'target': target})
+func sendStatus(id: int, powerup: String, scale: String) -> void:
+	send({'tag': tags.STATUS, 'id': id, 'powerup': powerup, 'scale': scale})
 
 func sendBump(direction: String, dirChange: int, target: int) -> void:
 	send({'tag': tags.BUMP, 'direction': direction, 'dirChange': dirChange, 'target': target})
@@ -68,6 +69,9 @@ func sendItemDestroy(itemId: String, eat: bool, target: int) -> void:
 
 func sendStatusRequest(target: int) -> void:
 	send({'tag': tags.TARGETSTATUS, 'target': target})
+
+func sendSpectateStatus(target: int, spectating: bool) -> void:
+	send({'tag': tags.SPECTATE, 'target': target, 'spectating': spectating})
 
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
@@ -115,7 +119,7 @@ func _on_data() -> void:
 			Global.playerCount = int(data.playerCount)
 			print(Global.nameMap[data.id] + ' left the game')
 			Global.nameMap[data.id] = null
-			if Network.lobby: helper.removeLobbyPlayer(data.id)
+			helper.removePlayer(data.id)
 		tags.EGGCONFIRM:
 			helper.eggParent.onlineEggQueue()
 		tags.BUMP:
@@ -129,6 +133,8 @@ func _on_data() -> void:
 			helper.setOnlineLabel(data.label, data.timer)
 		tags.BEGIN:
 			Network.lobby = false
-			get_tree().reload_current_scene()
+			var _nuScene = get_tree().reload_current_scene()
 		tags.TARGETSTATUS:
 			helper.setTargetStatus(data.scale, data.x, data.y)
+		tags.SPECTATE:
+			spectated = data.spectated

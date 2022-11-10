@@ -166,6 +166,7 @@ func _process(delta):
 				var choice = -1 if randf() < .75 else 1
 				registerHealth(randId, 99, playerStats[randId]["health"] + choice)
 	if !botIsSpawned:
+		print(targetPlayerLoaded)
 		if $EnemyContainer/Viewport.get_child_count() > 3: return
 		if Global.online && !Global.botList[Global.eid] && !targetPlayerLoaded: return
 		targetPlayerLoaded = false
@@ -215,7 +216,9 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 			return
 	if id == Global.eid:
 		Global.eid = findNewTarget(id, true, true) #seek new target
-		if Global.online && !Global.botList[Global.eid]: Network.sendStatusRequest(Global.eid)
+		if Global.online && !Global.botList[Global.eid]:
+			Network.sendStatusRequest(Global.eid)
+			if Global.playerDead: Network.sendSpectateStatus(Global.eid, true)
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
 	if Global.online: eggParent.botIsAbove = Global.botList[Global.sid]
 	if Global.eid == Global.sid:
@@ -254,6 +257,8 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 					eggParent.eggQueue = true
 					eggParent.eggQueueTime = gameTime
 			else: #set up spectate mode
+				if Global.online && !Global.botList[Global.eid]: Network.sendSpectateStatus(Global.eid, true)
+				Network.spectated = false
 				$PlayerContainer/Viewport/Playspace/ItemParent.player = null
 				for i in range(12):
 					if i == Global.id: continue
@@ -299,18 +304,22 @@ func endGame(win: bool, winner: int):
 		if recordedTime == null: gameOverLabels["sublabel"].text += "  TIME: " + hud["timer"].text
 		else: gameOverLabels["sublabel"].text += "  TIME: " + recordedTime
 		gameOverLabels["subsub"].text = "Press ESC to leave, R to restart"
-	else: #spectate
+	else: #spectate / hen house note
 		recordedTime = hud["timer"].text
-		Global.playerDead = true
-		enemyEggParent.botIsAbove = true
-		enemyEggParent.rateBuffer *= .1
 		var lastHit = player.lastHitId
 		var textChoices = ["YOU'VE BEEN PLUCKED", "YOU WERE SHELLED", "YOU WERE SCRAMBLED", "YOU GOT CLUCKED",
 		"YOU'VE BEEN FRIED", "YOU GOT TURNED INTO TENDIES", "YOU GOT COCK-A-DOODLE-DOO'D", "YOU BECAME A FAMILY MEAL"]
 		gameOverLabels["label"].text = textChoices[randi() % len(textChoices)]
 		gameOverLabels["sublabel"].text = "BY "
 		gameOverLabels["sublabel"].text += playerStats[lastHit]["name"] if lastHit != 99 else "THE CHICKEN GODS"
-		gameOverLabels["subsub"].text = "Press Up or Down to change spectate\nPress ESC to leave, R to restart"
+		if !Global.online:
+			gameOverLabels["subsub"].text = "Press Up or Down to change spectate\nPress ESC to leave, R to restart"
+		else: gameOverLabels["subsub"].text = "Press Space to go back to the hen house"
+		#you are dead settings
+		Global.playerDead = true
+		if Global.botList[Global.eid]:
+			enemyEggParent.botIsAbove = true
+			enemyEggParent.rateBuffer *= .1
 
 func makeBot() -> void:
 	botIsSpawned = true
@@ -339,9 +348,6 @@ func makeBot() -> void:
 		enemy.scale = Vector2(enemy.baseScale.x + (.05 * eggRoll), enemy.baseScale.y + (.05 * eggRoll))
 		enemy.baseSpriteScale = enemy.sprite.scale
 		enemy.weight = enemy.baseWeight + (eggRoll * .0002)
-		enemy.health = playerStats[Global.eid]["health"]
-		targetHearts[0].get_parent().visible = true
-		for i in range(5): targetHearts[i].visible = i < enemy.health
 		#make fake velocity
 		var rnd = [-1,1]
 		for i in range(len(enemy.dirListx)):
@@ -365,8 +371,12 @@ func makeBot() -> void:
 		var chick = chickenDummy.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		chick.scale = float(targetPlayerLoad["scale"])
+		var scl = float(targetPlayerLoad["scale"]) * 2
+		chick.scale = Vector2(scl, scl)
 		chick.position = Vector2(float(targetPlayerLoad["x"]), float(targetPlayerLoad["y"])) * .5
+	enemy.health = playerStats[Global.eid]["health"]
+	targetHearts[0].get_parent().visible = true
+	for i in range(5): targetHearts[i].visible = i < enemy.health
 	$NetworkHelper.enemy = enemy
 	enemy.id = Global.eid
 
@@ -412,4 +422,4 @@ func setPowerupIcon(id: int, type: String) -> void:
 		powerIcons[offsetIds[id]].texture = powerups[type]
 
 func setNameplateName(id: int) -> void:
-	namePlates[offsetIds[id]].text = Global.nameMap[id]
+	namePlates[offsetIds[id]].text = Global.nameMap[id] if Global.nameMap[id] != null else Global.botNameMap[id]

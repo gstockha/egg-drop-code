@@ -19,6 +19,7 @@ func _ready():
 	for i in range(12): lobbyChickens.append(null)
 	Network.helper = self
 	set_physics_process(Global.online)
+	Network.spectated = false
 
 func _physics_process(_delta):
 	if !Global.playerDead:
@@ -27,10 +28,15 @@ func _physics_process(_delta):
 			Network.sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid)
 			movecooldown = 0
 
-func removeLobbyPlayer(id: int) -> void:
-	if lobbyChickens[id] == null: return
-	lobbyChickens[id].queue_free()
-	lobbyChickens[id] = null
+func removePlayer(id: int) -> void:
+	Global.botList[id] = true
+	Global.nameMap[id] = null
+	if Network.lobby:
+		if lobbyChickens[id] == null: return
+		lobbyChickens[id].queue_free()
+		lobbyChickens[id] = null
+		game.setNameplateName(id)
+	else: game.registerHealth(id, 0, 0)
 
 func addLobbyPlayer(id: int) -> void:
 	var chick = chickenDummy.instance()
@@ -55,6 +61,7 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
 	else:
 		chicken = enemy
+		if chicken.id != id: return
 		pos *= .5
 		cPos = chicken.position
 		if cPos.x > pos.x - 10 || cPos.x < pos.x + 10: chicken.position.x = pos.x
@@ -85,17 +92,19 @@ func destroyOnlineItem(itemId: String, eat: bool) -> void:
 	enemyItemParent.deleteOnlineItem(itemId, eat)
 
 func setStatus(id: int, powerup: String, scale: String) -> void:
-	var chicken = null
-	if Network.lobby: chicken = lobbyChickens[id]
-	elif id == Global.eid && !Global.botList[id]: chicken = enemy
-	if chicken != null: chicken.baseSpriteScale = Vector2(float(scale), float(scale))
-	if powerup != "none":
-		game.setPowerupIcon(id, powerup)
-		if chicken != null: chicken.setPowerup(powerup)
+	if !Global.botList[id]:
+		var chicken = null
+		if Network.lobby: chicken = lobbyChickens[id]
+		elif id == Global.eid && !Global.botList[id]: chicken = enemy
+		if chicken != null: chicken.baseSpriteScale = Vector2(float(scale), float(scale))
+		if powerup != "none":
+			game.setPowerupIcon(id, powerup)
+			if chicken != null: chicken.setPowerup(powerup)
+	else: game.setPowerupIcon(id, powerup)
 
 func setHealth(id: int, lastHit: int, health: int, eggId: String) -> void:
 	game.registerHealth(id, lastHit, health)
-	if id == Global.eid && eggId != "0" && !Network.lobby:
+	if eggId != "0" && !Global.botList[id] && id == Global.eid && !Network.lobby:
 		enemyEggParent.onlineHit(eggId)
 		warpPlayer(id, true)
 

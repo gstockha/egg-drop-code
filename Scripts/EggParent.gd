@@ -91,7 +91,9 @@ func _process(delta):
 		var vec = Vector2(rand_range(spawnRange.x, spawnRange.y), 0)
 		var type = randType(Global.normalcy)
 		makeEgg(99, type, vec)
-		if !botMode && !botIsAbove: Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
+		if !botMode:
+			if !botIsAbove: Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
+			if Network.spectated: Network.sendEgg(99, type, vec, 1, 99, false) #to enemy's enemy screen
 	elif botReceive: #receive artificial eggs from above
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
@@ -104,7 +106,10 @@ func _process(delta):
 				rateBuffer = 0
 				botReceive = false
 			else: botTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1]) * .5
-			makeEgg(Global.sid,randType(Global.normalcy),Vector2(spawnRange.x+((spawnRange.y-spawnRange.x)*botReceiveLoc),0))
+			var type = randType(Global.normalcy)
+			var vec = Vector2(spawnRange.x + ((spawnRange.y - spawnRange.x) * botReceiveLoc), 0)
+			makeEgg(Global.sid, type, vec)
+			if Network.spectated: Network.sendEgg(Global.sid, type, vec, 1, 99, false) #to spectator's enemy screen
 	if botMode: #actually lay eggs when visible
 		if !botLayEgg[0]:
 			if botEggCount > 0: botLayEgg[1] += delta * botEggCount
@@ -165,6 +170,7 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 		if !botMode && Global.id == id:
 			egg.speed *= 2
 			if !botIsAbove: Network.sendEgg(id, type, pos, eggSpdBoost, Global.sid, false) #to enemy's enemy screen
+			if Network.spectated: Network.sendEgg(id, type, pos, eggSpdBoost, 99, false) #to enemy's enemy screen
 		elif botMode && Global.eid == id: egg.speed *= 2
 		else: egg.speed *= 1.25
 		if !botMode: game.confirmedEggs += 1

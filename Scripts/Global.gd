@@ -91,6 +91,10 @@ func defaults() -> void:
 	Network.joined = false
 	Network.helper = FakeHelper
 	Network.onlineLabelSet = [null, null]
+	Network.spectated = false
 	for i in range(12):
 		botList[i] = true
 		nameMap[i] = null
+
+func getBot(id) -> bool:
+	return botList[id]

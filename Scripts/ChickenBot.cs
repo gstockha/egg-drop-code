@@ -31,7 +31,7 @@ RayCast2D[] rayCasts = new RayCast2D[12];
 Dictionary<int, string> rays = new Dictionary<int, string>(){
 	{0, "bottom"}, {1, "top"}, {2, "right"}, {3, "left"}, {4, "br1"}, {5, "tr1"}, {6, "bl1"}, {7, "tl1"}, {8, "br2"}, {9, "tr2"}, {10, "bl2"}, {11, "tl2"}
 };
-Node Global;
+Node Global, Network;
 // TextureRect[] heartIcons = new TextureRect[6];
 Control game;
 Area2D hitbox, itemArea, eggArea;
@@ -40,6 +40,7 @@ CollisionShape2D collisionBox;
 // Called when the node enters the scene tree for the first time.
 public override void _Ready(){
     Global = GetNode<Node>("/root/Global");
+    Network = GetNode<Node>("/root/Network");
     sprite = GetNode<Sprite>("Sprite");
     shield = GetNode<Sprite>("Sprite/Shield");
     hitbox = GetNode<Area2D>("Hitbox");
@@ -494,6 +495,7 @@ public void _on_Hitbox_area_entered(Node body){
             }
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
             body.QueueFree();
+            if ((bool)Global.Get("online")) Network.Call("sendHealth", id, lastHitId, health, 0);
             break;
         case "food":
             if (eatBuffer > 0) return;
@@ -527,6 +529,7 @@ public void _on_Hitbox_area_entered(Node body){
             body.QueueFree();
             itemParent.Set("itemCount", (int)itemParent.Get("itemCount") - 1);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
+            if ((bool)Global.Get("online")) Network.Call("sendHealth", id, lastHitId, health, 0);
             break;
         case "powerups":
             type = (string)body.Get("type");
@@ -559,6 +562,7 @@ public void _on_Hitbox_area_entered(Node body){
                 game.Call("setPowerupIcon", id, type);
             }
             body.QueueFree();
+            if ((bool)Global.Get("online")) Network.Call("sendStatus", id, type, 0);
             break;
     }
 }
@@ -584,6 +588,7 @@ public void ResetPowerups(){
         gun.QueueFree();
         gun = null;
     }
+    if ((bool)Global.Get("online")) Network.Call("sendStatus", id, "", 0);
 }
 
 public void _on_Invincible_timeout(){

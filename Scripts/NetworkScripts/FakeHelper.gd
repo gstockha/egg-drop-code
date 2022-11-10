@@ -1,6 +1,6 @@
 extends Node2D
 
-func removeLobbyPlayer(_id):
+func removePlayer(_id):
 	pass
 
 func addLobbyPlayer(_id):
