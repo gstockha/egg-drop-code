@@ -57,19 +57,21 @@ func addLobbyPlayer(id: int) -> void:
 func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
 	var chicken = null
 	var cPos
-	if Network.lobby:
-		chicken = lobbyChickens[id]
-		cPos = chicken.position
-		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
-		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
-	elif enemy != null:
+	if enemy != null && Global.eid == id:
 		chicken = enemy
-		if chicken.id != id: return
+		if chicken == null: return
+#		if chicken.id != id: return
 		pos *= .5
 		cPos = chicken.position
 		if cPos.x > pos.x - 10 || cPos.x < pos.x + 10: chicken.position.x = pos.x
 		if cPos.y > pos.y - 10 || cPos.y < pos.y + 10: chicken.position.y = pos.y
-	if chicken == null: return
+	elif Network.lobby && lobbyChickens[id] != null:
+		chicken = lobbyChickens[id]
+		if chicken == null: return
+		cPos = chicken.position
+		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
+		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
+	else: return
 	chicken.dir[0] = vel.x
 	chicken.dir[1] = vel.y
 	chicken.gravity = float(grav)

@@ -221,3 +221,8 @@ func onlineHit(eggId: String) -> void:
 			player.shakeTimer = 25 + (player.screenShake * 1.3)
 		onlineEggs[eggId].queue_free()
 		onlineEggs.erase(eggId)
+
+func deactivate() -> void:
+	for egg in get_children(): egg.queue_free()
+	set_process(false)
+	set_physics_process(false)

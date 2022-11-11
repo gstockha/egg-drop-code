@@ -13,7 +13,6 @@ var joined = false
 var onlineLabelSet = [null, null]
 var spectated = false
 var lastWinner = 99
-var exitedToLobby = false
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")

@@ -11,6 +11,7 @@ var powerIcons = []
 var botIsSpawned = true
 var enemySpace = preload("res://Scenes/Enemyspace.tscn")
 var deadChicken = preload("res://Sprites/Chickens/DeadChicken.png")
+var chickenSprite = preload("res://Sprites/Chickens/Chicken.png")
 var chickenBot = preload("res://Scenes/ChickenBot.tscn")
 var chickenDummy = preload("res://Scenes/ChickenDummy.tscn")
 var botCount = 0
@@ -46,9 +47,6 @@ var targetPlayerLoaded = false #for getting a new online target
 var targetPlayerLoad = {"x": '0', "y": '0', "scale": '0'}
 
 func _ready():
-	if Network.exitedToLobby:
-		Network.exitedToLobby = false
-		Network.lobby = true
 	randomize()
 	$MuteButton.self_modulate.a = .6 if Global.muted else 1
 	#define ids
@@ -159,10 +157,23 @@ func _input(event):
 		Global.eid = findNewTarget(Global.eid, event.is_action("ui_down"), true) #seek new target
 		if prev != Global.eid: Global.sid = findNewTarget(Global.eid, false, false) #seek new sender
 	elif event.is_action_pressed("ui_accept"):
-		if !Global.online: return
+		if !Global.online || Network.lobby || !Global.playerDead: return
+		Network.lobby = true
 		Network.sendLobbyReturn()
-		Network.exitedToLobby = true
-		get_tree().reload_current_scene()
+		$PlayerContainer/Viewport/Playspace/ItemParent.deactivate()
+		eggParent.deactivate()
+		Global.playerDead = false
+#		Global.gameOver = false
+#		set_process(false)
+		player.sprite.texture = chickenSprite
+		player.idle = false
+		player.speed = 400
+		gameOverLabels["BG"].visible = false
+		eggParent.slowMo = 1
+		$OnlineLabel.visible = true
+		$OnlineLabel.text = 'Waiting for new game...'
+		for i in range(12):
+			if i != Global.id && !Global.botList[i] && !Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
 
 func _process(delta):
 	if !Global.online: #make fake health changes

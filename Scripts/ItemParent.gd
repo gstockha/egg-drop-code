@@ -158,7 +158,7 @@ func deleteOnlineItem(itemId: String, eat: bool):
 	onlineItems.erase(itemId)
 	if player != null && eat: player.Squish(Vector2(player.baseSpriteScale.x * .85, player.baseSpriteScale.y * 1.15))
 
-#func deactivate() -> void:
-#	set_process(false)
-#	for item in get_children():
-#		item.queue_free()
+func deactivate() -> void:
+	set_process(false)
+	for item in get_children():
+		item.queue_free()
