@@ -444,7 +444,7 @@ public void _on_Hitbox_area_entered(Node body){
             else if (type == "fast") soundId = 2;
             eatsfx.Call("playSound", "eat", soundId);
             if ((bool)Global.Get("online")){
-                if (((bool)Global.Call("getBot", (int)Global.Get("sid"))) || ((bool)Network.Get("spectated"))){
+                if ((bool)Global.Call("getBot", (int)Global.Get("sid")) == false || (bool)Network.Get("spectated")){
                     Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
                 }
                 Network.Call("sendStatus", id, "none", baseSpriteScale.x.ToString());
@@ -467,7 +467,7 @@ public void _on_Hitbox_area_entered(Node body){
             popupParent.Call("makePopup", "health", GlobalPosition, false);
             subfx.Call("playSound", "healing");
             if ((bool)Global.Get("online")){
-                if (((bool)Global.Call("getBot", (int)Global.Get("sid"))) || ((bool)Network.Get("spectated"))){
+                if ((bool)Global.Call("getBot", (int)Global.Get("sid")) == false || (bool)Network.Get("spectated")){
                     Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
                 }
                 Network.Call("sendHealth", id, lastHitId, health, 0);
@@ -512,7 +512,7 @@ public void _on_Hitbox_area_entered(Node body){
             body.QueueFree();
             subfx.Call("playSound", "power");
             if ((bool)Global.Get("online")){
-                if (((bool)Global.Call("getBot", (int)Global.Get("sid"))) || ((bool)Network.Get("spectated"))){
+                if ((bool)Global.Call("getBot", (int)Global.Get("sid")) == false || (bool)Network.Get("spectated")){
                     Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
                 }
                 Network.Call("sendStatus", id, type, baseSpriteScale.x.ToString());

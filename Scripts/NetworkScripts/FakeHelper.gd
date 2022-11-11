@@ -1,5 +1,7 @@
 extends Node2D
 
+var lobbyChickens = []
+
 func removePlayer(_id):
 	pass
 

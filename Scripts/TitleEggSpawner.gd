@@ -9,7 +9,7 @@ var eggTypes = {
 }
 
 func _ready():
-	for i in range(22):
+	for _i in range(22):
 		makeEgg(rand_range(0, 862))
 
 func _process(delta):

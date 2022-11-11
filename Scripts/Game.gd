@@ -45,6 +45,7 @@ onready var enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 onready var timerBar = $BottomHUD/TimerBar
 var targetPlayerLoaded = false #for getting a new online target
 var targetPlayerLoad = {"x": '0', "y": '0', "scale": '0'}
+var lastEggBuffer = 0
 
 func _ready():
 	randomize()
@@ -123,8 +124,8 @@ func _ready():
 		$NetworkHelper.game = self
 		Global.difficulty = 1
 	else:
-		Global.botList[Global.id] = false
-		for i in range(12): Global.activeList[i] = true
+		Global.botList[Global.id] = true
+		for i in range(12): Global.activeList[i] = false
 	#define enemy
 	if !Network.lobby:
 		var chick
@@ -142,8 +143,12 @@ func _ready():
 		enemyEggParent.set_process(Global.botList[Global.eid])
 	else:
 		set_process(false)
-		for i in range(12):
-			if i != Global.id && !Global.botList[i] && !Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
+		if Network.waitingForGame:
+			for i in range(12):
+				if i != Global.id && Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
+		else:
+			for i in range(12):
+				if i != Global.id && Global.botList[i] && Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
 
 func _input(event):
 	if event.is_action_pressed("restart"):
@@ -160,6 +165,7 @@ func _input(event):
 		if !Global.online || Network.lobby || !Global.playerDead: return
 		Network.lobby = true
 		Network.sendLobbyReturn()
+		Network.spectated = false
 		$PlayerContainer/Viewport/Playspace/ItemParent.deactivate()
 		eggParent.deactivate()
 		Global.playerDead = false
@@ -168,12 +174,14 @@ func _input(event):
 		player.sprite.texture = chickenSprite
 		player.idle = false
 		player.speed = 400
+		player.scale = Vector2(2,2)
+		player.baseSpriteScale = player.sprite.scale
 		gameOverLabels["BG"].visible = false
 		eggParent.slowMo = 1
 		$OnlineLabel.visible = true
 		$OnlineLabel.text = 'Waiting for new game...'
 		for i in range(12):
-			if i != Global.id && !Global.botList[i] && !Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
+			if i != Global.id && Global.botList[i] && Global.activeList[i]: $NetworkHelper.addLobbyPlayer(i)
 
 func _process(delta):
 	if !Global.online: #make fake health changes
@@ -190,7 +198,6 @@ func _process(delta):
 				var choice = -1 if randf() < .75 else 1
 				registerHealth(randId, 99, playerStats[randId]["health"] + choice)
 	if !botIsSpawned:
-		print(targetPlayerLoaded)
 		if $EnemyContainer/Viewport.get_child_count() > 3: return
 		if Global.online && !Global.botList[Global.eid] && !targetPlayerLoaded: return
 		targetPlayerLoaded = false
@@ -250,7 +257,12 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 			Network.sendStatusRequest(Global.eid)
 			if Global.playerDead: Network.sendSpectateStatus(Global.eid, true)
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
-	if Global.online: eggParent.botIsAbove = Global.botList[Global.sid]
+	if Global.online:
+		eggParent.botIsAbove = Global.botList[Global.sid] && !Global.activeList[Global.sid]
+		if eggParent.botIsAbove:
+			lastEggBuffer = eggParent.rateBuffer
+			eggParent.rateBuffer = 0
+		elif lastEggBuffer > eggParent.rateBuffer: eggParent.rateBuffer = lastEggBuffer
 	if Global.eid == Global.sid:
 		eggParent.botReceive = false
 		enemyEggParent.eggTarget = eggParent
@@ -264,13 +276,13 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if id == Global.eid:
 		if prevhp > health: $HitSFX.playSound("hit", randi() % 3)
 		for i in range(5): targetHearts[i].visible = i < health
-	elif id == Global.id:
+	elif id == Global.id && !Network.lobby:
 		for i in range(5):
 			player.heartIcons[i].visible = i < health
 			player.heartBGs[i].visible = i >= health
 	if health < 1:
 		aliveCount -= 1
-		var me = Global.id == id
+		var me = Global.id == id && !Network.lobby
 		var eParent = enemyEggParent if !me else eggParent
 		if (me || id == Global.eid) && eParent.slowMo != .5:
 			var deathTimer = Timer.new()
@@ -283,6 +295,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			var chicken = enemy if !me else player
 			chicken.idle = true
 			if !me && Global.botList[Global.eid]: eParent.player = null
+			if Global.online: Global.botList[id] = true
 			chicken.speed *= .5
 			chicken.get_child(0).texture = deadChicken
 			if !me:
@@ -352,7 +365,7 @@ func endGame(win: bool, winner: int):
 		else: gameOverLabels["subsub"].text = "Press Space to go back to the hen house"
 		#you are dead settings
 		Global.playerDead = true
-		if Global.botList[Global.eid]:
+		if Global.botList[Global.sid] && !Global.activeList[Global.sid]:
 			enemyEggParent.botIsAbove = true
 			enemyEggParent.rateBuffer *= .1
 
@@ -366,13 +379,11 @@ func makeBot() -> void:
 	enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 	$NetworkHelper.enemyItemParent = enemyItemParent
 	eggParent.eggTarget = enemyEggParent
-	eggParent.botIsBelow = Global.botList[Global.eid]
-	if Global.botList[Global.eid]:
+	eggParent.botIsBelow = Global.botList[Global.eid] && !Global.activeList[Global.eid]
+	if Global.botList[Global.eid] && !Global.activeList[Global.eid]:
 		var chick = chickenBot.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		enemyItemParent.player = enemy
-		enemyEggParent.player = enemy
 		enemy.position = Vector2(rand_range(Global.botBounds.x+10, Global.botBounds.y-10),
 		enemy.position.y + rand_range(-20,20))
 		var eggRoll = randi() % 100 + 1
@@ -414,6 +425,8 @@ func makeBot() -> void:
 	targetHearts[0].get_parent().visible = true
 	for i in range(5): targetHearts[i].visible = i < enemy.health
 	$NetworkHelper.enemy = enemy
+	enemyItemParent.player = enemy
+	enemyEggParent.player = enemy
 	enemy.id = Global.eid
 
 func calculateGameTime() -> String:

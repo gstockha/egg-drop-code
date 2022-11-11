@@ -105,8 +105,8 @@ func _on_data() -> void:
 			sendReady() #READY
 		tags.NEWPLAYER: #NEWPLAYER
 			Global.nameMap[data.id] = data.name
-			Global.botList[data.id] = false
-			Global.activeList[data.id] = false
+			Global.botList[data.id] = true #is currently a bot (regardless if a player slot)
+			Global.activeList[data.id] = true #is a player or not (in game or in lobby)
 			Global.idleList[data.id] = false
 			print("New player joined: ", Global.nameMap[data.id])
 			Global.playerCount += 1
@@ -115,7 +115,6 @@ func _on_data() -> void:
 			Global.id = int(data.id)
 			Global.playerName = data.name
 			Global.nameMap = data.nameMap
-			Global.activeList = data.activeList
 			joined = true
 			waitingForGame = data.lobby
 			lobby = true
@@ -126,7 +125,9 @@ func _on_data() -> void:
 			for i in range(len(Global.nameMap)):
 				if Global.nameMap[i] != null:
 					Global.playerCount += 1
-					Global.botList[i] = false
+					Global.activeList[i] = true
+			for i in range(len(data.bottedPlayers)): #which slots are currently bots
+				Global.botList[data.bottedPlayers[i]["id"]] = !data.bottedPlayers[i]["active"]
 		tags.PLAYERLEFT:
 			Global.botList[data.id] = true
 			Global.playerCount = int(data.playerCount)
@@ -144,10 +145,14 @@ func _on_data() -> void:
 			helper.destroyOnlineItem(data.itemId, data.eat)
 		tags.FULL: print('Game full!')
 		tags.LABEL:
-			helper.setOnlineLabel(data.label, data.timer)
+			if Network.waitingForGame: helper.setOnlineLabel(data.label, data.timer)
+			else: FakeHelper.setOnlineLabel(data.label, data.timer)
 		tags.BEGIN:
 			lobby = false
-			for i in range(12): if !Global.botList[i]: Global.activeList[i] = true
+			waitingForGame = false
+			for i in range(12):
+				Global.botList[i] = !Global.activeList[i]
+				helper.lobbyChickens[i] = null
 			var _nuScene = get_tree().reload_current_scene()
 		tags.TARGETSTATUS:
 			helper.setTargetStatus(data.scale, data.x, data.y)
@@ -159,8 +164,7 @@ func _on_data() -> void:
 		tags.ENDGAME:
 			lobby = true
 			lastWinner = data.winner
-			for i in range(12): Global.activeList[i] = false
 			var _nuScene = get_tree().reload_current_scene()
 		tags.LOBBYPLAYER:
-			Global.activeList[data.id] = false
+			Global.botList[data.id] = true
 			if Network.lobby: helper.addLobbyPlayer(data.id)

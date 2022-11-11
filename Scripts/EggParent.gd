@@ -42,7 +42,6 @@ var onlinePlayer = false #botmode && not a bot (online)
 var botIsBelow = false
 
 func _ready():
-	set_physics_process(!Network.lobby)
 	eggRateLevelStr = str(Global.level)
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
@@ -54,12 +53,12 @@ func _ready():
 		if !Global.online:
 			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 			botIsAbove = true
-		else: botIsAbove = Global.botList[Global.sid]
-#		botIsAbove = Global.id == 0 #DELETE WHEN NOT TESTING!
+		else: botIsAbove = Global.botList[Global.sid] && !Global.activeList[Global.sid]
 		game = get_parent().get_parent().get_parent().get_parent()
 		helper = Network.helper
-		botIsBelow = Global.botList[Global.eid]
-#		botIsBelow = false #DELETE WHEN NOT TESTING!
+		botIsBelow = (Global.botList[Global.eid] && !Global.activeList[Global.eid]) || !Global.online
+		set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
+		set_physics_process(!Network.lobby)
 	else:
 		myid = Global.eid
 		lowerBounds = 425
@@ -67,11 +66,8 @@ func _ready():
 		for key in eggTypes:
 			eggTypes[key]["speed"] *= .5
 			eggTypes[key]["size"] *= .5
-		onlinePlayer = !Global.botList[myid]
-#		onlinePlayer = myid != 1 #DELETE WHEN NOT TESTING!
-		set_process(Global.botList[myid])
-#		set_process(myid != 1) #DELETE WHEN NOT TESTING!
-	set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
+		onlinePlayer = !Global.botList[myid] && Global.activeList[myid]
+		set_process(!Network.waitingForGame && Global.botList[myid])
 
 func _process(delta):
 	eggTimer -= 10 * delta
@@ -136,18 +132,19 @@ func _physics_process(_delta):
 				var eggId = str(round(egg.position.x*2))
 				if eggId in onlineEggs: onlineEggs.erase(eggId)
 			if eggTarget == null || (egg.id != myid && egg.id != 99): return
-			if !botMode && (!Global.online || botIsBelow):
-				if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
-				elif egg.id == myid:
-					eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),
-					egg.spdBoost, game.gameTime - eggQueueTime])
-					eggQueueTime = game.gameTime
+			if !botMode:
+				if !Global.online || botIsBelow:
+					if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
+					elif egg.id == myid:
+						eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),
+						egg.spdBoost, game.gameTime - eggQueueTime])
+						eggQueueTime = game.gameTime
+				elif !Global.botList[Global.eid]: #player network send to player
+					Network.sendEgg(egg.id, egg.type, Vector2(egg.position.x, 0), egg.spdBoost, Global.eid)
+					onlineQueue.append([egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost])
 			#bot sends to player in a 1v1
-			elif botMode: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * 2, 0), egg.spdBoost)
-			else: #player network send to player
-				Network.sendEgg(egg.id, egg.type, Vector2(egg.position.x, 0),
-				egg.spdBoost, Global.eid)
-				onlineQueue.append([egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost])
+			elif !onlinePlayer && !Network.lobby:
+				eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * 2, 0), egg.spdBoost)
 		
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	var egg = eggScene.instance()
@@ -190,8 +187,8 @@ func releaseEggQueue(timer: Timer = null):
 		eggQueueList = []
 		return
 	var eggInfo = eggQueueList.pop_front()
-	if Global.botList[Global.eid]: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
-	else:
+	if Global.activeList[Global.eid]: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
+	elif !Global.botList[Global.eid]:
 		Network.sendEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3], Global.eid)
 		onlineQueue.append([eggInfo[0], eggInfo[1], Vector2(Global.botBounds.y*((eggInfo[2].x-11)/960),0), eggInfo[3]])
 	var queueTimer = Timer.new()
@@ -216,7 +213,7 @@ func activateWildcard() -> void:
 
 func onlineHit(eggId: String) -> void:
 	if eggId in onlineEggs:
-		if player.shielded == false:
+		if player != null && player.shielded == false:
 			player.screenShake = 15 + (onlineEggs[eggId].knockback * .04)
 			player.shakeTimer = 25 + (player.screenShake * 1.3)
 		onlineEggs[eggId].queue_free()

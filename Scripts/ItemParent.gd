@@ -32,7 +32,6 @@ var onlineItems = {}
 var onlineCount = 0
 
 func _ready():
-	set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING!
 	itemTimer = 30
 	botMode = 1 if get_parent().name == "Enemyspace" else 0
 	if botMode == 0:
@@ -42,8 +41,9 @@ func _ready():
 		ybounds.append(550)
 		ybounds.append(755)
 		pop = get_node("../PopSFX")
+		set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING!
 	else:
-		onlineEnemy = !Global.botList[Global.eid] && Global.online
+		onlineEnemy = !Global.botList[Global.eid] && Global.online && !Network.waitingForGame
 #		onlineEnemy = true #DELETE WHEN NOT TESTING!
 		spawnRange = Vector2(Global.botBounds.x+2, Global.botBounds.y-2)
 		ybounds.append(65)
@@ -156,7 +156,6 @@ func deleteOnlineItem(itemId: String, eat: bool):
 	if not itemId in onlineItems: return
 	onlineItems[itemId].queue_free()
 	onlineItems.erase(itemId)
-	if player != null && eat: player.Squish(Vector2(player.baseSpriteScale.x * .85, player.baseSpriteScale.y * 1.15))
 
 func deactivate() -> void:
 	set_process(false)
