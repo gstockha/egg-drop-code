@@ -78,6 +78,9 @@ func sendSpectateStatus(target: int, spectating: bool) -> void:
 func sendLobbyReturn() -> void:
 	send({'tag': tags.LOBBYPLAYER, 'id': Global.id})
 
+func sendEndGame() -> void:
+	send({'tag': tags.ENDGAME})
+
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
 	match int(data.tag):
@@ -94,7 +97,7 @@ func _on_data() -> void:
 			if data.toPlayer:
 				helper.eggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y), data.bltSpd)
 				send({'tag': tags.EGGCONFIRM, 'target': data.sender })
-			else:
+			elif helper.enemyEggParent != null:
 				helper.enemyEggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y) * .5, data.bltSpd)
 				if data.id == Global.eid: helper.warpPlayer(data.id)
 		tags.HEALTH: #HEALTH
@@ -163,6 +166,7 @@ func _on_data() -> void:
 			if data.idle: print(Global.nameMap[data.id] + ' idle!')
 		tags.ENDGAME:
 			lobby = true
+			waitingForGame = true
 			lastWinner = data.winner
 			var _nuScene = get_tree().reload_current_scene()
 		tags.LOBBYPLAYER:

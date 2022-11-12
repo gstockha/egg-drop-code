@@ -9,7 +9,6 @@ var rateBuffer = 0 #artifical egg drop lag for offline, or artificial egg receiv
 var botTimer = 60 #artifical bot receive cooldown
 var botLayEgg = [false, 0,0] #bool, buffer, and timer
 var botEggCount = 0
-var botIsAbove = false #synoymous with not online + non-bot player
 var eggQueue = false #enabled when going from one bot to another
 var eggQueueList = []
 var eggQueueTime = 0
@@ -39,7 +38,7 @@ var helper = null
 var onlineQueue = []
 var onlineEggs = {}
 var onlinePlayer = false #botmode && not a bot (online)
-var botIsBelow = false
+#var botIsBelow = false
 
 func _ready():
 	eggRateLevelStr = str(Global.level)
@@ -50,13 +49,10 @@ func _ready():
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+6,Global.playerBounds.y-6)
 		eggTarget = get_node('../../../../EnemyContainer/Viewport/Enemyspace/EggParent')
-		if !Global.online:
-			Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
-			botIsAbove = true
-		else: botIsAbove = Global.botList[Global.sid] && !Global.activeList[Global.sid]
+		if !Global.online: Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
 		game = get_parent().get_parent().get_parent().get_parent()
 		helper = Network.helper
-		botIsBelow = (Global.botList[Global.eid] && !Global.activeList[Global.eid]) || !Global.online
+#		botIsBelow = Global.botList[Global.eid] || !Global.online
 		set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
 		set_physics_process(!Network.lobby)
 	else:
@@ -67,17 +63,17 @@ func _ready():
 			eggTypes[key]["speed"] *= .5
 			eggTypes[key]["size"] *= .5
 		onlinePlayer = !Global.botList[myid] && Global.activeList[myid]
-		set_process(!Network.waitingForGame && Global.botList[myid])
+		set_process(!Network.waitingForGame && !onlinePlayer)
 
 func _process(delta):
 	eggTimer -= 10 * delta
 	if eggTimer < 1:
 		eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
-		if (!botMode && !botIsAbove) || (botMode && !Global.playerDead):
+		if (!botMode && !Global.botList[Global.sid]) || (botMode && !Global.playerDead):
 			#eggparent stop producing neutral eggs so much if receiving from above
 			if rateBuffer < (60 + (Global.level * 10)): rateBuffer += 3 + Global.difficulty
 			eggTimer += rateBuffer
-		elif !botReceive && botIsAbove: #fake bot receive ticker
+		elif !botReceive && Global.botList[Global.sid]: #fake bot receive ticker
 			if Global.sid == Global.eid: return
 			rateBuffer += .5 + (Global.level * .2)
 			if randi() % 100 + 1 < rateBuffer:
@@ -87,8 +83,8 @@ func _process(delta):
 		var vec = Vector2(rand_range(spawnRange.x, spawnRange.y), 0)
 		var type = randType(Global.normalcy)
 		makeEgg(99, type, vec)
-		if !botMode:
-			if !botIsAbove || Network.spectated: Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
+		if !botMode && !Global.botList[Global.sid] || Network.spectated:
+			Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
 	elif botReceive: #receive artificial eggs from above
 		if botTimer > 0: botTimer -= 10 * delta
 		else:
@@ -133,7 +129,7 @@ func _physics_process(_delta):
 				if eggId in onlineEggs: onlineEggs.erase(eggId)
 			if eggTarget == null || (egg.id != myid && egg.id != 99): return
 			if !botMode:
-				if !Global.online || botIsBelow:
+				if !Global.online || Global.botList[Global.eid]:
 					if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
 					elif egg.id == myid:
 						eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),
@@ -145,8 +141,9 @@ func _physics_process(_delta):
 			#bot sends to player in a 1v1
 			elif !onlinePlayer && !Network.lobby:
 				eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * 2, 0), egg.spdBoost)
-		
+
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
+	if !botMode && Network.lobby: return
 	var egg = eggScene.instance()
 	var typeKey = eggTypes[type]
 	add_child(egg)
@@ -166,7 +163,8 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 		if !botMode && Global.id == id:
 			egg.speed *= 2
 			#to enemy's enemy screen
-			if !botIsAbove || Network.spectated: Network.sendEgg(id, type, pos, eggSpdBoost, Global.sid, false)
+			if !Global.botList[Global.sid] || Network.spectated:
+				Network.sendEgg(id, type, pos, eggSpdBoost, Global.sid, false)
 		elif botMode && Global.eid == id: egg.speed *= 2
 		else: egg.speed *= 1.25
 		if !botMode: game.confirmedEggs += 1
@@ -187,8 +185,8 @@ func releaseEggQueue(timer: Timer = null):
 		eggQueueList = []
 		return
 	var eggInfo = eggQueueList.pop_front()
-	if Global.activeList[Global.eid]: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
-	elif !Global.botList[Global.eid]:
+	if Global.botList[Global.eid]: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
+	else:
 		Network.sendEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3], Global.eid)
 		onlineQueue.append([eggInfo[0], eggInfo[1], Vector2(Global.botBounds.y*((eggInfo[2].x-11)/960),0), eggInfo[3]])
 	var queueTimer = Timer.new()
@@ -199,7 +197,7 @@ func releaseEggQueue(timer: Timer = null):
 func onlineEggQueue() -> void: #to sync with the player behind us' screen (delayed drop)
 	if len(onlineQueue) < 1: return
 	var eggInfo = onlineQueue.pop_front()
-	eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
+	if eggTarget != null: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
 
 func activateWildcard() -> void:
 	var egg

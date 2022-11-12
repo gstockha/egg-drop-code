@@ -73,11 +73,10 @@ func _ready():
 		colorIdMap.append(Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2))
 
 func arrangeNames() -> void:
-	for i in range(12):
-		if botList[i]: nameMap[i] = botNameMap[i]
-	if !Global.online:
-		botList[id] = false
-		nameMap[id] = Global.playerName
+	if Global.online: return
+	for i in range(12): if botList[i]: nameMap[i] = botNameMap[i]
+	botList[id] = false
+	nameMap[id] = Global.playerName
 
 func defaults() -> void:
 	online = false

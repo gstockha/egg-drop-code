@@ -102,7 +102,9 @@ func setStatus(id: int, powerup: String, scale: String) -> void:
 		var chicken = null
 		if enemy != null && Global.eid == id: chicken = enemy
 		elif Network.lobby: chicken = lobbyChickens[id]
-		if chicken != null: chicken.baseSpriteScale = Vector2(float(scale), float(scale))
+		if chicken != null:
+			chicken.baseSpriteScale = Vector2(float(scale), float(scale))
+			print(scale)
 		if powerup != "none":
 			game.setPowerupIcon(id, powerup)
 			if chicken != null: chicken.setPowerup(powerup)

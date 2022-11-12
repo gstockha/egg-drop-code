@@ -93,15 +93,16 @@ func _ready():
 			c += 1
 		else: offsetIds[i] += offset
 	#nameplates
+	var name
 	for i in range(12):
 		if i != Global.id: botCount += 1
-		playerStats.append({"id" : i, "name": Global.nameMap[i], "color": Global.colorIdMap[i],
+		name = Global.nameMap[i] if Global.nameMap[i] != null else Global.botNameMap[i] + '[bot]'
+		playerStats.append({"id" : i, "name": name, "color": Global.colorIdMap[i],
 		"health": 5})
 		barKeys.append(i)
 		colorPlates[offsetIds[i]].self_modulate = Global.colorIdMap[i]
 		nameArrows[offsetIds[i]].self_modulate = Global.colorIdMap[i]
-		namePlates[offsetIds[i]].text = Global.nameMap[i]
-		if Global.online && Global.botList[i]: namePlates[offsetIds[i]].text += '[bot]'
+		namePlates[offsetIds[i]].text = playerStats[i]["name"]
 	#paint the player and target back grounds
 	playerBG.modulate = Global.colorIdMap[Global.id]
 	playerBorder.modulate = Global.colorIdMap[Global.id]
@@ -140,7 +141,7 @@ func _ready():
 		enemyEggParent.player = enemy
 		$NetworkHelper.enemy = enemy
 		enemy.id = Global.eid
-		enemyEggParent.set_process(Global.botList[Global.eid])
+#		enemyEggParent.set_process(!Network.waitingForGame && !(!Global.botList[Global.eid] && Global.activeList[Global.eid]))
 	else:
 		set_process(false)
 		if Network.waitingForGame:
@@ -258,8 +259,7 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 			if Global.playerDead: Network.sendSpectateStatus(Global.eid, true)
 	if id == Global.sid: Global.sid = findNewTarget(id, false, false) #seek new sender
 	if Global.online:
-		eggParent.botIsAbove = Global.botList[Global.sid] && !Global.activeList[Global.sid]
-		if eggParent.botIsAbove:
+		if Global.botList[Global.sid]:
 			lastEggBuffer = eggParent.rateBuffer
 			eggParent.rateBuffer = 0
 		elif lastEggBuffer > eggParent.rateBuffer: eggParent.rateBuffer = lastEggBuffer
@@ -282,7 +282,8 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			player.heartBGs[i].visible = i >= health
 	if health < 1:
 		aliveCount -= 1
-		var me = Global.id == id && !Network.lobby
+		var me = Global.id == id
+		if me && Network.lobby: return
 		var eParent = enemyEggParent if !me else eggParent
 		if (me || id == Global.eid) && eParent.slowMo != .5:
 			var deathTimer = Timer.new()
@@ -351,7 +352,10 @@ func endGame(win: bool, winner: int):
 		gameOverLabels["sublabel"].text += "  SHELLS: " + str(confirmedShells)
 		if recordedTime == null: gameOverLabels["sublabel"].text += "  TIME: " + hud["timer"].text
 		else: gameOverLabels["sublabel"].text += "  TIME: " + recordedTime
-		gameOverLabels["subsub"].text = "Press ESC to leave, R to restart"
+		if !Global.online: gameOverLabels["subsub"].text = "Press ESC to leave, R to restart"
+		else:
+			gameOverLabels["subsub"].text = "Winner winner, chicken's dinner"
+			if win: Network.sendEndGame()
 	else: #spectate / hen house note
 		recordedTime = hud["timer"].text
 		var lastHit = player.lastHitId
@@ -365,9 +369,7 @@ func endGame(win: bool, winner: int):
 		else: gameOverLabels["subsub"].text = "Press Space to go back to the hen house"
 		#you are dead settings
 		Global.playerDead = true
-		if Global.botList[Global.sid] && !Global.activeList[Global.sid]:
-			enemyEggParent.botIsAbove = true
-			enemyEggParent.rateBuffer *= .1
+		if Global.botList[Global.sid]: enemyEggParent.rateBuffer *= .1
 
 func makeBot() -> void:
 	botIsSpawned = true
@@ -379,8 +381,8 @@ func makeBot() -> void:
 	enemyItemParent = $EnemyContainer/Viewport/Enemyspace/ItemParent
 	$NetworkHelper.enemyItemParent = enemyItemParent
 	eggParent.eggTarget = enemyEggParent
-	eggParent.botIsBelow = Global.botList[Global.eid] && !Global.activeList[Global.eid]
-	if Global.botList[Global.eid] && !Global.activeList[Global.eid]:
+#	eggParent.botIsBelow = Global.botList[Global.eid]# && !Global.activeList[Global.eid]
+	if Global.botList[Global.eid]:# && !Global.activeList[Global.eid]:
 		var chick = chickenBot.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
@@ -402,7 +404,6 @@ func makeBot() -> void:
 		#make fake eggs
 		enemyEggParent.botEggCount = eggRoll
 		var myEnemy = findNewTarget(Global.eid, false, false)
-		enemyEggParent.botIsAbove = myEnemy != Global.id
 		if Global.sid == Global.eid:
 			enemyEggParent.eggTarget = eggParent
 			eggParent.botReceive = false
@@ -428,6 +429,7 @@ func makeBot() -> void:
 	enemyItemParent.player = enemy
 	enemyEggParent.player = enemy
 	enemy.id = Global.eid
+	enemyEggParent.myid = Global.eid
 
 func calculateGameTime() -> String:
 	var lev = Global.level
