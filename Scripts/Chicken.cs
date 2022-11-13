@@ -308,6 +308,7 @@ public void MakeEgg(bool automatic){
     eggBar.Call("drawEggs", "");
     bocksfx.Call("playSound", "bock", GD.Randi() % 3);
     if (eggSpdBoost > 1) subfx.Call("playSound", "butter");
+    if ((bool)Global.Get("online")) Network.Call("sendStatus", id, "none", (Scale.x * .5F).ToString(), Global.Get("sid"));
 }
 
 public override void _Input(InputEvent @event){
@@ -447,7 +448,7 @@ public void _on_Hitbox_area_entered(Node body){
                 if ((bool)Global.Call("getBot", (int)Global.Get("sid")) == false || (bool)Network.Get("spectated")){
                     Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
                 }
-                Network.Call("sendStatus", id, "none", baseSpriteScale.x.ToString());
+                Network.Call("sendStatus", id, "none", (Scale.x * .5F).ToString(), Global.Get("sid"));
             }
             break;
         case "health":
@@ -515,7 +516,7 @@ public void _on_Hitbox_area_entered(Node body){
                 if ((bool)Global.Call("getBot", (int)Global.Get("sid")) == false || (bool)Network.Get("spectated")){
                     Network.Call("sendItemDestroy", body.Get("id"), true, (int)Global.Get("sid"));
                 }
-                Network.Call("sendStatus", id, type, baseSpriteScale.x.ToString());
+                Network.Call("sendStatus", id, type, (Scale.x * .5F).ToString());
             }
             break;
     }
@@ -545,7 +546,7 @@ public void ResetPowerups(){
         gun.QueueFree();
         gun = null;
     }
-    if ((bool)Global.Get("online")) Network.Call("sendStatus", id, "", baseSpriteScale.x.ToString());
+    if ((bool)Global.Get("online")) Network.Call("sendStatus", id, "", (Scale.x * .5F).ToString());
 }
 
 public void _on_Invincible_timeout(){

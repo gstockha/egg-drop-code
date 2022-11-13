@@ -1,6 +1,7 @@
 extends Node2D
 
 var lobbyChickens = []
+var foundDummy = true
 
 func removePlayer(_id):
 	pass

@@ -83,7 +83,7 @@ func _process(delta):
 		var vec = Vector2(rand_range(spawnRange.x, spawnRange.y), 0)
 		var type = randType(Global.normalcy)
 		makeEgg(99, type, vec)
-		if !botMode && !Global.botList[Global.sid] || Network.spectated:
+		if !botMode && (!Global.botList[Global.sid] || Network.spectated):
 			Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
 	elif botReceive: #receive artificial eggs from above
 		if botTimer > 0: botTimer -= 10 * delta
@@ -160,7 +160,7 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1):
 	if onlinePlayer && id != myid: onlineEggs[str(round(pos.x*2))] = egg
 	if id != 99:
 		egg.sprite.modulate = Global.colorIdMap[id]
-		if !botMode && Global.id == id:
+		if !botMode && Global.id == id: #player is hatching it
 			egg.speed *= 2
 			#to enemy's enemy screen
 			if !Global.botList[Global.sid] || Network.spectated:
@@ -196,7 +196,11 @@ func releaseEggQueue(timer: Timer = null):
 
 func onlineEggQueue() -> void: #to sync with the player behind us' screen (delayed drop)
 	if len(onlineQueue) < 1: return
+	if Global.playerDead:
+		onlineQueue = []
+		return
 	var eggInfo = onlineQueue.pop_front()
+	print('onlineQueue: ' + str(eggInfo))
 	if eggTarget != null: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
 
 func activateWildcard() -> void:

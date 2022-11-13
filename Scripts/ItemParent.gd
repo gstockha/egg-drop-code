@@ -34,6 +34,7 @@ var onlineCount = 0
 func _ready():
 	itemTimer = 30
 	botMode = 1 if get_parent().name == "Enemyspace" else 0
+	powerCooldown = 120 - (Global.level * 7)
 	if botMode == 0:
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+4, Global.playerBounds.y-4)
@@ -149,7 +150,7 @@ func addOnlineItem(itemId: String, category: String, type: String, position: Vec
 	item.duration = duration
 	onlineItems[itemId] = item
 	item.id = itemId
-	item.scale *= .5
+	if category != 'power': item.scale *= .5
 	item.baseScale = item.scale
 
 func deleteOnlineItem(itemId: String, eat: bool):

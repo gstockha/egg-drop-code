@@ -42,6 +42,7 @@ func send(json) -> void:
 	client.get_peer(1).put_packet(JSON.print(json).to_utf8())
 
 func sendEgg(id: int, type: String, coords: Vector2, bltSpd: float, target: int, toPlayer: bool = true) -> void:
+	if Global.playerDead: return
 	send({'tag': tags.EGG, 'id': id, 'type': type, 'x': round(coords.x), 'y': round(coords.y),
 	'bltSpd': bltSpd, 'target': target, 'toPlayer': toPlayer})
 
@@ -56,8 +57,8 @@ func sendHealth(id: int, lastHit: int, health: int, eggId: float) -> void:
 func sendReady() -> void:
 	send({'tag': tags.READY})
 
-func sendStatus(id: int, powerup: String, scale: String) -> void:
-	send({'tag': tags.STATUS, 'id': id, 'powerup': powerup, 'scale': scale})
+func sendStatus(id: int, powerup: String, scale: String, target: int = 99) -> void:
+	send({'tag': tags.STATUS, 'id': id, 'powerup': powerup, 'scale': scale, 'target': target})
 
 func sendBump(direction: String, dirChange: int, target: int) -> void:
 	send({'tag': tags.BUMP, 'direction': direction, 'dirChange': dirChange, 'target': target})

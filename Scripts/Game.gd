@@ -175,8 +175,6 @@ func _input(event):
 		player.sprite.texture = chickenSprite
 		player.idle = false
 		player.speed = 400
-		player.scale = Vector2(2,2)
-		player.baseSpriteScale = player.sprite.scale
 		gameOverLabels["BG"].visible = false
 		eggParent.slowMo = 1
 		$OnlineLabel.visible = true
@@ -202,6 +200,7 @@ func _process(delta):
 		if $EnemyContainer/Viewport.get_child_count() > 3: return
 		if Global.online && !Global.botList[Global.eid] && !targetPlayerLoaded: return
 		targetPlayerLoaded = false
+		Network.helper.foundDummy = true
 		makeBot()
 		if !Global.playerDead:
 			eggParent.releaseEggQueue()
@@ -281,6 +280,7 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 			player.heartIcons[i].visible = i < health
 			player.heartBGs[i].visible = i >= health
 	if health < 1:
+		Global.botList[id] = true
 		aliveCount -= 1
 		var me = Global.id == id
 		if me && Network.lobby: return
@@ -304,7 +304,12 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 				if !Global.playerDead:
 					eggParent.eggQueue = true
 					eggParent.eggQueueTime = gameTime
-			else: #set up spectate mode
+			else: #set up spectate mode and reset stats
+				player.eggCount = 0
+				$EggBar.clearEggs()
+				player.scale = Vector2(2,2)
+				player.baseSpriteScale = player.sprite.scale
+				player.ResetPowerups()
 				if Global.online && !Global.botList[Global.eid]: Network.sendSpectateStatus(Global.eid, true)
 				Network.spectated = false
 				$PlayerContainer/Viewport/Playspace/ItemParent.player = null
@@ -333,6 +338,7 @@ func findNewTarget(id: int, below: bool, eid: bool) -> int:
 				break
 		$EnemyContainer/Viewport/Enemyspace.queue_free()
 		botIsSpawned = false
+		Network.helper.foundDummy = false
 		statusLabels[offsetIds[newId]].text = "[TARGET]" if !Global.playerDead else "[SPEC]"
 	else:
 		for i in range(12):
@@ -441,24 +447,25 @@ func calculateGameTime() -> String:
 		enemyItemParent.powerCooldown = 120 - (Global.level * 7)
 		eggParent.eggRateLevelStr = str(Global.level)
 		hud["level"].text = str(Global.level+1)
-		var clr = Color.deeppink
-		var eggClr = Color.webpurple
-		if Global.level == 1:
-			clr = Color.green
-			eggClr = Color.lightgreen
-		elif Global.level == 2:
-			clr = Color.gold
-			eggClr = Color.palegoldenrod
-		elif Global.level == 3:
-			clr = Color.orange
-			eggClr = Color.peachpuff
-		elif Global.level == 4:
-			clr = Color.red
-			eggClr = Color.pink
-		hud["level"].modulate = clr
-		hud["levelegg"].modulate = eggClr
-		timerBar.modulate = clr
 		enemyEggParent.eggRateLevelStr = str(Global.level)
+		if Global.level > 0:
+			var clr = Color.deeppink
+			var eggClr = Color.webpurple
+			if Global.level == 1:
+				clr = Color.green
+				eggClr = Color.lightgreen
+			elif Global.level == 2:
+				clr = Color.gold
+				eggClr = Color.palegoldenrod
+			elif Global.level == 3:
+				clr = Color.orange
+				eggClr = Color.peachpuff
+			elif Global.level == 4:
+				clr = Color.red
+				eggClr = Color.pink
+			hud["level"].modulate = clr
+			hud["levelegg"].modulate = eggClr
+			timerBar.modulate = clr
 	var mins = int(gameTime) / 60
 	var secs = int(gameTime - (mins * 60))
 	mins = "0" + str(mins) if mins < 10 else str(mins)

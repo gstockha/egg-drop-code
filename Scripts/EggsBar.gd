@@ -45,6 +45,9 @@ func drawEggs(type: String) -> void:
 			eggs[i].texture = eggs[i+1].texture
 	else: eggs[player.eggCount-1].texture = eggSprites[type] # add an egg
 
+func clearEggs() -> void:
+	for i in range(0,25): eggs[i].texture = null
+
 func jiggle() -> void:
 	oddUp = !oddUp
 	if oddUp:

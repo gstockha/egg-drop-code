@@ -13,6 +13,7 @@ var movecooldown = 0
 #ITEMDESTROY}
 var playerSpace = null
 var chickenDummy = null
+var foundDummy = true
 onready var onlineLabel = get_node("../OnlineLabel")
 
 func _ready():
@@ -55,11 +56,12 @@ func addLobbyPlayer(id: int) -> void:
 	game.setNameplateName(id)
 
 func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
+	if !foundDummy: return
 	var chicken = null
 	var cPos
 	if enemy != null && Global.eid == id:
 		chicken = enemy
-		if chicken == null: return
+#		if chicken == null || enemy == null: return
 #		if chicken.id != id: return
 		pos *= .5
 		cPos = chicken.position
@@ -67,7 +69,7 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 		if cPos.y > pos.y - 10 || cPos.y < pos.y + 10: chicken.position.y = pos.y
 	elif Network.lobby && lobbyChickens[id] != null:
 		chicken = lobbyChickens[id]
-		if chicken == null: return
+#		if chicken == null || lobbyChickens[id] == null: return
 		cPos = chicken.position
 		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
 		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
@@ -91,9 +93,11 @@ func bumpPlayer(direction: String, dirChange: int, id: int):
 	elif lobbyChickens[id] != null: lobbyChickens[id].KnockBack(direction, dirChange, 50, 50, 0, false)
 
 func addOnlineItem(itemId: String, category: String, type: String, position: Vector2, duration: int) -> void:
+	if !foundDummy: return
 	enemyItemParent.addOnlineItem(itemId, category, type, position, duration)
 
 func destroyOnlineItem(itemId: String, eat: bool) -> void:
+	if !foundDummy: return
 	enemyItemParent.deleteOnlineItem(itemId, eat)
 	if eat: warpPlayer(Global.eid, false)
 
@@ -103,22 +107,25 @@ func setStatus(id: int, powerup: String, scale: String) -> void:
 		if enemy != null && Global.eid == id: chicken = enemy
 		elif Network.lobby: chicken = lobbyChickens[id]
 		if chicken != null:
-			chicken.baseSpriteScale = Vector2(float(scale), float(scale))
-			print(scale)
+			if !foundDummy: return
+			chicken.scale = Vector2(float(scale), float(scale))
 		if powerup != "none":
 			game.setPowerupIcon(id, powerup)
 			if chicken != null: chicken.setPowerup(powerup)
-	else: game.setPowerupIcon(id, powerup)
+	elif powerup != "none": game.setPowerupIcon(id, powerup)
 
 func setHealth(id: int, lastHit: int, health: int, eggId: String) -> void:
-	game.registerHealth(id, lastHit, health)
 	if eggId != "0" && !Global.botList[id] && id == Global.eid:
+		if !foundDummy: return
 		enemyEggParent.onlineHit(eggId)
 		warpPlayer(id, true)
+	game.registerHealth(id, lastHit, health)
 
 func warpPlayer(id: int, hurt: bool = false) -> void:
 	var chicken = null
-	if enemy != null && Global.eid == id: chicken = enemy
+	if enemy != null && Global.eid == id:
+		if !foundDummy: return
+		chicken = enemy
 	elif Network.lobby: chicken = lobbyChickens[id]
 	if chicken == null: return
 	var xsc = 1.3 if !hurt else .7
@@ -139,4 +146,6 @@ func setTargetStatus(scale: String, x: String, y: String) -> void:
 
 func setPlayerIdle(id: int, idle: bool) -> void:
 	Global.idleList[id] = idle
-	if id == Global.eid && !Global.botList[id] && enemy != null && enemy.onlineIdle != null: enemy.onlineIdle = idle
+	if id == Global.eid && !Global.botList[id] && enemy != null && enemy.onlineIdle != null:
+		if !foundDummy: return
+		enemy.onlineIdle = idle
