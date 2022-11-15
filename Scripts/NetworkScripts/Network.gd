@@ -5,7 +5,7 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
 enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER}
+ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER, HEALTHSTATES}
 var attemptingConnection = false
 var lobby = false
 var waitingForGame = false
@@ -82,6 +82,9 @@ func sendLobbyReturn() -> void:
 func sendEndGame() -> void:
 	send({'tag': tags.ENDGAME})
 
+func sendHealthStates(target: int, states: Array):
+	send({'tag': tags.HEALTHSTATES, 'target': target, 'states': states})
+
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result
 	match int(data.tag):
@@ -114,7 +117,7 @@ func _on_data() -> void:
 			Global.idleList[data.id] = false
 			print("New player joined: ", Global.nameMap[data.id])
 			Global.playerCount += 1
-			if Network.lobby: helper.addLobbyPlayer(data.id)
+			if lobby: helper.addLobbyPlayer(data.id)
 		tags.JOINCONFIRM: #JOINCONFIRM receive our assigned id and player name list
 			Global.id = int(data.id)
 			Global.playerName = data.name
@@ -133,12 +136,13 @@ func _on_data() -> void:
 			for i in range(len(data.bottedPlayers)): #which slots are currently bots
 				Global.botList[data.bottedPlayers[i]["id"]] = !data.bottedPlayers[i]["active"]
 		tags.PLAYERLEFT:
+			var wasActive = !Global.botList[data.id]
 			Global.botList[data.id] = true
 			Global.playerCount = int(data.playerCount)
 			print(Global.nameMap[data.id] + ' left the game')
 			Global.nameMap[data.id] = null
 			Global.activeList[data.id] = false
-			helper.removePlayer(data.id)
+			helper.removePlayer(data.id, wasActive)
 		tags.EGGCONFIRM:
 			helper.eggParent.onlineEggQueue()
 		tags.BUMP:
@@ -149,7 +153,7 @@ func _on_data() -> void:
 			helper.destroyOnlineItem(data.itemId, data.eat)
 		tags.FULL: print('Game full!')
 		tags.LABEL:
-			if Network.waitingForGame: helper.setOnlineLabel(data.label, data.timer)
+			if waitingForGame: helper.setOnlineLabel(data.label, data.timer)
 			else: FakeHelper.setOnlineLabel(data.label, data.timer)
 		tags.BEGIN:
 			lobby = false
@@ -172,4 +176,12 @@ func _on_data() -> void:
 			var _nuScene = get_tree().reload_current_scene()
 		tags.LOBBYPLAYER:
 			Global.botList[data.id] = true
-			if Network.lobby: helper.addLobbyPlayer(data.id)
+			if lobby: helper.addLobbyPlayer(data.id)
+		tags.HEALTHSTATES:
+			if len(data.states) < 1: #requested
+				var healthStates = helper.getBotHealth()
+				if len(healthStates) < 1: return
+				sendHealthStates(data.target, healthStates)
+			else: #you just joined and want to know the bot states
+				for i in range(len(data.states)):
+					helper.setHealth(i, 99, int(data.states[i]), "0", true) #just set is true

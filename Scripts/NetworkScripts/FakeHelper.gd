@@ -2,8 +2,13 @@ extends Node2D
 
 var lobbyChickens = []
 var foundDummy = true
+var playerHealthSave = []
+var playerHealthSaved = false
 
-func removePlayer(_id):
+func _ready():
+	for _i in range(12): playerHealthSave.append(5)
+
+func removePlayer(_id, _wasActive):
 	pass
 
 func addLobbyPlayer(_id):
@@ -27,8 +32,9 @@ func destroyOnlineItem(_itemId, _eat):
 func setStatus(_id, _powerup, _scale):
 	pass
 
-func setHealth(_id, _lastHit, _health, _eggId):
-	pass
+func setHealth(id, _lastHit, health, _eggId, _justSet = false):
+	playerHealthSaved = true
+	playerHealthSave[id] = health
 
 func warpPlayer(_id):
 	pass
@@ -42,3 +48,6 @@ func setTargetStatus(_scale, _x, _y):
 
 func setPlayerIdle(id: int, idle: bool) -> void:
 	Global.idleList[id] = idle
+
+func getBotHealth():
+	return []

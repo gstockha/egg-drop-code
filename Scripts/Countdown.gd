@@ -6,11 +6,12 @@ onready var bg = get_node("../CountdownBG")
 onready var sfx = get_node("../GameSFX")
 
 func _ready():
+	visible = !Network.lobby
 	if !visible:
 		queue_free()
 		return
 	$StartTimer.visible = false
-	set_physics_process(!Network.lobby)
+#	set_physics_process(!Network.lobby)
 	if Network.lobby: return
 	get_tree().paused = true
 	Global.countdown = true

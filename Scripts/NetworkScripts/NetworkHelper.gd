@@ -15,6 +15,7 @@ var playerSpace = null
 var chickenDummy = null
 var foundDummy = true
 onready var onlineLabel = get_node("../OnlineLabel")
+var spawnMod = []
 
 func _ready():
 	for _i in range(12): lobbyChickens.append(null)
@@ -24,6 +25,9 @@ func _ready():
 	Global.playerDead = false
 	Global.gameOver = false
 	Global.win = null
+	for i in range(12):
+		if i < 6: spawnMod.append(435 - (65 * i))
+		else: spawnMod.append(515 + (65 * (i - 6)))
 
 func _physics_process(_delta):
 	if !Global.playerDead:
@@ -32,10 +36,10 @@ func _physics_process(_delta):
 			Network.sendMove(player.position, Vector2(player.dir[0], player.dir[1]), str(player.gravity), Global.sid)
 			movecooldown = 0
 
-func removePlayer(id: int) -> void:
+func removePlayer(id: int, wasActive: bool) -> void:
 	Global.botList[id] = true
 	Global.nameMap[id] = null
-	if Network.lobby:
+	if Network.lobby || !wasActive:
 		if lobbyChickens[id] == null: return
 		lobbyChickens[id].queue_free()
 		lobbyChickens[id] = null
@@ -43,16 +47,19 @@ func removePlayer(id: int) -> void:
 	else: game.registerHealth(id, 0, 0)
 
 func addLobbyPlayer(id: int) -> void:
+	if lobbyChickens[id] != null: return
 	var chick = chickenDummy.instance()
 	playerSpace.add_child(chick)
 	chick.nameLabel.modulate = Global.colorIdMap[id]
 	chick.nameLabel.text = Global.nameMap[id]
 	chick.nameLabel.visible = true
-	chick.position = Vector2(480,480)
+	chick.position = Vector2(spawnMod[id],480)
 	chick.id = id
 	lobbyChickens[id] = chick
 	chick.scale *= 2
 	chick.speed = 400
+	chick.visible = false
+	chick.hitboxboxDisable(true)
 	game.setNameplateName(id)
 
 func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter = null, shoveVel = null, dir = null):
@@ -73,6 +80,9 @@ func movePlayer(pos: Vector2, vel: Vector2, grav: String, id: int, shoveCounter 
 		cPos = chicken.position
 		if cPos.x > pos.x - 20 || cPos.x < pos.x + 20: chicken.position.x = pos.x
 		if cPos.y > pos.y - 20 || cPos.y < pos.y + 20: chicken.position.y = pos.y
+		if !chicken.visible:
+			chicken.visible = true
+			chicken.hitboxboxDisable(false)
 	else: return
 	chicken.dir[0] = vel.x
 	chicken.dir[1] = vel.y
@@ -114,12 +124,12 @@ func setStatus(id: int, powerup: String, scale: String) -> void:
 			if chicken != null: chicken.setPowerup(powerup)
 	elif powerup != "none": game.setPowerupIcon(id, powerup)
 
-func setHealth(id: int, lastHit: int, health: int, eggId: String) -> void:
+func setHealth(id: int, lastHit: int, health: int, eggId: String, justSet: bool = false) -> void:
 	if eggId != "0" && !Global.botList[id] && id == Global.eid:
 		if !foundDummy: return
 		enemyEggParent.onlineHit(eggId)
 		warpPlayer(id, true)
-	game.registerHealth(id, lastHit, health)
+	game.registerHealth(id, lastHit, health, justSet)
 
 func warpPlayer(id: int, hurt: bool = false) -> void:
 	var chicken = null
@@ -149,3 +159,10 @@ func setPlayerIdle(id: int, idle: bool) -> void:
 	if id == Global.eid && !Global.botList[id] && enemy != null && enemy.onlineIdle != null:
 		if !foundDummy: return
 		enemy.onlineIdle = idle
+
+func getBotHealth() -> Array:
+	var healthList = []
+	for i in range(12):
+		if Global.botList[i]: healthList.append(game.playerStats[i]["health"])
+		else: healthList.append(99)
+	return healthList

@@ -34,7 +34,7 @@ Node Global, Network;
 Control game;
 ProgressBar powerBar;
 Area2D hitbox;
-CollisionShape2D collisionBox;
+CollisionShape2D collisionBox, hitboxbox;
 Label nameLabel;
 bool onlineIdle = false;
 
@@ -45,6 +45,7 @@ public override void _Ready(){
     sprite = GetNode<Sprite>("Sprite");
     shield = GetNode<Sprite>("Sprite/Shield");
     hitbox = GetNode<Area2D>("Hitbox");
+    hitboxbox = GetNode<CollisionShape2D>("Hitbox/CollisionShape2D");
     collisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
     eggParent = GetNode<Node2D>("../EggParent");
     itemParent = GetNode<Node2D>("../ItemParent");
@@ -375,6 +376,10 @@ public void ResetPowerups(){
 
 public void _on_Invincible_timeout(){
     invincible = false;
+}
+
+public void hitboxboxDisable(bool disable){
+    hitboxbox.Disabled = disable;
 }
 
 }

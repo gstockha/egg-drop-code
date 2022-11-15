@@ -27,7 +27,7 @@ var muted = false
 var botList = []
 var idleList = []
 var activeList = [] #who is actually in game or just in lobby
-var botNameMap = ["XiaoCHN#1", "left_lunch21", "frog", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
+var botNameMap = ["XiaoCHN#1", "frog", "left_lunch21", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInNiNjAx", "DAD"]
 var prefID = 5
 
@@ -71,6 +71,9 @@ func _ready():
 			rgb[0] = 255
 			rgb[1] = 125
 		colorIdMap.append(Color8(rgb[0]*1.2, rgb[1]*1.2, rgb[2]*1.2))
+	var purple = colorIdMap[1]
+	colorIdMap[1] = colorIdMap[2]
+	colorIdMap[2] = purple
 
 func arrangeNames() -> void:
 	if Global.online: return
@@ -98,6 +101,7 @@ func defaults() -> void:
 	Network.onlineLabelSet = [null, null]
 	Network.spectated = false
 	Network.waitingForGame = false
+	FakeHelper.playerHealthSaved = false
 	for i in range(12):
 		botList[i] = true
 		nameMap[i] = null

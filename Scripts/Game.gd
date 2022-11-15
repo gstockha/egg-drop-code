@@ -124,13 +124,15 @@ func _ready():
 		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
 		$NetworkHelper.game = self
 		Global.difficulty = 1
+		if FakeHelper.playerHealthSaved: #preloaded health values
+			FakeHelper.playerHealthSaved = false
+			for i in range(len(FakeHelper.playerHealthSave)): registerHealth(i, 99, FakeHelper.playerHealthSave[i], true)
 	else:
 		Global.botList[Global.id] = true
 		for i in range(12): Global.activeList[i] = false
 	#define enemy
 	if !Network.lobby:
 		var chick
-#		chick = chickenDummy.instance() #DELETE WHEN NOT TESTING!
 		if Global.botList[Global.eid]: chick = chickenBot.instance()
 		else:
 			chick = chickenDummy.instance()
@@ -143,6 +145,7 @@ func _ready():
 		enemy.id = Global.eid
 #		enemyEggParent.set_process(!Network.waitingForGame && !(!Global.botList[Global.eid] && Global.activeList[Global.eid]))
 	else:
+		player.position = Vector2($NetworkHelper.spawnMod[Global.id],480)
 		set_process(false)
 		if Network.waitingForGame:
 			for i in range(12):
@@ -175,6 +178,7 @@ func _input(event):
 		player.sprite.texture = chickenSprite
 		player.idle = false
 		player.speed = 400
+		player.position = Vector2($NetworkHelper.spawnMod[Global.id],480)
 		gameOverLabels["BG"].visible = false
 		eggParent.slowMo = 1
 		$OnlineLabel.visible = true
@@ -227,12 +231,12 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 	namePlates[offsetIds[id]].self_modulate.a = .5
 	nameArrows[offsetIds[id]].visible = false
 	if Global.gameOver == false:
-		if id == Global.eid && !Global.playerDead:
+		if id == Global.eid && !Global.playerDead && !Network.lobby:
 			$GameSFX.playSound("killconfirm")
 			confirmedShells += 1
 			var hisX = (enemy.global_position.x * 2) + 16
 			$PopupParent.makePopup(playerStats[id]["name"], Vector2(hisX, 780), true)
-		if aliveCount == 1 && playerStats[Global.id]["health"] > 0: #win game
+		if aliveCount == 1 && playerStats[Global.id]["health"] > 0 && !Network.lobby: #win game
 			$GameSFX.playSound("win")
 			endGame(true, Global.id)
 			return
@@ -266,14 +270,14 @@ func registerDeath(id: int, _lastHitId: int, _disconnect: bool, delayed: Timer) 
 		eggParent.botReceive = false
 		enemyEggParent.eggTarget = eggParent
 
-func registerHealth(id: int, lastHitId: int, health: int) -> void:
+func registerHealth(id: int, lastHitId: int, health: int, justSet: bool = false) -> void:
 	if aliveCount == 1: return
 	health = clamp(health, 0, 5)
 	var prevhp = playerStats[id]["health"]
 	playerStats[id]["health"] = health
 	for i in range(5): heartIcons[offsetIds[id]][i].visible = i < health
 	if id == Global.eid:
-		if prevhp > health: $HitSFX.playSound("hit", randi() % 3)
+		if prevhp > health && !justSet: $HitSFX.playSound("hit", randi() % 3)
 		for i in range(5): targetHearts[i].visible = i < health
 	elif id == Global.id && !Network.lobby:
 		for i in range(5):
@@ -282,6 +286,15 @@ func registerHealth(id: int, lastHitId: int, health: int) -> void:
 	if health < 1:
 		Global.botList[id] = true
 		aliveCount -= 1
+		if justSet:
+			playerStats[id]["health"] = 0
+			powerIcons[offsetIds[id]].visible = false
+			heartIcons[offsetIds[id]][0].get_parent().visible = false
+			if id == Global.eid: targetHearts[0].get_parent().visible = false
+			colorPlates[offsetIds[id]].self_modulate.a = .3
+			namePlates[offsetIds[id]].self_modulate.a = .5
+			nameArrows[offsetIds[id]].visible = false
+			return
 		var me = Global.id == id
 		if me && Network.lobby: return
 		var eParent = enemyEggParent if !me else eggParent
@@ -424,7 +437,7 @@ func makeBot() -> void:
 		var chick = chickenDummy.instance()
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
-		var scl = float(targetPlayerLoad["scale"]) * 2
+		var scl = float(targetPlayerLoad["scale"])
 		chick.scale = Vector2(scl, scl)
 		chick.position = Vector2(float(targetPlayerLoad["x"]), float(targetPlayerLoad["y"])) * .5
 		chick.onlineIdle = Global.idleList[Global.eid]
