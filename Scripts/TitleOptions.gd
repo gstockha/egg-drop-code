@@ -7,9 +7,16 @@ var lastMusicValue = 0
 var focused = false
 onready var muteBtn = get_node("../MuteButton")
 onready var mstr = AudioServer.get_bus_index("Master")
+var plrContainer = null
 
 func _ready():
 	focused = !title #strange little disablement so when we back out to main menu we don't press START immediately
+	if !title: plrContainer = get_node("../PlayerContainer")
+	elif Global.reset:
+		Global.reset = false
+		Network.client = WebSocketClient.new()
+		Network._ready()
+		return
 	muteBtn.self_modulate.a = .6 if Global.muted else 1
 	sfxSlider.value = AudioServer.get_bus_volume_db(mstr) * 5
 
@@ -26,10 +33,6 @@ func _input(event):
 			get_tree().paused = !get_tree().paused
 	elif event.is_action_pressed("ui_accept"):
 		if musicSlider.has_focus():
-#			if musicSlider.value > -100:
-#				lastMusicValue = musicSlider.value
-#				musicSlider.value = -100
-#			else: musicSlider.value = lastMusicValue
 			pass
 		elif sfxSlider.has_focus():
 			if sfxSlider.value > -100:
@@ -52,6 +55,7 @@ func _on_MainButton_button_up(): #solo game / continue
 		get_node("../PlayerOptions/NameLabel/NameEdit").grab_focus()
 	else: #in-game CONTINUE
 		if !Global.online && !Global.countdown: get_tree().paused = false
+		elif Global.online && !title: plrContainer.disableInput(false)
 		visible = false
 		Global.menu = false
 
@@ -59,15 +63,21 @@ func _on_ExitButton_button_down():
 	if title: get_tree().quit()
 	else:
 		Global.defaults()
+		if Global.online: Global.reset = true
 		get_tree().paused = false
 		get_tree().change_scene("res://Scenes/Screens/TitleScreen.tscn")
 
 func _on_MenuButton_button_down(): #in-game menu btn
-	if visible || title: return
+	if title: return
+	if visible:
+		_on_MainButton_button_up()
+		return
 	visible = true
 	Global.menu = true
 	if !Global.online && !Global.countdown:
 		get_tree().paused = true
+	elif Global.online && !title:
+		plrContainer.disableInput(true)
 
 func _on_FullscreenButton_button_up():
 	OS.window_fullscreen = !OS.window_fullscreen

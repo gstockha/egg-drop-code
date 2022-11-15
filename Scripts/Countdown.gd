@@ -17,8 +17,8 @@ func _ready():
 	Global.countdown = true
 	bg.visible = true
 
-func _physics_process(delta):
-	if Global.menu: return
+func _process(delta):
+	if Global.menu && !Global.online: return
 	timer -= delta
 	bg.modulate.a -= delta * .2
 	var time = ceil(timer)

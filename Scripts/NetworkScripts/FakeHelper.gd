@@ -47,7 +47,13 @@ func setTargetStatus(_scale, _x, _y):
 	pass
 
 func setPlayerIdle(id: int, idle: bool) -> void:
-	Global.idleList[id] = idle
+	Network.idleList[id] = idle
 
 func getBotHealth():
 	return []
+
+func closeMenu():
+	pass
+
+func setGameTime(_time):
+	pass

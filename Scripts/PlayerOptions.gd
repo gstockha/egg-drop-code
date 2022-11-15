@@ -25,7 +25,7 @@ func _process(_delta):
 		transition.transition("fade_to_black")
 		transition.screen = 'title'
 		Network.attemptingConnection = false
-	if Input.is_action_pressed("ui_select"): $BeginButton.grab_focus()
+	if Input.is_action_pressed("ui_select") && visible: $BeginButton.grab_focus()
 	elif Input.is_action_just_pressed("ui_cancel"): _on_BackButton_button_up()
 
 func _on_NameEdit_focus_entered():

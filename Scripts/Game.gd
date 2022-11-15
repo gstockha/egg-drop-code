@@ -123,7 +123,6 @@ func _ready():
 		$NetworkHelper.chickenDummy = chickenDummy
 		$NetworkHelper.playerSpace = $PlayerContainer/Viewport/Playspace
 		$NetworkHelper.game = self
-		Global.difficulty = 1
 		if FakeHelper.playerHealthSaved: #preloaded health values
 			FakeHelper.playerHealthSaved = false
 			for i in range(len(FakeHelper.playerHealthSave)): registerHealth(i, 99, FakeHelper.playerHealthSave[i], true)
@@ -136,7 +135,7 @@ func _ready():
 		if Global.botList[Global.eid]: chick = chickenBot.instance()
 		else:
 			chick = chickenDummy.instance()
-			chick.onlineIdle = Global.idleList[Global.eid]
+			chick.onlineIdle = Network.idleList[Global.eid]
 		$EnemyContainer/Viewport/Enemyspace.add_child(chick)
 		enemy = $EnemyContainer/Viewport/Enemyspace/ChickenBot
 		enemyItemParent.player = enemy
@@ -280,6 +279,7 @@ func registerHealth(id: int, lastHitId: int, health: int, justSet: bool = false)
 		if prevhp > health && !justSet: $HitSFX.playSound("hit", randi() % 3)
 		for i in range(5): targetHearts[i].visible = i < health
 	elif id == Global.id && !Network.lobby:
+		if Global.online: player.health = health
 		for i in range(5):
 			player.heartIcons[i].visible = i < health
 			player.heartBGs[i].visible = i >= health
@@ -440,7 +440,7 @@ func makeBot() -> void:
 		var scl = float(targetPlayerLoad["scale"])
 		chick.scale = Vector2(scl, scl)
 		chick.position = Vector2(float(targetPlayerLoad["x"]), float(targetPlayerLoad["y"])) * .5
-		chick.onlineIdle = Global.idleList[Global.eid]
+		chick.onlineIdle = Network.idleList[Global.eid]
 	enemy.health = playerStats[Global.eid]["health"]
 	targetHearts[0].get_parent().visible = true
 	for i in range(5): targetHearts[i].visible = i < enemy.health
@@ -452,7 +452,7 @@ func makeBot() -> void:
 
 func calculateGameTime() -> String:
 	var lev = Global.level
-	var timeBase = 90 - (Global.difficulty * 20) 
+	var timeBase = 90 - (Global.difficulty * 20)
 	Global.level = clamp(floor(gameTime / timeBase), 0, 5)
 	timerBar.value = (((gameTime - (timeBase * Global.level)) / timeBase) * 100) + 1
 	if lev != Global.level:

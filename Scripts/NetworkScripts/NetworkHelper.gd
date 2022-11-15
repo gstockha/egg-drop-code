@@ -15,6 +15,7 @@ var playerSpace = null
 var chickenDummy = null
 var foundDummy = true
 onready var onlineLabel = get_node("../OnlineLabel")
+onready var menu = get_node("../Menu")
 var spawnMod = []
 
 func _ready():
@@ -149,13 +150,12 @@ func setOnlineLabel(set: String, timer: int = 0) -> void:
 		onlineLabel.timer = timer
 
 func setTargetStatus(scale: String, x: String, y: String) -> void:
-	game.targetPlayerLoad["scale"] = scale
+	game.targetPlayerLoad["scale"] = str(float(scale) * 2)
 	game.targetPlayerLoad["x"] = x
 	game.targetPlayerLoad["y"] = y
 	game.targetPlayerLoaded = true
 
 func setPlayerIdle(id: int, idle: bool) -> void:
-	Global.idleList[id] = idle
 	if id == Global.eid && !Global.botList[id] && enemy != null && enemy.onlineIdle != null:
 		if !foundDummy: return
 		enemy.onlineIdle = idle
@@ -166,3 +166,10 @@ func getBotHealth() -> Array:
 		if Global.botList[i]: healthList.append(game.playerStats[i]["health"])
 		else: healthList.append(99)
 	return healthList
+
+func closeMenu() -> void:
+	if menu.visible: menu._on_MainButton_button_up()
+
+func setGameTime(time: String) -> void:
+	game.gameTime = float(time)
+	game.calculateGameTime()

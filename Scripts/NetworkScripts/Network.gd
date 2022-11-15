@@ -5,7 +5,7 @@ var SOCKET_URL = "ws://127.0.0.1:3000"
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
 enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER, HEALTHSTATES}
+ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER, HEALTHSTATES, TIME}
 var attemptingConnection = false
 var lobby = false
 var waitingForGame = false
@@ -13,6 +13,7 @@ var joined = false
 var onlineLabelSet = [null, null]
 var spectated = false
 var lastWinner = 99
+var idleList = [false, false, false, false, false, false, false, false, false, false, false, false]
 
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
@@ -31,9 +32,9 @@ func _process(_delta):
 
 func _on_connection_closed(error: bool = false):
 	print("closed, error: ", error)
-	Network.lobby = false
+	lobby = false
 	set_process(false)
-	Network.attemptingConnection = false
+	attemptingConnection = false
 
 func _on_connected(_proto):
 	print('connected to server!')
@@ -114,7 +115,7 @@ func _on_data() -> void:
 			Global.nameMap[data.id] = data.name
 			Global.botList[data.id] = true #is currently a bot (regardless if a player slot)
 			Global.activeList[data.id] = true #is a player or not (in game or in lobby)
-			Global.idleList[data.id] = false
+			Network.idleList[data.id] = false
 			print("New player joined: ", Global.nameMap[data.id])
 			Global.playerCount += 1
 			if lobby: helper.addLobbyPlayer(data.id)
@@ -122,6 +123,7 @@ func _on_data() -> void:
 			Global.id = int(data.id)
 			Global.playerName = data.name
 			Global.nameMap = data.nameMap
+			Global.difficulty = int(data.difficulty)
 			joined = true
 			waitingForGame = data.lobby
 			lobby = true
@@ -156,6 +158,7 @@ func _on_data() -> void:
 			if waitingForGame: helper.setOnlineLabel(data.label, data.timer)
 			else: FakeHelper.setOnlineLabel(data.label, data.timer)
 		tags.BEGIN:
+			helper.closeMenu()
 			lobby = false
 			waitingForGame = false
 			for i in range(12):
@@ -167,6 +170,7 @@ func _on_data() -> void:
 		tags.SPECTATE:
 			spectated = data.spectated
 		tags.IDLE:
+			idleList[data.id] = data.idle
 			helper.setPlayerIdle(data.id, data.idle)
 			if data.idle: print(Global.nameMap[data.id] + ' idle!')
 		tags.ENDGAME:
@@ -185,3 +189,5 @@ func _on_data() -> void:
 			else: #you just joined and want to know the bot states
 				for i in range(len(data.states)):
 					helper.setHealth(i, 99, int(data.states[i]), "0", true) #just set is true
+		tags.TIME:
+			helper.setGameTime(data.time)

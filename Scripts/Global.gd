@@ -25,18 +25,17 @@ var crack1 = preload("res://Sprites/Eggs/EggCrack1.png")
 var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
 var muted = false
 var botList = []
-var idleList = []
 var activeList = [] #who is actually in game or just in lobby
 var botNameMap = ["XiaoCHN#1", "frog", "left_lunch21", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInNiNjAx", "DAD"]
 var prefID = 5
+var reset = false
 
 func _ready():
 	var rgb = [0,0,0]
 	for _i in range(12):
 		botList.append(true)
 		nameMap.append(null)
-		idleList.append(false)
 		activeList.append(false)
 	colorIdMap.append(Color8(255,100,100))
 #	eggColorMap[0] = colorIdMap[0] * 1.5
@@ -82,6 +81,7 @@ func arrangeNames() -> void:
 	nameMap[id] = Global.playerName
 
 func defaults() -> void:
+	if Global.online && Network.client: Network.client.disconnect_from_host(1000, "exit")
 	online = false
 	level = 0
 	normalcy = 60 #percent chance a normal egg spawns
@@ -94,7 +94,7 @@ func defaults() -> void:
 	prefID = 5
 	menu = false
 	countdown = false
-	idleList = []
+	Network.idleList = [false, false, false, false, false, false, false, false, false, false, false, false]
 	Network.lobby = false
 	Network.joined = false
 	Network.helper = FakeHelper
