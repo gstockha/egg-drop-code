@@ -12,11 +12,11 @@ var plrContainer = null
 func _ready():
 	focused = !title #strange little disablement so when we back out to main menu we don't press START immediately
 	if !title: plrContainer = get_node("../PlayerContainer")
-	elif Global.reset:
-		Global.reset = false
-		Network.client = WebSocketClient.new()
-		Network._ready()
-		return
+	# elif Global.reset:
+	# 	Global.reset = false
+	# 	Network.client = WebSocketClient.new()
+	# 	Network._ready()
+	# 	return
 	muteBtn.self_modulate.a = .6 if Global.muted else 1
 	sfxSlider.value = AudioServer.get_bus_volume_db(mstr) * 5
 
@@ -63,7 +63,7 @@ func _on_ExitButton_button_down():
 	if title: get_tree().quit()
 	else:
 		Global.defaults()
-		if Global.online: Global.reset = true
+		# if Global.online: Global.reset = true
 		get_tree().paused = false
 		get_tree().change_scene("res://Scenes/Screens/TitleScreen.tscn")
 

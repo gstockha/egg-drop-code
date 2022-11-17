@@ -15,6 +15,18 @@ var spectated = false
 var lastWinner = 99
 var idleList = [false, false, false, false, false, false, false, false, false, false, false, false]
 
+func defaults():
+	client = WebSocketClient.new()
+	attemptingConnection = false
+	lobby = false
+	waitingForGame = false
+	joined = false
+	onlineLabelSet = [null, null]
+	spectated = false
+	lastWinner = 99
+	idleList = [false, false, false, false, false, false, false, false, false, false, false, false]
+	_ready()
+
 func _ready():
 	client.connect("connection_closed", self, "_on_connection_closed")
 	client.connect("connection_error", self, "_on_connection_closed")
@@ -177,6 +189,14 @@ func _on_data() -> void:
 			lobby = true
 			waitingForGame = true
 			lastWinner = data.winner
+			#partial global reset
+			Global.level = 0
+			Global.normalcy = 60 #percent chance a normal egg spawns
+			Global.playerDead = false
+			Global.gameOver = false
+			Global.win = null
+			Global.menu = false
+			Global.gameTime = 0
 			var _nuScene = get_tree().reload_current_scene()
 		tags.LOBBYPLAYER:
 			Global.botList[data.id] = true
@@ -190,4 +210,5 @@ func _on_data() -> void:
 				for i in range(len(data.states)):
 					helper.setHealth(i, 99, int(data.states[i]), "0", true) #just set is true
 		tags.TIME:
-			helper.setGameTime(data.time)
+			print(data.time)
+			Global.gameTime = float(data.time)

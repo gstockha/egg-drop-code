@@ -21,7 +21,6 @@ onready var eggParent = $PlayerContainer/Viewport/Playspace/EggParent
 var confirmedShells = 0
 var confirmedLaid = 0
 var confirmedEggs = 0
-var gameTime = 0
 var recordedTime = null
 var aliveCount = 12
 var hudRefresh = 0
@@ -209,11 +208,11 @@ func _process(delta):
 			eggParent.releaseEggQueue()
 			eggParent.eggQueue = false
 	if !Global.gameOver:
-		gameTime += delta
+		Global.gameTime += delta
 		hudRefresh += delta
 		if hudRefresh > 1:
 			hudRefresh = 0
-			hud["timer"].text = calculateGameTime()
+			hud["timer"].text = calculategameTime()
 			hud["eggs"].text = 'x' + str(confirmedEggs)
 			hud["laid"].text = 'x' + str(confirmedLaid)
 			hud["shelled"].text = 'x' + str(confirmedShells)
@@ -316,7 +315,7 @@ func registerHealth(id: int, lastHitId: int, health: int, justSet: bool = false)
 				enemyItemParent.player = null
 				if !Global.playerDead:
 					eggParent.eggQueue = true
-					eggParent.eggQueueTime = gameTime
+					eggParent.eggQueueTime = Global.gameTime
 			else: #set up spectate mode and reset stats
 				player.eggCount = 0
 				$EggBar.clearEggs()
@@ -450,11 +449,11 @@ func makeBot() -> void:
 	enemy.id = Global.eid
 	enemyEggParent.myid = Global.eid
 
-func calculateGameTime() -> String:
+func calculategameTime() -> String:
 	var lev = Global.level
 	var timeBase = 90 - (Global.difficulty * 20)
-	Global.level = clamp(floor(gameTime / timeBase), 0, 5)
-	timerBar.value = (((gameTime - (timeBase * Global.level)) / timeBase) * 100) + 1
+	Global.level = clamp(floor(Global.gameTime / timeBase), 0, 5)
+	timerBar.value = (((Global.gameTime - (timeBase * Global.level)) / timeBase) * 100) + 1
 	if lev != Global.level:
 		$PlayerContainer/Viewport/Playspace/ItemParent.powerCooldown = 120 - (Global.level * 7)
 		enemyItemParent.powerCooldown = 120 - (Global.level * 7)
@@ -479,8 +478,8 @@ func calculateGameTime() -> String:
 			hud["level"].modulate = clr
 			hud["levelegg"].modulate = eggClr
 			timerBar.modulate = clr
-	var mins = int(gameTime) / 60
-	var secs = int(gameTime - (mins * 60))
+	var mins = int(Global.gameTime) / 60
+	var secs = int(Global.gameTime - (mins * 60))
 	mins = "0" + str(mins) if mins < 10 else str(mins)
 	var timerr = mins + ":"
 	timerr += str(secs) if secs > 9 else "0" + str(secs)
@@ -493,4 +492,4 @@ func setPowerupIcon(id: int, type: String) -> void:
 		powerIcons[offsetIds[id]].texture = powerups[type]
 
 func setNameplateName(id: int) -> void:
-	namePlates[offsetIds[id]].text = Global.nameMap[id] if Global.nameMap[id] != null else Global.botNameMap[id]
+	namePlates[offsetIds[id]].text = Global.nameMap[id] if Global.nameMap[id] != null else Global.botNameMap[id] + '[bot]'

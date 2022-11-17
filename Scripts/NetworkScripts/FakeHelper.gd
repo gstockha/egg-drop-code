@@ -54,6 +54,3 @@ func getBotHealth():
 
 func closeMenu():
 	pass
-
-func setGameTime(_time):
-	pass

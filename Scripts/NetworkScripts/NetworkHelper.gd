@@ -169,7 +169,3 @@ func getBotHealth() -> Array:
 
 func closeMenu() -> void:
 	if menu.visible: menu._on_MainButton_button_up()
-
-func setGameTime(time: String) -> void:
-	game.gameTime = float(time)
-	game.calculateGameTime()

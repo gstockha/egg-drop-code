@@ -133,8 +133,8 @@ func _physics_process(_delta):
 					if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
 					elif egg.id == myid:
 						eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),
-						egg.spdBoost, game.gameTime - eggQueueTime])
-						eggQueueTime = game.gameTime
+						egg.spdBoost, Global.gameTime - eggQueueTime])
+						eggQueueTime = Global.gameTime
 				elif !Global.botList[Global.eid]: #player network send to player
 					Network.sendEgg(egg.id, egg.type, Vector2(egg.position.x, 0), egg.spdBoost, Global.eid)
 					onlineQueue.append([egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost])
@@ -200,7 +200,7 @@ func onlineEggQueue() -> void: #to sync with the player behind us' screen (delay
 		onlineQueue = []
 		return
 	var eggInfo = onlineQueue.pop_front()
-	print('onlineQueue: ' + str(eggInfo))
+#	print('onlineQueue: ' + str(eggInfo))
 	if eggTarget != null: eggTarget.makeEgg(eggInfo[0], eggInfo[1], eggInfo[2], eggInfo[3])
 
 func activateWildcard() -> void:

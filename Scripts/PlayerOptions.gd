@@ -35,7 +35,7 @@ func _on_NameEdit_focus_entered():
 	nameEdit.text = ''
 
 func _on_BackButton_button_up():
-	if Network.attemptingConnection: return
+	if Network.attemptingConnection: Global.defaults()
 	visible = false
 	title.visible = true
 

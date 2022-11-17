@@ -26,19 +26,19 @@ var crack2 = preload("res://Sprites/Eggs/EggCrack2.png")
 var muted = false
 var botList = []
 var activeList = [] #who is actually in game or just in lobby
-var botNameMap = ["XiaoCHN#1", "frog", "left_lunch21", "LOGANCRAFT2013", "dudelmaaooo", "[USA] Marine_mike",
+var botNameMap = ["XiaoCHN#1", "frog", "left_lunch21", "LOGANCRAFT2013", "dudelmaaooo", "[USA]Marine_mike",
 "yay^^", "BasedMoron", "agentorange1972", "SunE)))", "xLiNkInNiNjAx", "DAD"]
 var prefID = 5
-var reset = false
+var gameTime = 0
 
 func _ready():
-	var rgb = [0,0,0]
 	for _i in range(12):
 		botList.append(true)
 		nameMap.append(null)
 		activeList.append(false)
+	if colorIdMap != []: return
+	var rgb = [0,0,0]
 	colorIdMap.append(Color8(255,100,100))
-#	eggColorMap[0] = colorIdMap[0] * 1.5
 	for i in range(1,12):
 		rgb[0] = 100
 		rgb[1] = 100
@@ -81,30 +81,28 @@ func arrangeNames() -> void:
 	nameMap[id] = Global.playerName
 
 func defaults() -> void:
-	if Global.online && Network.client: Network.client.disconnect_from_host(1000, "exit")
+	var wasOnline = Global.online
 	online = false
 	level = 0
 	normalcy = 60 #percent chance a normal egg spawns
+	id = 5
 	eid = 0
 	sid = 0
-	playerCount = 12
+	nameMap = []
+	playerCount = 1
 	playerDead = false
 	gameOver = false
 	win = null
-	prefID = 5
 	menu = false
 	countdown = false
-	Network.idleList = [false, false, false, false, false, false, false, false, false, false, false, false]
-	Network.lobby = false
-	Network.joined = false
-	Network.helper = FakeHelper
-	Network.onlineLabelSet = [null, null]
-	Network.spectated = false
-	Network.waitingForGame = false
-	FakeHelper.playerHealthSaved = false
-	for i in range(12):
-		botList[i] = true
-		nameMap[i] = null
+	botList = []
+	activeList = [] #who is actually in game or just in lobby
+	gameTime = 0
+	# reset = false
+	_ready()
+	if wasOnline:
+		if Network.client: Network.client.disconnect_from_host(1000, "exit")
+		Network.defaults()
 
 func getBot(target) -> bool:
 	return botList[target]
