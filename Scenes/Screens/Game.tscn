@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=2]
+[gd_scene load_steps=66 format=2]
 
 [ext_resource path="res://Fonts/baloo20.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/Enemyspace.tscn" type="PackedScene" id=2]
@@ -22,6 +22,7 @@
 [ext_resource path="res://Scripts/EggsBar.gd" type="Script" id=20]
 [ext_resource path="res://Scripts/NetworkScripts/NetworkHelper.gd" type="Script" id=21]
 [ext_resource path="res://Scripts/UI/OnlineLabel.gd" type="Script" id=22]
+[ext_resource path="res://Scenes/UI/EnemyArrow.tscn" type="PackedScene" id=23]
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.333333, 0.337255, 0.576471, 1 )
@@ -471,6 +472,9 @@ margin_bottom = 96.0
 color = Color( 0.780392, 0.780392, 0.780392, 1 )
 
 [node name="Playspace" parent="PlayerContainer/Viewport" instance=ExtResource( 9 )]
+
+[node name="EnemyArrow" parent="PlayerContainer/Viewport" instance=ExtResource( 23 )]
+position = Vector2( 460, 760 )
 
 [node name="EnemyContainer" type="ViewportContainer" parent="."]
 margin_left = 992.0

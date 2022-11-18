@@ -127,7 +127,7 @@ func _on_data() -> void:
 			Global.nameMap[data.id] = data.name
 			Global.botList[data.id] = true #is currently a bot (regardless if a player slot)
 			Global.activeList[data.id] = true #is a player or not (in game or in lobby)
-			Network.idleList[data.id] = false
+			idleList[data.id] = false
 			print("New player joined: ", Global.nameMap[data.id])
 			Global.playerCount += 1
 			if lobby: helper.addLobbyPlayer(data.id)

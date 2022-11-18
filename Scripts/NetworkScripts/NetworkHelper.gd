@@ -159,6 +159,7 @@ func setPlayerIdle(id: int, idle: bool) -> void:
 	if id == Global.eid && !Global.botList[id] && enemy != null && enemy.onlineIdle != null:
 		if !foundDummy: return
 		enemy.onlineIdle = idle
+		eggParent.onlineTargetIdle = idle
 
 func getBotHealth() -> Array:
 	var healthList = []

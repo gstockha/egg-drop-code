@@ -38,6 +38,7 @@ var helper = null
 var onlineQueue = []
 var onlineEggs = {}
 var onlinePlayer = false #botmode && not a bot (online)
+var onlineTargetIdle = false
 #var botIsBelow = false
 
 func _ready():
@@ -55,6 +56,7 @@ func _ready():
 #		botIsBelow = Global.botList[Global.eid] || !Global.online
 		set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
 		set_physics_process(!Network.lobby)
+		onlineTargetIdle = Global.online && !Global.botList[Global.eid] && Network.idleList[Global.eid]
 	else:
 		myid = Global.eid
 		lowerBounds = 425
@@ -129,7 +131,7 @@ func _physics_process(_delta):
 				if eggId in onlineEggs: onlineEggs.erase(eggId)
 			if eggTarget == null || (egg.id != myid && egg.id != 99): return
 			if !botMode:
-				if !Global.online || Global.botList[Global.eid]:
+				if !Global.online || Global.botList[Global.eid] || onlineTargetIdle:
 					if !eggQueue: eggTarget.makeEgg(egg.id, egg.type, Vector2(egg.position.x * .5, 0), egg.spdBoost)
 					elif egg.id == myid:
 						eggQueueList.append([egg.id, egg.type, Vector2(egg.position.x * .5,0),

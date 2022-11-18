@@ -91,7 +91,7 @@ func _process(delta):
 			if pop: pop.play()
 			elif onlineEnemy && item.id in onlineItems: onlineItems.erase(item.id)
 		elif item.duration > 160:
-			item.scale = item.baseScale * (.25 + (((30 - (item.duration - 160)) / 30) * .75))
+			item.scale = item.baseScale * (.1 + (((30 - (item.duration - 160)) / 30) * .9))
 
 func getLocation() -> Vector2:
 	var plrPos = player.position
