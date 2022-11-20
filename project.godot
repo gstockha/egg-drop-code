@@ -22,7 +22,7 @@ _global_script_class_icons={
 
 config/name="EGG DROP"
 run/main_scene="res://Scenes/Screens/TitleScreen.tscn"
-config/icon="res://icon.png"
+config/icon="res://Sprites/Chickens/Chicken.png"
 
 [autoload]
 

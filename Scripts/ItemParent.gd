@@ -56,7 +56,7 @@ func _process(delta):
 	if player == null: return
 	var tick = 10 * delta
 	powerTimer += tick
-	healthTimer += tick
+	healthTimer += tick * (1 - (.1 * Global.difficulty))
 	if !onlineEnemy: itemTimer -= tick
 	if itemTimer < 1:
 		itemTimer = 25

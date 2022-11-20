@@ -478,8 +478,8 @@ public void _on_Hitbox_area_entered(Node body){
             type = (string)body.Get("type");
             popupParent.Call("makePopup", type, GlobalPosition, false);
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-            powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
-            if (powerup && powerupDir[0] != 0) ResetPowerups();
+            bool isPowerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
+            if (isPowerup && powerupDir[0] != 0) ResetPowerups();
             if (type == "butter"){
                 eggSpdBoost = 1.5F;
                 powerupDir[0] = 5;
@@ -505,10 +505,11 @@ public void _on_Hitbox_area_entered(Node body){
                 itemParent.Call("spawnGun");
             }
             else if (type == "wildcard") eggParent.Call("activateWildcard");
-            if (powerup){
+            if (isPowerup){
                 powerBar.Visible = true;
                 powerupDir[1] = powerupDir[0];
                 game.Call("setPowerupIcon", id, type);
+                powerup = true;
             }
             body.QueueFree();
             subfx.Call("playSound", "power");

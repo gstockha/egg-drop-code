@@ -1,6 +1,6 @@
 extends Node2D
 
-var SOCKET_URL = "ws://127.0.0.1:3000"
+var SOCKET_URL = "ws://24.143.59.168:7100"
 
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
@@ -112,7 +112,7 @@ func _on_data() -> void:
 			data.shoveCounter, data.shoveVel, data.dir)
 		tags.EGG: #EGG
 			if data.toPlayer:
-				helper.eggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y), data.bltSpd)
+				helper.eggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y), data.bltSpd, true)
 				send({'tag': tags.EGGCONFIRM, 'target': data.sender })
 			elif helper.enemyEggParent != null:
 				helper.enemyEggParent.makeEgg(data.id, data.type, Vector2(data.x, data.y) * .5, data.bltSpd)
@@ -188,7 +188,7 @@ func _on_data() -> void:
 		tags.ENDGAME:
 			lobby = true
 			waitingForGame = true
-			lastWinner = data.winner
+			lastWinner = data.winner #99 if no winner
 			#partial global reset
 			Global.level = 0
 			Global.normalcy = 60 #percent chance a normal egg spawns

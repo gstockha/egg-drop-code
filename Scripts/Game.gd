@@ -190,7 +190,7 @@ func _input(event):
 
 func _process(delta):
 	if !Global.online: #make fake health changes
-		botDamageBuffer += delta * botCount * (.05 + ((Global.level + 1) * .05))
+		botDamageBuffer += delta * botCount * (.00005 + ((Global.level + 1) * .00005))
 		if randf() < botDamageBuffer:
 			botDamageBuffer = 0
 			var randId = round(rand_range(0,11))

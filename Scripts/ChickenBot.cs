@@ -533,8 +533,8 @@ public void _on_Hitbox_area_entered(Node body){
         case "powerups":
             type = (string)body.Get("type");
             Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-            powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
-            if (powerup) ResetPowerups();
+            bool isPowerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
+            if (isPowerup && powerupDir[0] != 0) ResetPowerups();
             if (type == "butter"){
                 eggSpdBoost = 1.5F;
                 powerupDir[0] = 5;
@@ -556,9 +556,10 @@ public void _on_Hitbox_area_entered(Node body){
                 itemParent.Call("spawnGun");
             }
             else if (type == "wildcard") eggParent.Call("activateWildcard");
-            if (powerup){
+            if (isPowerup){
                 powerupDir[1] = powerupDir[0];
                 game.Call("setPowerupIcon", id, type);
+                powerup = true;
             }
             body.QueueFree();
             if ((bool)Global.Get("online")) Network.Call("sendStatus", id, type, 0);

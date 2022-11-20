@@ -150,7 +150,7 @@ func setOnlineLabel(set: String, timer: int = 0) -> void:
 		onlineLabel.timer = timer
 
 func setTargetStatus(scale: String, x: String, y: String) -> void:
-	game.targetPlayerLoad["scale"] = str(float(scale) * 2)
+	game.targetPlayerLoad["scale"] = str(float(scale))
 	game.targetPlayerLoad["x"] = x
 	game.targetPlayerLoad["y"] = y
 	game.targetPlayerLoaded = true

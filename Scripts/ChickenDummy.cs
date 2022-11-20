@@ -310,8 +310,8 @@ public void setPowerup(String type){
         return;
     }
     Squish(new Vector2(baseSpriteScale.x * .85F, baseSpriteScale.y * 1.15F));
-    powerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
-    if (powerup && powerupDir[0] != 0) ResetPowerups();
+    bool isPowerup = type == "butter" || type == "shield" || type == "gun" || type == "shrink";
+    if (isPowerup && powerupDir[0] != 0) ResetPowerups();
     if (type == "butter"){
         eggSpdBoost = 1.5F;
         sprite.Modulate = Godot.Colors.Yellow;
@@ -330,6 +330,7 @@ public void setPowerup(String type){
     }
     else if (type == "wildcard") eggParent.Call("activateWildcard");
     powerupDir[0] = 1;
+    if (isPowerup) powerup = true;
 }
 
 public void _on_Hitbox_area_entered(Node body){

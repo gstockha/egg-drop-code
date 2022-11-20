@@ -474,7 +474,7 @@ color = Color( 0.780392, 0.780392, 0.780392, 1 )
 [node name="Playspace" parent="PlayerContainer/Viewport" instance=ExtResource( 9 )]
 
 [node name="EnemyArrow" parent="PlayerContainer/Viewport" instance=ExtResource( 23 )]
-position = Vector2( 460, 760 )
+position = Vector2( 460, 755 )
 
 [node name="EnemyContainer" type="ViewportContainer" parent="."]
 margin_left = 992.0
