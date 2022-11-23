@@ -159,6 +159,9 @@ func _input(event):
 		if !Global.online:
 			Global.defaults()
 			get_tree().reload_current_scene()
+	elif event.is_action_pressed("admin_start"):
+		if Global.id != 5 || !Network.lobby || !Network.waitingForGame: return
+		Network.sendAdminStart()
 	if !Global.playerDead: return
 	if event.is_action_pressed("ui_up") || event.is_action_pressed("ui_down"):
 		if Global.gameOver: return
@@ -462,7 +465,7 @@ func makeBot() -> void:
 
 func calculategameTime() -> String:
 	var lev = Global.level
-	var timeBase = 90 - (Global.difficulty * 20)
+	var timeBase = 80 - (Global.difficulty * 20)
 	Global.level = clamp(floor(Global.gameTime / timeBase), 0, 5)
 	timerBar.value = (((Global.gameTime - (timeBase * Global.level)) / timeBase) * 100) + 1
 	if lev != Global.level:

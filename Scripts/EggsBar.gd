@@ -5,7 +5,7 @@ onready var eggIcon = preload("res://Scenes/UI/EggIcon.tscn")
 var hearts = []
 var eggSprites = {
 	"normal": preload("res://Sprites/Eggs/Egg.png"), "fast": preload("res://Sprites/Eggs/FastEgg.png"),
-	"big": preload("res://Sprites/Eggs/BigEgg.png")
+	"big": preload("res://Sprites/Eggs/BigEgg.png"), "mega": preload("res://Sprites/Eggs/MegaEgg.png")
 }
 var eggs = []
 var player = null

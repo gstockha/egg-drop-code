@@ -292,6 +292,7 @@ public void MakeEgg(bool automatic){
     // else if (eggs[0] == "fast") soundId = 2;
     // else soundId = 0;
     //}
+    String laidType = eggs[0];
     eggParent.Call("makeEgg", id, eggs[0], new Vector2(Position.x, Position.y + 15 + (15 * (eggCount/maxEggs))), eggSpdBoost);
     game.Set("confirmedLaid", (int)game.Get("confirmedLaid") + 1);
     for (int i = 0; i < maxEggs - 1; i++){
@@ -303,10 +304,16 @@ public void MakeEgg(bool automatic){
     Scale = new Vector2(baseScale.x + (.07F * eggCount), baseScale.y + (.07F * eggCount));
     baseSpriteScale = sprite.Scale;
     weight = baseWeight + (eggCount * .0002F);
-    Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
     eggCooldown = (automatic) ? 90 : 30;
     eggBar.Call("drawEggs", "");
-    bocksfx.Call("playSound", "bock", GD.Randi() % 3);
+    if (laidType != "mega"){
+        bocksfx.Call("playSound", "bock", GD.Randi() % 3);
+        Squish(new Vector2(baseSpriteScale.x * 1.3F, baseSpriteScale.y * .7F));
+    }
+    else{
+        bocksfx.Call("playSound", "bock", 3);
+        Squish(new Vector2(baseSpriteScale.x * 1.8F, baseSpriteScale.y * .2F));
+    }
     if (eggSpdBoost > 1) subfx.Call("playSound", "butter");
     if ((bool)Global.Get("online")) Network.Call("sendStatus", id, "none", (Scale.x * .5F).ToString(), Global.Get("sid"));
 }
@@ -443,6 +450,7 @@ public void _on_Hitbox_area_entered(Node body){
             int soundId = 1;
             if (type == "big") soundId = 0;
             else if (type == "fast") soundId = 2;
+            else if (type == "mega") soundId = 3;
             eatsfx.Call("playSound", "eat", soundId);
             if ((bool)Global.Get("online")){
                 if ((bool)Global.Call("getBot", (int)Global.Get("sid")) == false || (bool)Network.Get("spectated")){
@@ -487,20 +495,20 @@ public void _on_Hitbox_area_entered(Node body){
                 powerBar.Modulate = Godot.Colors.Yellow;
             }
             else if (type == "shield"){
-                powerupDir[0] = 10;
+                powerupDir[0] = 8;
                 shielded = true;
                 shield.Visible = true;
                 powerBar.Modulate = Godot.Colors.Magenta;
             }
             else if (type == "shrink"){
-                powerupDir[0] = 15;
+                powerupDir[0] = 13;
                 baseSpriteScale = new Vector2(.3F, .3F);
                 powerBar.Modulate = Godot.Colors.Cyan;
                 collisionBox.Scale *= .5F;
                 hitbox.Scale *= .5F;
             }
             else if (type == "gun"){
-                powerupDir[0] = 12;
+                powerupDir[0] = 10;
                 powerBar.Modulate = Godot.Colors.Chartreuse;
                 itemParent.Call("spawnGun");
             }

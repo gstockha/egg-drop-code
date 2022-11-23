@@ -26,7 +26,8 @@ var eggRateLevelStr = "0"
 var eggTypes = {
 	"normal": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2 },
 	"fast": { "speed": 3.2, "size": 1, "knockback": 100.0, "damage": 1, "hp": 1 },
-	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1, "hp": 4 }
+	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1, "hp": 5 },
+	"mega": { "speed": 1.5, "size": 5, "knockback": 600.0, "damage": 2, "hp": 10 }
 }
 var lowerBounds = 850
 var spawnRange = Vector2.ZERO

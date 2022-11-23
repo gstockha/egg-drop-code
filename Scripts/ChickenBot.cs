@@ -541,18 +541,18 @@ public void _on_Hitbox_area_entered(Node body){
                 sprite.Modulate = Godot.Colors.Yellow;
             }
             else if (type == "shield"){
-                powerupDir[0] = 10;
+                powerupDir[0] = 8;
                 shielded = true;
                 shield.Visible = true;
             }
             else if (type == "shrink"){
-                powerupDir[0] = 15;
+                powerupDir[0] = 13;
                 baseSpriteScale = new Vector2(.3F, .3F);
                 collisionBox.Scale *= .5F;
                 hitbox.Scale *= .5F;
             }
             else if (type == "gun"){
-                powerupDir[0] = 12;
+                powerupDir[0] = 10;
                 itemParent.Call("spawnGun");
             }
             else if (type == "wildcard") eggParent.Call("activateWildcard");

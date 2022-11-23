@@ -5,7 +5,7 @@ var SOCKET_URL = "ws://24.143.59.168:7100"
 var client = WebSocketClient.new()
 onready var helper = FakeHelper
 enum tags {JOINED, MOVE, EGG, HEALTH, READY, STATUS, NEWPLAYER, JOINCONFIRM, PLAYERLEFT, EGGCONFIRM, BUMP, ITEMSEND,
-ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER, HEALTHSTATES, TIME}
+ITEMDESTROY, FULL, LABEL, BEGIN, TARGETSTATUS, SPECTATE, IDLE, ENDGAME, LOBBYPLAYER, HEALTHSTATES, TIME, ADMINSTART}
 var attemptingConnection = false
 var lobby = false
 var waitingForGame = false
@@ -97,6 +97,9 @@ func sendEndGame() -> void:
 
 func sendHealthStates(target: int, states: Array):
 	send({'tag': tags.HEALTHSTATES, 'target': target, 'states': states})
+
+func sendAdminStart():
+	send({'tag': tags.ADMINSTART})
 
 func _on_data() -> void:
 	var data = JSON.parse(client.get_peer(1).get_packet().get_string_from_utf8()).result

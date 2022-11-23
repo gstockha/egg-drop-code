@@ -1,9 +1,12 @@
 extends Node2D
 
 var popup = preload('res://Scenes/UI/Popup.tscn')
-var popupMap = {"normal": ["+egg", null], "big": ["+bigegg", null], "fast": ["+fastegg", null], "three": ["+3 eggs", null],
-"health": ["+1 hp", Color.pink], "shield": ["+shield", Color.orchid], "butter": ["+egg spd", Color.yellow],
-"gun": ["+gun", Color.lightgreen], "wildcard": ["+wildcard", Color.orange], "shrink": ["-size", Color.skyblue]}
+var popupMap = {
+"normal": ["+egg", null], "big": ["+bigegg", null], "fast": ["+fastegg", null], "three": ["+3 eggs", null],
+"mega": ["+MEGAEGG", null], "health": ["+1 hp", Color.pink], "shield": ["+shield", Color.orchid],
+"butter": ["+egg spd", Color.yellow], "gun": ["+gun", Color.lightgreen], "wildcard": ["+wildcard", Color.orange],
+"shrink": ["-size", Color.skyblue]
+}
 
 func _process(delta):
 	for pop in get_children():

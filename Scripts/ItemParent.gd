@@ -20,6 +20,7 @@ var items = {
 var foodSprites = {
 	"normal": preload("res://Sprites/Corn/Corn.png"), "three": preload("res://Sprites/Corn/Three.png"),
 	"fast": preload("res://Sprites/Corn/Fast.png"), "big": preload("res://Sprites/Corn/Big.png"),
+	"mega": preload("res://Sprites/Corn/Mega.png")
 }
 var powerSprites = {
 	"shield": preload("res://Sprites/Items/ShieldItem.png"), "butter": preload("res://Sprites/Items/Butter.png"),
@@ -124,12 +125,16 @@ func getPowerType() -> String:
 	return "gun"
 
 func getCornType() -> String:
+	return 'mega'
 	var roll = randi() % 100 + 1
-	if roll <= 60:
-		if roll <= 40 - (Global.level * 10): return "normal"
-		return "three"
-	if roll <= 85: return "fast"
-	return "big"
+	if roll >= Global.difficulty + ceil(Global.level * .5):
+		if roll <= 60:
+			if roll <= 40 - (Global.level * 10): return "normal"
+			return "three"
+		if roll <= 85: return "fast"
+		return "big"
+	else: #rare
+		return "mega"
 
 func spawnGun() -> void:
 	var gun = Gun.instance()
