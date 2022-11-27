@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "AudioController",
 "language": "GDScript",
 "path": "res://Scripts/SoundScripts/AudioController.gd"
+}, {
+"base": "Area2D",
+"class": "egg",
+"language": "GDScript",
+"path": "res://Scripts/Egg.gd"
 } ]
 _global_script_class_icons={
-"AudioController": ""
+"AudioController": "",
+"egg": ""
 }
 
 [application]
@@ -29,6 +35,7 @@ config/icon="res://Sprites/Chickens/Chicken.png"
 Global="*res://Scripts/Global.gd"
 Network="*res://Scripts/NetworkScripts/Network.gd"
 FakeHelper="*res://Scripts/NetworkScripts/FakeHelper.gd"
+SpriteRepo="*res://Scripts/SpriteRepo.gd"
 
 [display]
 

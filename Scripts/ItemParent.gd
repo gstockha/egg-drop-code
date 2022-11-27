@@ -17,16 +17,6 @@ var items = {
 	"food": preload("res://Scenes/Corn.tscn"), "health": preload("res://Scenes/Health.tscn"),
 	"power": preload("res://Scenes/Powerup.tscn")
 }
-var foodSprites = {
-	"normal": preload("res://Sprites/Corn/Corn.png"), "three": preload("res://Sprites/Corn/Three.png"),
-	"fast": preload("res://Sprites/Corn/Fast.png"), "big": preload("res://Sprites/Corn/Big.png"),
-	"mega": preload("res://Sprites/Corn/Mega.png")
-}
-var powerSprites = {
-	"shield": preload("res://Sprites/Items/ShieldItem.png"), "butter": preload("res://Sprites/Items/Butter.png"),
-	"gun": preload("res://Sprites/Items/CornGun.png"), "shrink": preload("res://Sprites/Items/Shrink.png"),
-	"wildcard": preload("res://Sprites/Items/Wildcard.png")
-}
 var pop = null
 var onlineEnemy = false
 var onlineItems = {}
@@ -68,11 +58,11 @@ func _process(delta):
 		item.position = getLocation()
 		if type == "food":
 			item.type = getCornType()
-			item.sprite.texture = foodSprites[item.type]
+			item.sprite.texture = SpriteRepo.foodSprites[item.type]
 		elif type == "power":
 			itemTimer -= 15
 			item.type = getPowerType()
-			item.sprite.texture = powerSprites[item.type]
+			item.sprite.texture = SpriteRepo.powerSprites[item.type]
 			item.scale *= 2
 			item.baseScale = item.scale
 		if botMode == 1:
@@ -125,16 +115,19 @@ func getPowerType() -> String:
 	return "gun"
 
 func getCornType() -> String:
-	return 'mega'
 	var roll = randi() % 100 + 1
-	if roll >= Global.difficulty + ceil(Global.level * .5):
+	if roll < 50: return "0right"
+	else: return "0left"
+	if roll >= 3 + Global.difficulty + Global.level:
 		if roll <= 60:
 			if roll <= 40 - (Global.level * 10): return "normal"
 			return "three"
 		if roll <= 85: return "fast"
 		return "big"
 	else: #rare
-		return "mega"
+		roll = randi() % 100 + 1
+		if roll < 40: return "mega"
+		return "sniper"
 
 func spawnGun() -> void:
 	var gun = Gun.instance()
@@ -150,7 +143,7 @@ func addOnlineItem(itemId: String, category: String, type: String, position: Vec
 	add_child(item)
 	if category != "health":
 		item.type = type
-		item.sprite.texture = foodSprites[type] if category == "food" else powerSprites[type]
+		item.sprite.texture = SpriteRepo.foodSprites[type] if category == "food" else SpriteRepo.powerSprites[type]
 	item.position = position * .5
 	item.duration = duration
 	onlineItems[itemId] = item

@@ -3,10 +3,7 @@ extends Control
 onready var eggParent = $Eggs
 onready var eggIcon = preload("res://Scenes/UI/EggIcon.tscn")
 var hearts = []
-var eggSprites = {
-	"normal": preload("res://Sprites/Eggs/Egg.png"), "fast": preload("res://Sprites/Eggs/FastEgg.png"),
-	"big": preload("res://Sprites/Eggs/BigEgg.png"), "mega": preload("res://Sprites/Eggs/MegaEgg.png")
-}
+
 var eggs = []
 var player = null
 var cooldown = 0
@@ -43,7 +40,7 @@ func drawEggs(type: String) -> void:
 				eggs[i].texture = null
 				return
 			eggs[i].texture = eggs[i+1].texture
-	else: eggs[player.eggCount-1].texture = eggSprites[type] # add an egg
+	else: eggs[player.eggCount-1].texture = SpriteRepo.eggBarSprites[type] # add an egg
 
 func clearEggs() -> void:
 	for i in range(0,25): eggs[i].texture = null

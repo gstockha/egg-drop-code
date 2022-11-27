@@ -419,7 +419,10 @@ public void _on_Hitbox_area_entered(Node body){
                 sfx.Call("playSound", "hurt");
             }
             Node2D egg = (Node2D)body;
-            if ((bool)Global.Get("online")) Network.Call("sendHealth", id, lastHitId, health, egg.Position.x);
+            if ((bool)Global.Get("online")){
+                if ((bool)body.Get("normalHitDetect")) Network.Call("sendHealth", id, lastHitId, health, egg.Position.x);
+                else Network.Call("sendHealth", id, lastHitId, health, egg.Position.y);
+            }
             break;
         case "chickens":
             Node chick = body.Owner;

@@ -6,8 +6,9 @@ func _on_Bullet_area_entered(area):
 	queue_free()
 	area.hp -= 1
 	if area.hp < 1: area.queue_free()
-	elif area.hp == 1: area.sprite.texture = Global.crack2
-	elif area.hp == 3: area.sprite.texture = Global.crack1
+	elif area.crackSprite == null: return
+	elif area.hp == 1: area.sprite.texture = SpriteRepo.crack2
+	elif area.hp == 3: area.sprite.texture = SpriteRepo.crack1
 	
 
 func _physics_process(_delta):

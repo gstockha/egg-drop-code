@@ -1,6 +1,7 @@
 extends Node2D
 
 var eggScene = preload("res://Scenes/Egg.tscn")
+var directionalEggScene = preload("res://Scenes/Eggs/directionalEgg.tscn")
 var eggTimer = 0
 var player = null
 var botMode = false #if this is the bot's eggparent
@@ -24,10 +25,15 @@ var eggRates = {
 }
 var eggRateLevelStr = "0"
 var eggTypes = {
-	"normal": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2 },
-	"fast": { "speed": 3.2, "size": 1, "knockback": 100.0, "damage": 1, "hp": 1 },
-	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1, "hp": 5 },
-	"mega": { "speed": 1.5, "size": 5, "knockback": 600.0, "damage": 2, "hp": 10 }
+	"normal": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2, "sprite": null },
+	"fast": { "speed": 3.2, "size": 1, "knockback": 100.0, "damage": 1, "hp": 1, "sprite": null },
+	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1, "hp": 5, "sprite": null },
+	"mega": { "speed": 1.5, "size": 5, "knockback": 600.0, "damage": 2, "hp": 10, "sprite": null },
+	"sniper": { "speed": 5.0, "size": -1, "knockback": 500.0, "damage": 1, "hp": 2, "sprite": null },
+	"0left": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2,
+	"sprite": SpriteRepo.eggBarSprites["0left"] },
+	"0right": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2,
+	"sprite": SpriteRepo.eggBarSprites["0right"] },
 }
 var lowerBounds = 850
 var spawnRange = Vector2.ZERO
@@ -95,7 +101,7 @@ func _process(delta):
 		var vec = Vector2(rand_range(spawnRange.x, spawnRange.y), 0)
 		var type = randType(Global.normalcy)
 		makeEgg(99, type, vec, 1)
-		if !botMode: print('made neutral egg ', vec.x)
+#		if !botMode: print('made neutral egg ', vec.x)
 		if !botMode && (!Global.botList[Global.sid] || Network.spectated):
 			Network.sendEgg(99, type, vec, 1, Global.sid, false) #to enemy's enemy screen
 	elif botReceive: #receive artificial eggs from above
@@ -157,10 +163,19 @@ func _physics_process(_delta):
 
 func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1, sentNeutral = false):
 	if !botMode && Network.lobby: return
-	var egg = eggScene.instance()
+	var special = type[0] == "0"
+	var egg
+	if !special: egg = eggScene.instance()
+	elif type == "0right" || type == "0left":
+		egg = directionalEggScene.instance()
+		if id != myid:
+			if type == "0left": pos = Vector2(spawnRange.y, lowerBounds - pos.x)
+			else: pos = Vector2(0, pos.x)
 	var typeKey = eggTypes[type]
-	add_child(egg)
+	egg.id = id
+	egg.position = pos
 	egg.type = type
+	add_child(egg)
 	egg.size = typeKey["size"]
 	egg.scale = Vector2(egg.size, egg.size)
 	egg.speed = typeKey["speed"] * eggSpdBoost
@@ -168,9 +183,10 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1, sentNe
 	egg.knockback = typeKey["knockback"]
 	egg.damage = typeKey["damage"]
 	egg.hp = typeKey["hp"]
-	egg.id = id
-	egg.position = pos
-	if onlinePlayer && id != myid: onlineEggs[str(round(pos.x*2))] = egg
+	if typeKey["sprite"]: egg.sprite.texture = typeKey["sprite"]
+	if onlinePlayer && id != myid:
+		if egg.normalHitDetect: onlineEggs[str(round(pos.x*2))] = egg
+		else: onlineEggs[str(round(pos.y*2))] = egg
 	if id != 99:
 		egg.sprite.modulate = Global.colorIdMap[id]
 		if !botMode && Global.id == id: #player is hatching it
