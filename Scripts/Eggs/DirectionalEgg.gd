@@ -7,6 +7,7 @@ func _ready():
 	if get_parent().myid == id:
 		set_physics_process(false)
 		return
+	crackSprite = true
 	normalHitDetect = false
 	direction = -1 if type == "0left" else 1
 	yy = position.y

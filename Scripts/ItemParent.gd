@@ -116,8 +116,6 @@ func getPowerType() -> String:
 
 func getCornType() -> String:
 	var roll = randi() % 100 + 1
-	if roll < 50: return "0right"
-	else: return "0left"
 	if roll >= 3 + Global.difficulty + Global.level:
 		if roll <= 60:
 			if roll <= 40 - (Global.level * 10): return "normal"
@@ -126,10 +124,14 @@ func getCornType() -> String:
 		return "big"
 	else: #rare
 		roll = randi() % 100 + 1
-		if roll < 40: return "mega"
-		return "sniper"
+		if roll < 20: return "sniper"
+		elif roll < 45: return "0right"
+		elif roll < 70: return "0left"
+		elif roll < 90: return "mega"
+		return "0exploding"
 
 func spawnGun() -> void:
+	if player == null: return
 	var gun = Gun.instance()
 	get_parent().add_child(gun)
 	gun.plr = player

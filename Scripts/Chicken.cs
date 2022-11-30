@@ -389,10 +389,11 @@ public void DetectCollision(float power, float lowerBound, float invTime, bool s
 }
 
 public void _on_Hitbox_area_entered(Node body){
-    Godot.Collections.Array group = body.GetGroups();
+    Godot.Collections.Array groups = body.GetGroups();
     float knockb = 0;
     string type;
-    switch (group[0]){
+    foreach (string group in groups){
+    switch (group){
         case "eggs":
             int eggId = (int)body.Get("id");
             if (invincible || eggId == id) return;
@@ -404,9 +405,9 @@ public void _on_Hitbox_area_entered(Node body){
                 //     heartIcons[i].Visible = i < health;
                 //     heartBGs[i].Visible = i >= health;
                 // }
+                if (eggId != 99) lastHitId = eggId;
                 game.Call("registerHealth", id, lastHitId, health);
                 itemParent.Set("playerHealth", health);
-                if (eggId != 99) lastHitId = eggId;
             }
             DetectCollision(knockb, .3F + (knockb * .0005F), .25F, true);
             body.QueueFree();
@@ -531,6 +532,29 @@ public void _on_Hitbox_area_entered(Node body){
                 Network.Call("sendStatus", id, type, (Scale.x * .5F).ToString());
             }
             break;
+        case "explosions":
+            int explosionId = (int)body.Get("id");
+            if (invincible) return;
+            knockb = (float)body.Get("knockback");
+            if (!shielded){
+                health -= (int)body.Get("damage");
+                if (health < 0) health = 0;
+                game.Call("registerHealth", id, lastHitId, health);
+                itemParent.Set("playerHealth", health);
+                if (explosionId != 99) lastHitId = explosionId;
+            }
+            DetectCollision(knockb, .3F + (knockb * .0005F), .25F, true);
+            if (health > 0){
+                if (shielded) sfx.Call("playSound", "boing");
+            }
+            else{
+                sfx.Call("playSound", "hurt");
+            }
+            if ((bool)Global.Get("online")){
+                Network.Call("sendHealth", id, lastHitId, health, 0);
+            }
+            break;
+    }
     }
 }
 

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/MagicEgg1.png-f604aed7f4abb1883a1a8d1848556ae0.stex"
+path="res://.import/RightEgg.png-78e1aff2e8d669437ebdd31da682e0a9.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Eggs/MagicEgg1.png"
-dest_files=[ "res://.import/MagicEgg1.png-f604aed7f4abb1883a1a8d1848556ae0.stex" ]
+source_file="res://Sprites/Eggs/RightLeft/RightEgg.png"
+dest_files=[ "res://.import/RightEgg.png-78e1aff2e8d669437ebdd31da682e0a9.stex" ]
 
 [params]
 

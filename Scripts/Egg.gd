@@ -12,6 +12,6 @@ var hp = 1
 var eggid = ""
 var magic = false
 var normalHitDetect = true
-var crackSprite = null
+var crackSprite = false
 onready var sprite = $Sprite
 onready var hitBox = $CollisionShape2D

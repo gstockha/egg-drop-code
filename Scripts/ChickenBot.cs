@@ -477,10 +477,11 @@ public void DetectCollision(float power, float lowerBound, float invTime){
 }
 
 public void _on_Hitbox_area_entered(Node body){
-    Godot.Collections.Array group = body.GetGroups();
+    Godot.Collections.Array groups = body.GetGroups();
     float knockb = 0;
     string type;
-    switch (group[0]){
+    foreach (string group in groups){
+    switch (group){
         case "eggs":
             int eggId = (int)body.Get("id");
             if (invincible || eggId == id) return;
@@ -564,6 +565,21 @@ public void _on_Hitbox_area_entered(Node body){
             body.QueueFree();
             if ((bool)Global.Get("online")) Network.Call("sendStatus", id, type, 0);
             break;
+        case "explosions":
+            int explosionId = (int)body.Get("id");
+            if (invincible) return;
+            knockb = (float)body.Get("knockback");
+            if (!shielded){
+                health -= (int)body.Get("damage");
+                if (explosionId != 99) lastHitId = explosionId;
+                if (health < 1) health = 0;
+                game.Call("registerHealth", (int)Global.Get("eid"), lastHitId, health);
+                itemParent.Set("playerHealth", health);
+            }
+            DetectCollision(knockb, .3F + (knockb * .0005F), .25F);
+            if ((bool)Global.Get("online")) Network.Call("sendHealth", id, lastHitId, health, 0);
+            break;
+    }
     }
 }
 

@@ -1,7 +1,8 @@
 extends Node2D
 
 var eggScene = preload("res://Scenes/Egg.tscn")
-var directionalEggScene = preload("res://Scenes/Eggs/directionalEgg.tscn")
+var directionalEggScene = preload("res://Scenes/Eggs/DirectionalEgg.tscn")
+var explodingEggScene = preload("res://Scenes/Eggs/ExplodingEgg.tscn")
 var eggTimer = 0
 var player = null
 var botMode = false #if this is the bot's eggparent
@@ -30,10 +31,12 @@ var eggTypes = {
 	"big": { "speed": 2.0, "size": 2, "knockback": 400.0, "damage": 1, "hp": 5, "sprite": null },
 	"mega": { "speed": 1.5, "size": 5, "knockback": 600.0, "damage": 2, "hp": 10, "sprite": null },
 	"sniper": { "speed": 5.0, "size": -1, "knockback": 500.0, "damage": 1, "hp": 2, "sprite": null },
-	"0left": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2,
+	"0left": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 4,
 	"sprite": SpriteRepo.eggBarSprites["0left"] },
-	"0right": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 2,
+	"0right": { "speed": 2.5, "size": 1.25, "knockback": 225.0, "damage": 1, "hp": 4,
 	"sprite": SpriteRepo.eggBarSprites["0right"] },
+	"0exploding": { "speed": 4.2, "size": 1.25, "knockback": 1000.0, "damage": 3, "hp": 6,
+	"sprite": SpriteRepo.eggBarSprites["0exploding"] }
 }
 var lowerBounds = 850
 var spawnRange = Vector2.ZERO
@@ -54,13 +57,13 @@ func _ready():
 	eggRateLevelStr = str(Global.level)
 	eggTimer = rand_range(eggRates[eggRateLevelStr][0], eggRates[eggRateLevelStr][1])
 	botMode = get_parent().name == "Enemyspace"
+	game = get_parent().get_parent().get_parent().get_parent()
 	if !botMode:
 		myid = Global.id
 		player = get_parent().get_node('Chicken')
 		spawnRange = Vector2(Global.playerBounds.x+6,Global.playerBounds.y-6)
 		eggTarget = get_node('../../../../EnemyContainer/Viewport/Enemyspace/EggParent')
 		if !Global.online: Global.sid = Global.id - 1 if Global.id - 1 >= 0 else 11
-		game = get_parent().get_parent().get_parent().get_parent()
 		helper = Network.helper
 #		botIsBelow = Global.botList[Global.eid] || !Global.online
 		set_process(!Network.lobby) #UNCOMMENT WHEN NOT TESTING
@@ -166,6 +169,7 @@ func makeEgg(id: int, type: String, pos: Vector2, eggSpdBoost: float = 1, sentNe
 	var special = type[0] == "0"
 	var egg
 	if !special: egg = eggScene.instance()
+	elif type == "0exploding": egg = explodingEggScene.instance()
 	elif type == "0right" || type == "0left":
 		egg = directionalEggScene.instance()
 		if id != myid:

@@ -4,6 +4,7 @@ var popup = preload('res://Scenes/UI/Popup.tscn')
 var popupMap = {
 "normal": ["+egg", null], "big": ["+bigegg", null], "fast": ["+fastegg", null], "three": ["+3 eggs", null],
 "mega": ["+MEGAEGG", null], "sniper": ["+SNIPEREGG", null], "0left": ["+LEFTEGG", null], "0right": ["+RIGHTEGG", null],
+"0exploding": ["+BOMBEGG", null],
 "health": ["+1 hp", Color.pink], "shield": ["+shield", Color.orchid], "butter": ["+egg spd", Color.yellow],
 "gun": ["+gun", Color.lightgreen], "wildcard": ["+wildcard", Color.orange], "shrink": ["-size", Color.skyblue]
 }

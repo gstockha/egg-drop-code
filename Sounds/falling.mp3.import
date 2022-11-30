@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/falling.mp3-deda85f7f72c892d6f56724bb971bc96.mp3str"
+
+[deps]
+
+source_file="res://Sounds/falling.mp3"
+dest_files=[ "res://.import/falling.mp3-deda85f7f72c892d6f56724bb971bc96.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

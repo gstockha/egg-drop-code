@@ -3,7 +3,6 @@ extends Control
 onready var eggParent = $Eggs
 onready var eggIcon = preload("res://Scenes/UI/EggIcon.tscn")
 var hearts = []
-
 var eggs = []
 var player = null
 var cooldown = 0

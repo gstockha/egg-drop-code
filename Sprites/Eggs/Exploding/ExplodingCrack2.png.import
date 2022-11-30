@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/LeftEgg.png-52e0f0faa3762f91a9989dd413f77801.stex"
+path="res://.import/ExplodingCrack2.png-cfb99fae9f26b6b1754741dd87b4b0ee.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Eggs/LeftEgg.png"
-dest_files=[ "res://.import/LeftEgg.png-52e0f0faa3762f91a9989dd413f77801.stex" ]
+source_file="res://Sprites/Eggs/Exploding/ExplodingCrack2.png"
+dest_files=[ "res://.import/ExplodingCrack2.png-cfb99fae9f26b6b1754741dd87b4b0ee.stex" ]
 
 [params]
 
